@@ -6,7 +6,10 @@ export const Route = createFileRoute("/@admin/")({
   head: () => ({
     meta: [
       { title: "Admin Login — Janhit Group of Institutions" },
-      { name: "description", content: "Access the Janhit Group of Institutions administration panel." },
+      {
+        name: "description",
+        content: "Access the Janhit Group of Institutions administration panel.",
+      },
     ],
   }),
 });

@@ -5,9 +5,7 @@ import { ProtectedRoute } from "@/admin/components/ProtectedRoute";
 export const Route = createFileRoute("/@admin/committees/")({
   component: CommitteesListingRouteComponent,
   head: () => ({
-    meta: [
-      { title: "Committees Management — Janhit Group of Institutions" },
-    ],
+    meta: [{ title: "Committees Management — Janhit Group of Institutions" }],
   }),
 });
 

@@ -8,15 +8,31 @@ export const Route = createFileRoute("/courses")({
   head: () => ({
     meta: [
       { title: "Courses — Janhit Group" },
-      { name: "description", content: "Search and filter all academic programs offered across Janhit colleges and schools." },
+      {
+        name: "description",
+        content:
+          "Search and filter all academic programs offered across Janhit colleges and schools.",
+      },
       { property: "og:title", content: "All Courses — Janhit Group" },
-      { property: "og:description", content: "Programs in Law, Management, Commerce, Science, Education and K-12." },
+      {
+        property: "og:description",
+        content: "Programs in Law, Management, Commerce, Science, Education and K-12.",
+      },
     ],
   }),
   component: Courses,
 });
 
-const cats = ["All", "Law", "Management", "Commerce", "Science", "Education", "Arts", "School Education"];
+const cats = [
+  "All",
+  "Law",
+  "Management",
+  "Commerce",
+  "Science",
+  "Education",
+  "Arts",
+  "School Education",
+];
 
 function Courses() {
   const [q, setQ] = useState("");
@@ -57,7 +73,9 @@ function Courses() {
               key={c}
               onClick={() => setCat(c)}
               className={`px-4 py-2 text-sm font-semibold rounded-full transition ${
-                cat === c ? "bg-gradient-primary text-primary-foreground shadow-elegant" : "bg-secondary text-secondary-foreground hover:bg-accent"
+                cat === c
+                  ? "bg-gradient-primary text-primary-foreground shadow-elegant"
+                  : "bg-secondary text-secondary-foreground hover:bg-accent"
               }`}
             >
               {c}
@@ -67,7 +85,10 @@ function Courses() {
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {list.map((c, i) => (
-            <article key={c.slug + c.name + i} className="group p-6 rounded-2xl bg-card border border-border hover-lift">
+            <article
+              key={c.slug + c.name + i}
+              className="group p-6 rounded-2xl bg-card border border-border hover-lift"
+            >
               <div className="flex items-start justify-between gap-3">
                 <div className="size-12 rounded-xl bg-gradient-gold grid place-items-center shadow-gold">
                   <GraduationCap className="size-5 text-gold-foreground" />
@@ -79,15 +100,29 @@ function Courses() {
               <h3 className="mt-4 font-display text-xl font-bold">{c.name}</h3>
               <p className="mt-1 text-sm text-muted-foreground">{c.institution}</p>
               <dl className="mt-4 grid grid-cols-2 gap-2 text-xs">
-                <div className="p-2.5 rounded-lg bg-secondary"><dt className="text-muted-foreground">Duration</dt><dd className="font-semibold">{c.duration}</dd></div>
-                <div className="p-2.5 rounded-lg bg-secondary"><dt className="text-muted-foreground">City</dt><dd className="font-semibold">{c.city}</dd></div>
-                <div className="p-2.5 rounded-lg bg-secondary col-span-2"><dt className="text-muted-foreground">Eligibility</dt><dd className="font-semibold">{c.eligibility}</dd></div>
-                <div className="p-2.5 rounded-lg bg-secondary col-span-2"><dt className="text-muted-foreground">Affiliation</dt><dd className="font-semibold">{c.affiliation}</dd></div>
+                <div className="p-2.5 rounded-lg bg-secondary">
+                  <dt className="text-muted-foreground">Duration</dt>
+                  <dd className="font-semibold">{c.duration}</dd>
+                </div>
+                <div className="p-2.5 rounded-lg bg-secondary">
+                  <dt className="text-muted-foreground">City</dt>
+                  <dd className="font-semibold">{c.city}</dd>
+                </div>
+                <div className="p-2.5 rounded-lg bg-secondary col-span-2">
+                  <dt className="text-muted-foreground">Eligibility</dt>
+                  <dd className="font-semibold">{c.eligibility}</dd>
+                </div>
+                <div className="p-2.5 rounded-lg bg-secondary col-span-2">
+                  <dt className="text-muted-foreground">Affiliation</dt>
+                  <dd className="font-semibold">{c.affiliation}</dd>
+                </div>
               </dl>
             </article>
           ))}
         </div>
-        {list.length === 0 && <p className="text-center text-muted-foreground py-20">No matching courses.</p>}
+        {list.length === 0 && (
+          <p className="text-center text-muted-foreground py-20">No matching courses.</p>
+        )}
       </div>
     </section>
   );

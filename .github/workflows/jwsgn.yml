@@ -1,0 +1,33 @@
+name: Janhit World School GN CI
+
+on:
+  push:
+    branches: [ main, master ]
+    paths:
+      - 'janhitcampus/janhit_world_school_gn/**'
+  pull_request:
+    branches: [ main, master ]
+    paths:
+      - 'janhitcampus/janhit_world_school_gn/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build project
+        run: npm run build --workspace=janhit_world_school_gn
+
+      - name: Lint project
+        run: npm run lint --workspace=janhit_world_school_gn

@@ -28,7 +28,8 @@ export const Route = createFileRoute("/gallery")({
       { title: "Media Gallery — Janhit Group of Institutions" },
       {
         name: "description",
-        content: "Explore campus photos and videos of Janhit institutions. View facilities, libraries, labs, sports events, convocations, and virtual campus tours.",
+        content:
+          "Explore campus photos and videos of Janhit institutions. View facilities, libraries, labs, sports events, convocations, and virtual campus tours.",
       },
       { property: "og:title", content: "Campus Media Gallery — Janhit Group" },
       { property: "og:description", content: "Glimpses of campus life across the Janhit family." },
@@ -138,7 +139,8 @@ function Gallery() {
               Life and learning. <span className="text-gradient-gold">Captured</span>.
             </h1>
             <p className="mt-6 text-lg opacity-90 max-w-2xl">
-              Explore photo highlights and video tours showing the state-of-the-art infrastructure, sports arenas, classrooms, and memorable campus events at Janhit.
+              Explore photo highlights and video tours showing the state-of-the-art infrastructure,
+              sports arenas, classrooms, and memorable campus events at Janhit.
             </p>
           </FadeIn>
         </div>
@@ -287,7 +289,9 @@ function Gallery() {
                       <h3 className="font-display font-bold text-lg md:text-xl text-foreground group-hover:text-gold transition-colors leading-tight">
                         {item.title}
                       </h3>
-                      <p className="mt-4 text-sm text-muted-foreground leading-relaxed">{item.desc}</p>
+                      <p className="mt-4 text-sm text-muted-foreground leading-relaxed">
+                        {item.desc}
+                      </p>
                     </div>
                     <div className="mt-8 pt-4 border-t border-border flex justify-between items-center">
                       <span className="text-[10px] uppercase tracking-wider font-semibold text-muted-foreground">
@@ -406,7 +410,11 @@ function Gallery() {
                     onClick={() => setIsPlaying((p) => !p)}
                     className="hover:text-white transition disabled:opacity-50"
                   >
-                    {isPlaying ? <Pause className="size-4" /> : <Play className="size-4 fill-current" />}
+                    {isPlaying ? (
+                      <Pause className="size-4" />
+                    ) : (
+                      <Play className="size-4 fill-current" />
+                    )}
                   </button>
                   <div className="flex items-center gap-1.5">
                     <Volume2 className="size-4" />
@@ -428,4 +436,3 @@ function Gallery() {
     </>
   );
 }
-

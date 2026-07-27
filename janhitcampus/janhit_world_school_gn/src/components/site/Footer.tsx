@@ -11,14 +11,12 @@ export function Footer() {
             <img src={logo} alt="Janhit World School Logo" className="h-20 w-20 object-contain" />
             <div>
               <div className="font-serif text-xl">Janhit World School</div>
-              <div className="text-[11px] uppercase tracking-[0.3em] text-gold">
-                Greater Noida
-              </div>
+              <div className="text-[11px] uppercase tracking-[0.3em] text-gold">Greater Noida</div>
             </div>
           </div>
           <p className="mt-6 text-white/65 max-w-md leading-relaxed">
-            Where Global Foundations Meet Elite Excellence. To be affiliated with CBSE.
-            Foundational Stage to Class 8 · Session 2026-27.
+            Where Global Foundations Meet Elite Excellence. To be affiliated with CBSE. Foundational
+            Stage to Class 8 · Session 2026-27.
           </p>
           <div className="mt-6 flex gap-3">
             {[Instagram, Facebook, Youtube, Linkedin].map((Icon, i) => (
@@ -38,7 +36,10 @@ export function Footer() {
           <ul className="space-y-3 text-white/75">
             {["About", "Why Us", "Foundation", "Sports", "Admissions", "Contact"].map((l) => (
               <li key={l}>
-                <a href={`#${l.toLowerCase().replace(" ", "")}`} className="hover:text-gold transition-colors">
+                <a
+                  href={`#${l.toLowerCase().replace(" ", "")}`}
+                  className="hover:text-gold transition-colors"
+                >
                   {l}
                 </a>
               </li>

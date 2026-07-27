@@ -22,7 +22,10 @@ export function InstitutionCard({ inst, index = 0 }: { inst: Institution; index?
         <div className="absolute inset-0 bg-gradient-to-t from-primary/90 via-primary/20 to-transparent" />
         <div className="absolute top-3 left-3 flex flex-wrap gap-1.5">
           {inst.approvals.map((a) => (
-            <span key={a} className="px-2.5 py-1 rounded-full bg-gradient-gold text-gold-foreground text-[10px] font-bold tracking-wider shadow-gold">
+            <span
+              key={a}
+              className="px-2.5 py-1 rounded-full bg-gradient-gold text-gold-foreground text-[10px] font-bold tracking-wider shadow-gold"
+            >
               {a}
             </span>
           ))}
@@ -39,7 +42,10 @@ export function InstitutionCard({ inst, index = 0 }: { inst: Institution; index?
         <p className="text-sm text-muted-foreground line-clamp-2">{inst.short}</p>
         <div className="mt-4 flex flex-wrap gap-1.5">
           {inst.courses.slice(0, 5).map((c) => (
-            <span key={c} className="text-[11px] px-2 py-1 rounded-md bg-accent text-accent-foreground font-medium">
+            <span
+              key={c}
+              className="text-[11px] px-2 py-1 rounded-md bg-accent text-accent-foreground font-medium"
+            >
               {c}
             </span>
           ))}

@@ -29,7 +29,7 @@ export const FacultyForm: React.FC<FacultyFormProps> = ({
   submitButtonText,
 }) => {
   // Load campuses for campus select dropdown
-  const campusesList = getStoredCampuses().filter(c => c.status === "active");
+  const campusesList = getStoredCampuses().filter((c) => c.status === "active");
 
   // Form states
   const [name, setName] = useState(initialData?.name || "");
@@ -48,11 +48,15 @@ export const FacultyForm: React.FC<FacultyFormProps> = ({
   const [awards, setAwards] = useState(initialData?.awards || "");
   const [bio, setBio] = useState(initialData?.bio || "");
   const [message, setMessage] = useState(initialData?.message || "");
-  const [displayOrder, setDisplayOrder] = useState(initialData?.displayOrder !== undefined ? String(initialData.displayOrder) : "0");
-  
+  const [displayOrder, setDisplayOrder] = useState(
+    initialData?.displayOrder !== undefined ? String(initialData.displayOrder) : "0",
+  );
+
   const [isHod, setIsHod] = useState(initialData?.isHod || false);
   const [isFeatured, setIsFeatured] = useState(initialData?.isFeatured || false);
-  const [isActive, setIsActive] = useState(initialData?.isActive !== undefined ? initialData.isActive : true);
+  const [isActive, setIsActive] = useState(
+    initialData?.isActive !== undefined ? initialData.isActive : true,
+  );
   const [image, setImage] = useState(initialData?.image || "");
 
   // Error & Touch states
@@ -113,7 +117,7 @@ export const FacultyForm: React.FC<FacultyFormProps> = ({
         setErrors((prev) => ({ ...prev, image: "Image must be less than 1.5MB." }));
         return;
       }
-      
+
       const reader = new FileReader();
       reader.onloadend = () => {
         setImage(reader.result as string);
@@ -152,7 +156,9 @@ export const FacultyForm: React.FC<FacultyFormProps> = ({
     const hasErrors = Object.values(newErrors).some((err) => err !== "");
     if (hasErrors) {
       // Find first error and scroll to it
-      const firstErrorKey = Object.keys(newErrors).find((k) => newErrors[k as keyof typeof newErrors] !== "");
+      const firstErrorKey = Object.keys(newErrors).find(
+        (k) => newErrors[k as keyof typeof newErrors] !== "",
+      );
       if (firstErrorKey) {
         const element = document.getElementsByName(firstErrorKey)[0];
         if (element) {
@@ -194,15 +200,15 @@ export const FacultyForm: React.FC<FacultyFormProps> = ({
       {/* Profile Image & Primary Meta */}
       <div className="bg-card glass rounded-2xl p-6 border shadow-sm relative overflow-hidden">
         <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 blur-2xl rounded-full pointer-events-none" />
-        
+
         <div className="flex flex-col md:flex-row gap-6 items-center md:items-start">
           {/* Avatar Upload */}
           <div className="relative group">
-            <div 
+            <div
               onClick={handleImageClick}
               className={`size-32 rounded-2xl border-2 border-dashed flex flex-col items-center justify-center cursor-pointer overflow-hidden transition-all relative ${
-                image 
-                  ? "border-primary/40 bg-background" 
+                image
+                  ? "border-primary/40 bg-background"
                   : "border-muted-foreground/30 hover:border-primary/50 bg-background/50 hover:bg-background"
               }`}
             >
@@ -211,10 +217,12 @@ export const FacultyForm: React.FC<FacultyFormProps> = ({
               ) : (
                 <div className="text-center p-4">
                   <Camera className="size-6 text-muted-foreground mx-auto mb-1 group-hover:scale-110 transition-transform" />
-                  <span className="text-[10px] text-muted-foreground font-medium">Upload Photo</span>
+                  <span className="text-[10px] text-muted-foreground font-medium">
+                    Upload Photo
+                  </span>
                 </div>
               )}
-              
+
               {/* Overlay on hover */}
               {image && (
                 <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
@@ -243,14 +251,18 @@ export const FacultyForm: React.FC<FacultyFormProps> = ({
               className="hidden"
             />
             {errors.image && (
-              <p className="text-destructive text-[11px] font-semibold mt-1.5 text-center">{errors.image}</p>
+              <p className="text-destructive text-[11px] font-semibold mt-1.5 text-center">
+                {errors.image}
+              </p>
             )}
           </div>
 
           {/* Core Info */}
           <div className="flex-1 w-full grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <Label htmlFor="name" className="text-xs font-bold text-foreground/80">Faculty Name <span className="text-destructive">*</span></Label>
+              <Label htmlFor="name" className="text-xs font-bold text-foreground/80">
+                Faculty Name <span className="text-destructive">*</span>
+              </Label>
               <Input
                 id="name"
                 name="name"
@@ -266,7 +278,9 @@ export const FacultyForm: React.FC<FacultyFormProps> = ({
             </div>
 
             <div>
-              <Label htmlFor="campusId" className="text-xs font-bold text-foreground/80">Campus <span className="text-destructive">*</span></Label>
+              <Label htmlFor="campusId" className="text-xs font-bold text-foreground/80">
+                Campus <span className="text-destructive">*</span>
+              </Label>
               <div className="mt-1.5">
                 <Select
                   value={campusId}
@@ -274,7 +288,9 @@ export const FacultyForm: React.FC<FacultyFormProps> = ({
                     handleFieldChange("campusId", val, setCampusId);
                   }}
                 >
-                  <SelectTrigger className={`rounded-xl bg-background ${errors.campusId ? "border-destructive focus:ring-destructive" : ""}`}>
+                  <SelectTrigger
+                    className={`rounded-xl bg-background ${errors.campusId ? "border-destructive focus:ring-destructive" : ""}`}
+                  >
                     <SelectValue placeholder="Select Campus" />
                   </SelectTrigger>
                   <SelectContent className="rounded-xl border border-border/80">
@@ -292,7 +308,9 @@ export const FacultyForm: React.FC<FacultyFormProps> = ({
             </div>
 
             <div>
-              <Label htmlFor="designation" className="text-xs font-bold text-foreground/80">Designation</Label>
+              <Label htmlFor="designation" className="text-xs font-bold text-foreground/80">
+                Designation
+              </Label>
               <Input
                 id="designation"
                 value={designation}
@@ -303,7 +321,9 @@ export const FacultyForm: React.FC<FacultyFormProps> = ({
             </div>
 
             <div>
-              <Label htmlFor="department" className="text-xs font-bold text-foreground/80">Department</Label>
+              <Label htmlFor="department" className="text-xs font-bold text-foreground/80">
+                Department
+              </Label>
               <Input
                 id="department"
                 value={department}
@@ -318,11 +338,15 @@ export const FacultyForm: React.FC<FacultyFormProps> = ({
 
       {/* Qualifications & Specializations */}
       <div className="bg-card glass rounded-2xl p-6 border shadow-sm space-y-4">
-        <h3 className="font-display font-bold text-lg text-foreground border-b pb-2">Academic & Experience Details</h3>
-        
+        <h3 className="font-display font-bold text-lg text-foreground border-b pb-2">
+          Academic & Experience Details
+        </h3>
+
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
-            <Label htmlFor="qualification" className="text-xs font-bold text-foreground/80">Qualification</Label>
+            <Label htmlFor="qualification" className="text-xs font-bold text-foreground/80">
+              Qualification
+            </Label>
             <Input
               id="qualification"
               value={qualification}
@@ -333,7 +357,9 @@ export const FacultyForm: React.FC<FacultyFormProps> = ({
           </div>
 
           <div>
-            <Label htmlFor="specialization" className="text-xs font-bold text-foreground/80">Specialization</Label>
+            <Label htmlFor="specialization" className="text-xs font-bold text-foreground/80">
+              Specialization
+            </Label>
             <Input
               id="specialization"
               value={specialization}
@@ -344,7 +370,9 @@ export const FacultyForm: React.FC<FacultyFormProps> = ({
           </div>
 
           <div>
-            <Label htmlFor="experience" className="text-xs font-bold text-foreground/80">Total Experience</Label>
+            <Label htmlFor="experience" className="text-xs font-bold text-foreground/80">
+              Total Experience
+            </Label>
             <Input
               id="experience"
               value={experience}
@@ -358,11 +386,15 @@ export const FacultyForm: React.FC<FacultyFormProps> = ({
 
       {/* Contact & Professional Links */}
       <div className="bg-card glass rounded-2xl p-6 border shadow-sm space-y-4">
-        <h3 className="font-display font-bold text-lg text-foreground border-b pb-2">Contact & Professional Links</h3>
-        
+        <h3 className="font-display font-bold text-lg text-foreground border-b pb-2">
+          Contact & Professional Links
+        </h3>
+
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
-            <Label htmlFor="email" className="text-xs font-bold text-foreground/80">Email Address</Label>
+            <Label htmlFor="email" className="text-xs font-bold text-foreground/80">
+              Email Address
+            </Label>
             <Input
               id="email"
               name="email"
@@ -379,7 +411,9 @@ export const FacultyForm: React.FC<FacultyFormProps> = ({
           </div>
 
           <div>
-            <Label htmlFor="phone" className="text-xs font-bold text-foreground/80">Phone Number</Label>
+            <Label htmlFor="phone" className="text-xs font-bold text-foreground/80">
+              Phone Number
+            </Label>
             <Input
               id="phone"
               value={phone}
@@ -390,7 +424,9 @@ export const FacultyForm: React.FC<FacultyFormProps> = ({
           </div>
 
           <div>
-            <Label htmlFor="linkedin" className="text-xs font-bold text-foreground/80">LinkedIn Profile URL</Label>
+            <Label htmlFor="linkedin" className="text-xs font-bold text-foreground/80">
+              LinkedIn Profile URL
+            </Label>
             <Input
               id="linkedin"
               value={linkedin}
@@ -404,11 +440,15 @@ export const FacultyForm: React.FC<FacultyFormProps> = ({
 
       {/* Research, Publications, Subjects */}
       <div className="bg-card glass rounded-2xl p-6 border shadow-sm space-y-4">
-        <h3 className="font-display font-bold text-lg text-foreground border-b pb-2">Research & Publications</h3>
-        
+        <h3 className="font-display font-bold text-lg text-foreground border-b pb-2">
+          Research & Publications
+        </h3>
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <Label htmlFor="researchInterest" className="text-xs font-bold text-foreground/80">Research Interest</Label>
+            <Label htmlFor="researchInterest" className="text-xs font-bold text-foreground/80">
+              Research Interest
+            </Label>
             <Textarea
               id="researchInterest"
               value={researchInterest}
@@ -419,7 +459,9 @@ export const FacultyForm: React.FC<FacultyFormProps> = ({
           </div>
 
           <div>
-            <Label htmlFor="subjects" className="text-xs font-bold text-foreground/80">Subjects Taught</Label>
+            <Label htmlFor="subjects" className="text-xs font-bold text-foreground/80">
+              Subjects Taught
+            </Label>
             <Textarea
               id="subjects"
               value={subjects}
@@ -430,7 +472,9 @@ export const FacultyForm: React.FC<FacultyFormProps> = ({
           </div>
 
           <div className="md:col-span-2">
-            <Label htmlFor="publications" className="text-xs font-bold text-foreground/80">Key Publications</Label>
+            <Label htmlFor="publications" className="text-xs font-bold text-foreground/80">
+              Key Publications
+            </Label>
             <Textarea
               id="publications"
               value={publications}
@@ -441,7 +485,9 @@ export const FacultyForm: React.FC<FacultyFormProps> = ({
           </div>
 
           <div className="md:col-span-2">
-            <Label htmlFor="awards" className="text-xs font-bold text-foreground/80">Awards & Honors</Label>
+            <Label htmlFor="awards" className="text-xs font-bold text-foreground/80">
+              Awards & Honors
+            </Label>
             <Textarea
               id="awards"
               value={awards}
@@ -455,11 +501,15 @@ export const FacultyForm: React.FC<FacultyFormProps> = ({
 
       {/* Biography & Personal Message */}
       <div className="bg-card glass rounded-2xl p-6 border shadow-sm space-y-4">
-        <h3 className="font-display font-bold text-lg text-foreground border-b pb-2">Biography & Personal Message</h3>
-        
+        <h3 className="font-display font-bold text-lg text-foreground border-b pb-2">
+          Biography & Personal Message
+        </h3>
+
         <div className="space-y-4">
           <div>
-            <Label htmlFor="bio" className="text-xs font-bold text-foreground/80">Full Biography</Label>
+            <Label htmlFor="bio" className="text-xs font-bold text-foreground/80">
+              Full Biography
+            </Label>
             <Textarea
               id="bio"
               value={bio}
@@ -470,7 +520,9 @@ export const FacultyForm: React.FC<FacultyFormProps> = ({
           </div>
 
           <div>
-            <Label htmlFor="message" className="text-xs font-bold text-foreground/80">Personal Message / Quote</Label>
+            <Label htmlFor="message" className="text-xs font-bold text-foreground/80">
+              Personal Message / Quote
+            </Label>
             <Textarea
               id="message"
               value={message}
@@ -484,11 +536,15 @@ export const FacultyForm: React.FC<FacultyFormProps> = ({
 
       {/* Admin Settings & Switches */}
       <div className="bg-card glass rounded-2xl p-6 border shadow-sm space-y-4">
-        <h3 className="font-display font-bold text-lg text-foreground border-b pb-2">Publishing & Admin Settings</h3>
-        
+        <h3 className="font-display font-bold text-lg text-foreground border-b pb-2">
+          Publishing & Admin Settings
+        </h3>
+
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 items-center">
           <div>
-            <Label htmlFor="displayOrder" className="text-xs font-bold text-foreground/80">Display Order <span className="text-destructive">*</span></Label>
+            <Label htmlFor="displayOrder" className="text-xs font-bold text-foreground/80">
+              Display Order <span className="text-destructive">*</span>
+            </Label>
             <Input
               id="displayOrder"
               name="displayOrder"
@@ -500,56 +556,47 @@ export const FacultyForm: React.FC<FacultyFormProps> = ({
               className={`mt-1.5 rounded-xl ${errors.displayOrder ? "border-destructive focus-visible:ring-destructive" : ""}`}
             />
             {errors.displayOrder && (
-              <p className="text-destructive text-[11px] font-semibold mt-1">{errors.displayOrder}</p>
+              <p className="text-destructive text-[11px] font-semibold mt-1">
+                {errors.displayOrder}
+              </p>
             )}
           </div>
 
           <div className="flex items-center justify-between p-3 rounded-xl bg-background/50 border border-border/40">
             <div className="flex flex-col gap-0.5">
-              <Label htmlFor="isHod" className="text-xs font-bold cursor-pointer">Department Head (HOD)</Label>
+              <Label htmlFor="isHod" className="text-xs font-bold cursor-pointer">
+                Department Head (HOD)
+              </Label>
               <span className="text-[10px] text-muted-foreground">Sets HOD priority flag</span>
             </div>
-            <Switch
-              id="isHod"
-              checked={isHod}
-              onCheckedChange={setIsHod}
-            />
+            <Switch id="isHod" checked={isHod} onCheckedChange={setIsHod} />
           </div>
 
           <div className="flex items-center justify-between p-3 rounded-xl bg-background/50 border border-border/40">
             <div className="flex flex-col gap-0.5">
-              <Label htmlFor="isFeatured" className="text-xs font-bold cursor-pointer">Featured Faculty</Label>
+              <Label htmlFor="isFeatured" className="text-xs font-bold cursor-pointer">
+                Featured Faculty
+              </Label>
               <span className="text-[10px] text-muted-foreground">Promote on home screen</span>
             </div>
-            <Switch
-              id="isFeatured"
-              checked={isFeatured}
-              onCheckedChange={setIsFeatured}
-            />
+            <Switch id="isFeatured" checked={isFeatured} onCheckedChange={setIsFeatured} />
           </div>
 
           <div className="flex items-center justify-between p-3 rounded-xl bg-background/50 border border-border/40">
             <div className="flex flex-col gap-0.5">
-              <Label htmlFor="isActive" className="text-xs font-bold cursor-pointer">Active Status</Label>
+              <Label htmlFor="isActive" className="text-xs font-bold cursor-pointer">
+                Active Status
+              </Label>
               <span className="text-[10px] text-muted-foreground">Visible on public list</span>
             </div>
-            <Switch
-              id="isActive"
-              checked={isActive}
-              onCheckedChange={setIsActive}
-            />
+            <Switch id="isActive" checked={isActive} onCheckedChange={setIsActive} />
           </div>
         </div>
       </div>
 
       {/* Buttons */}
       <div className="flex items-center justify-end gap-3 pt-4 border-t">
-        <Button
-          type="button"
-          variant="outline"
-          onClick={onCancel}
-          className="rounded-xl px-6"
-        >
+        <Button type="button" variant="outline" onClick={onCancel} className="rounded-xl px-6">
           Cancel
         </Button>
         <Button

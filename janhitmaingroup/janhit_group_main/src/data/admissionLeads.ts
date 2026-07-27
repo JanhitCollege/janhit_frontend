@@ -22,9 +22,10 @@ export const defaultLeads: AdmissionLead[] = [
     campusId: "4", // Janhit College of Law
     status: "NEW",
     city: "Greater Noida",
-    message: "I am interested in taking admission in 3-year LL.B. Please let me know the eligibility and fee details.",
+    message:
+      "I am interested in taking admission in 3-year LL.B. Please let me know the eligibility and fee details.",
     createdAt: "2026-07-17T09:00:00Z",
-    updatedAt: "2026-07-17T09:00:00Z"
+    updatedAt: "2026-07-17T09:00:00Z",
   },
   {
     id: "lead-2",
@@ -37,7 +38,7 @@ export const defaultLeads: AdmissionLead[] = [
     city: "Ghaziabad",
     message: "What is the scholarship percentage for students scoring above 90% in class 12?",
     createdAt: "2026-07-16T10:15:00Z",
-    updatedAt: "2026-07-17T11:30:00Z"
+    updatedAt: "2026-07-17T11:30:00Z",
   },
   {
     id: "lead-3",
@@ -50,7 +51,7 @@ export const defaultLeads: AdmissionLead[] = [
     city: "Noida",
     message: "Looking for admission guidelines in B.Ed course.",
     createdAt: "2026-07-15T08:30:00Z",
-    updatedAt: "2026-07-18T10:00:00Z"
+    updatedAt: "2026-07-18T10:00:00Z",
   },
   {
     id: "lead-4",
@@ -63,7 +64,7 @@ export const defaultLeads: AdmissionLead[] = [
     city: "Ghaziabad",
     message: "Enquiring about BCA placements and lab facilities.",
     createdAt: "2026-07-14T11:00:00Z",
-    updatedAt: "2026-07-16T14:00:00Z"
+    updatedAt: "2026-07-16T14:00:00Z",
   },
   {
     id: "lead-5",
@@ -76,8 +77,8 @@ export const defaultLeads: AdmissionLead[] = [
     city: "Delhi",
     message: "Is hostel facility available for 5-year law students?",
     createdAt: "2026-07-18T05:30:00Z",
-    updatedAt: "2026-07-18T05:30:00Z"
-  }
+    updatedAt: "2026-07-18T05:30:00Z",
+  },
 ];
 
 const LOCAL_STORAGE_KEY = "janhit_admission_leads";
@@ -102,14 +103,16 @@ export const saveAdmissionLeads = (leads: AdmissionLead[]) => {
   }
 };
 
-export const createAdmissionLead = (leadData: Omit<AdmissionLead, "id" | "status" | "createdAt" | "updatedAt">): AdmissionLead => {
+export const createAdmissionLead = (
+  leadData: Omit<AdmissionLead, "id" | "status" | "createdAt" | "updatedAt">,
+): AdmissionLead => {
   const existing = getStoredAdmissionLeads();
   const newLead: AdmissionLead = {
     ...leadData,
     id: "lead-" + Date.now(),
     status: "NEW",
     createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
+    updatedAt: new Date().toISOString(),
   };
   const updated = [newLead, ...existing]; // Show new leads at the top
   saveAdmissionLeads(updated);

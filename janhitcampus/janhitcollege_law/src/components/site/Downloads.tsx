@@ -43,10 +43,10 @@ export function Downloads() {
       <div className="max-w-7xl mx-auto px-6">
         {/* Section Header */}
         <div className="text-center space-y-3 max-w-2xl mx-auto mb-16">
-          <span className="text-xs font-bold uppercase tracking-wider text-gold">Resources Hub</span>
-          <h2 className="text-3xl md:text-4xl font-serif font-bold text-navy">
-            Downloads Center
-          </h2>
+          <span className="text-xs font-bold uppercase tracking-wider text-gold">
+            Resources Hub
+          </span>
+          <h2 className="text-3xl md:text-4xl font-serif font-bold text-navy">Downloads Center</h2>
           <div className="h-1 w-20 bg-gold mx-auto rounded" />
           <p className="text-sm text-navy/70">
             Quickly download syllabuses, college brochures, and mandatory legal education forms.
@@ -94,7 +94,8 @@ export function Downloads() {
               <span>Looking for Admissions Form?</span>
             </h4>
             <p className="text-xs text-white/70 max-w-md">
-              You can instantly fill out our digital admission enquiry form below to secure your counseling seat. Our representatives will get back to you.
+              You can instantly fill out our digital admission enquiry form below to secure your
+              counseling seat. Our representatives will get back to you.
             </p>
           </div>
           <a

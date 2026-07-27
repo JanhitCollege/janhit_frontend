@@ -88,7 +88,9 @@ export const GalleryEdit: React.FC<GalleryEditProps> = ({ id }) => {
       {errorMsg ? (
         <div className="glass rounded-2xl p-8 border border-destructive/20 bg-destructive/5 text-center flex flex-col items-center justify-center max-w-lg mx-auto my-12 z-10">
           <AlertCircle className="size-12 text-destructive mb-3" />
-          <h2 className="font-display text-lg font-bold text-foreground">Failed to Load Gallery Item</h2>
+          <h2 className="font-display text-lg font-bold text-foreground">
+            Failed to Load Gallery Item
+          </h2>
           <p className="text-sm text-muted-foreground mt-2">{errorMsg}</p>
           <Link
             to="/@admin/gallery"
@@ -101,9 +103,12 @@ export const GalleryEdit: React.FC<GalleryEditProps> = ({ id }) => {
         <>
           {/* Page Header */}
           <div className="mb-6 z-10">
-            <h1 className="font-display text-2xl md:text-3xl font-bold text-foreground">Edit Gallery Item</h1>
+            <h1 className="font-display text-2xl md:text-3xl font-bold text-foreground">
+              Edit Gallery Item
+            </h1>
             <p className="text-xs md:text-sm text-muted-foreground mt-1">
-              Modify properties, category, scope, status, or replace file for the media: <span className="font-medium text-foreground">{record.title || record.fileName}</span>
+              Modify properties, category, scope, status, or replace file for the media:{" "}
+              <span className="font-medium text-foreground">{record.title || record.fileName}</span>
             </p>
           </div>
 

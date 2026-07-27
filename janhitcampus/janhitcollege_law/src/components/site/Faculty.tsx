@@ -32,25 +32,29 @@ const facultyList = [
 ];
 
 const recruiters = [
-  "District Courts Noida", "Delhi High Court Chambers", "Leading Legal Corporate Firms", "Legal Aid NGOs", "Real Estate Legal Cells"
+  "District Courts Noida",
+  "Delhi High Court Chambers",
+  "Leading Legal Corporate Firms",
+  "Legal Aid NGOs",
+  "Real Estate Legal Cells",
 ];
 
 export function Faculty() {
   return (
     <section id="faculty" className="py-20 bg-background">
       <div className="max-w-7xl mx-auto px-6 space-y-20">
-        
         {/* Faculty Section */}
         <div className="space-y-12">
           {/* Section Header */}
           <div className="text-center space-y-3 max-w-2xl mx-auto">
-            <span className="text-xs font-bold uppercase tracking-wider text-gold">Academic Leadership</span>
-            <h2 className="text-3xl md:text-4xl font-serif font-bold text-navy">
-              Faculty & Staff
-            </h2>
+            <span className="text-xs font-bold uppercase tracking-wider text-gold">
+              Academic Leadership
+            </span>
+            <h2 className="text-3xl md:text-4xl font-serif font-bold text-navy">Faculty & Staff</h2>
             <div className="h-1 w-20 bg-gold mx-auto rounded" />
             <p className="text-sm text-navy/70">
-              Classes are guided by senior legal experts, former judges, and research scholars committed to student success.
+              Classes are guided by senior legal experts, former judges, and research scholars
+              committed to student success.
             </p>
           </div>
 
@@ -99,20 +103,30 @@ export function Faculty() {
         </div>
 
         {/* Placement Section */}
-        <div id="placement" className="bg-white border border-gold/15 rounded-2xl p-8 md:p-10 shadow-lg grid lg:grid-cols-12 gap-8 items-center">
+        <div
+          id="placement"
+          className="bg-white border border-gold/15 rounded-2xl p-8 md:p-10 shadow-lg grid lg:grid-cols-12 gap-8 items-center"
+        >
           <div className="lg:col-span-7 space-y-6">
             <div className="space-y-2">
-              <span className="text-xs font-bold uppercase tracking-wider text-gold">Career Development</span>
-              <h2 className="text-2xl md:text-3xl font-serif font-bold text-navy">Placement & Internship Cell</h2>
+              <span className="text-xs font-bold uppercase tracking-wider text-gold">
+                Career Development
+              </span>
+              <h2 className="text-2xl md:text-3xl font-serif font-bold text-navy">
+                Placement & Internship Cell
+              </h2>
               <div className="h-1 w-20 bg-gold rounded" />
             </div>
 
             <p className="text-sm text-navy/80 leading-relaxed">
-              Our dedicated Placement Cell bridges the gap between classrooms and courtrooms. We mandate internship terms in Trial Courts, High Courts, and Corporate law departments to ensure students graduate with real-world case exposure.
+              Our dedicated Placement Cell bridges the gap between classrooms and courtrooms. We
+              mandate internship terms in Trial Courts, High Courts, and Corporate law departments
+              to ensure students graduate with real-world case exposure.
             </p>
 
             <p className="text-sm text-navy/80 leading-relaxed">
-              We conduct weekly legal drafting clinics, guest lectures on soft skills, CV builder workshops, and invite local legal partners to hire on-campus.
+              We conduct weekly legal drafting clinics, guest lectures on soft skills, CV builder
+              workshops, and invite local legal partners to hire on-campus.
             </p>
 
             <div className="flex flex-wrap gap-2.5 pt-2">
@@ -143,12 +157,14 @@ export function Faculty() {
               </li>
               <li className="flex items-center gap-2">
                 <div className="h-1.5 w-1.5 bg-gold rounded-full" />
-                <span>4th-5th Year: Internships in High Courts, Supreme Court chambers, and Corporate Legal Cells.</span>
+                <span>
+                  4th-5th Year: Internships in High Courts, Supreme Court chambers, and Corporate
+                  Legal Cells.
+                </span>
               </li>
             </ul>
           </div>
         </div>
-
       </div>
     </section>
   );

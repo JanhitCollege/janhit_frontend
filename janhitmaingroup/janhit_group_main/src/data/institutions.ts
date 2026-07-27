@@ -193,7 +193,8 @@ function duration(c: string) {
   if (c === "LL.M") return "2 Years";
   if (c === "LL.B") return "3 Years";
   if (["D.El.Ed"].includes(c)) return "2 Years";
-  if (["BBA", "BCA", "B.Sc", "B.Com", "B.A", "B.Ed", "B.P.Ed", "Agriculture"].includes(c)) return "3 Years";
+  if (["BBA", "BCA", "B.Sc", "B.Com", "B.A", "B.Ed", "B.P.Ed", "Agriculture"].includes(c))
+    return "3 Years";
   return "1-12 Years";
 }
 function eligibility(c: string) {

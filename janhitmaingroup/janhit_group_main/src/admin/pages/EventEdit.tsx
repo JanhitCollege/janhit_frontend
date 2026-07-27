@@ -101,9 +101,12 @@ export const EventEdit: React.FC<EventEditProps> = ({ id }) => {
         <>
           {/* Page Header */}
           <div className="mb-6 z-10">
-            <h1 className="font-display text-2xl md:text-3xl font-bold text-foreground">Edit Event</h1>
+            <h1 className="font-display text-2xl md:text-3xl font-bold text-foreground">
+              Edit Event
+            </h1>
             <p className="text-xs md:text-sm text-muted-foreground mt-1">
-              Modify dates, venue, registrations, active switches, or mapped campuses for: <span className="font-medium text-foreground">{record.title}</span>
+              Modify dates, venue, registrations, active switches, or mapped campuses for:{" "}
+              <span className="font-medium text-foreground">{record.title}</span>
             </p>
           </div>
 

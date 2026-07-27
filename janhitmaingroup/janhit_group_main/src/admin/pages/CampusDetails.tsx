@@ -12,7 +12,7 @@ import {
   AlertCircle,
   ToggleLeft,
   ToggleRight,
-  Loader2
+  Loader2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -44,7 +44,7 @@ export const CampusDetails: React.FC<CampusDetailsProps> = ({ id }) => {
 
   const [campus, setCampus] = useState<Campus | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
-  
+
   // Status Modal State
   const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
   const [isTogglingStatus, setIsTogglingStatus] = useState(false);
@@ -63,7 +63,7 @@ export const CampusDetails: React.FC<CampusDetailsProps> = ({ id }) => {
   const handleStatusToggle = async () => {
     if (!campus) return;
     setIsTogglingStatus(true);
-    
+
     // Simulate short network delay
     await new Promise((resolve) => setTimeout(resolve, 500));
 
@@ -80,7 +80,7 @@ export const CampusDetails: React.FC<CampusDetailsProps> = ({ id }) => {
     });
 
     saveCampuses(updated);
-    
+
     // Update local state
     const found = updated.find((c) => c.id === id);
     if (found) setCampus(found);
@@ -177,7 +177,10 @@ export const CampusDetails: React.FC<CampusDetailsProps> = ({ id }) => {
                 </h1>
 
                 <div className="flex flex-wrap items-center justify-center md:justify-start gap-2">
-                  <Badge variant="outline" className="font-mono text-xs bg-muted px-2 py-0.5 rounded border">
+                  <Badge
+                    variant="outline"
+                    className="font-mono text-xs bg-muted px-2 py-0.5 rounded border"
+                  >
                     Code: {campus.code}
                   </Badge>
                   <Badge
@@ -195,9 +198,7 @@ export const CampusDetails: React.FC<CampusDetailsProps> = ({ id }) => {
                 {/* Web URL */}
                 <div className="flex items-center justify-center md:justify-start gap-1.5 text-xs text-primary font-medium">
                   <Globe className="size-3.5" />
-                  <span className="hover:underline cursor-pointer">
-                    {campus.websiteUrl}
-                  </span>
+                  <span className="hover:underline cursor-pointer">{campus.websiteUrl}</span>
                 </div>
               </div>
             </div>
@@ -205,10 +206,8 @@ export const CampusDetails: React.FC<CampusDetailsProps> = ({ id }) => {
 
           {/* Details grids */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            
             {/* Left Columns */}
             <div className="lg:col-span-2 space-y-6">
-              
               {/* Card: Basic Information */}
               <div className="glass rounded-2xl p-6 border border-border/80 shadow-sm space-y-4">
                 <h2 className="font-display text-lg font-bold text-foreground pb-2 border-b border-border/40 flex items-center gap-2">
@@ -217,24 +216,38 @@ export const CampusDetails: React.FC<CampusDetailsProps> = ({ id }) => {
                 </h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
                   <div className="space-y-1 p-3 rounded-lg bg-background/40 border">
-                    <span className="text-xs text-muted-foreground uppercase tracking-wider block">Official Name</span>
+                    <span className="text-xs text-muted-foreground uppercase tracking-wider block">
+                      Official Name
+                    </span>
                     <span className="font-semibold text-foreground">{campus.name}</span>
                   </div>
                   <div className="space-y-1 p-3 rounded-lg bg-background/40 border">
-                    <span className="text-xs text-muted-foreground uppercase tracking-wider block">Short Abbreviation</span>
+                    <span className="text-xs text-muted-foreground uppercase tracking-wider block">
+                      Short Abbreviation
+                    </span>
                     <span className="font-semibold text-foreground">{campus.shortName || "—"}</span>
                   </div>
                   <div className="space-y-1 p-3 rounded-lg bg-background/40 border">
-                    <span className="text-xs text-muted-foreground uppercase tracking-wider block">Campus Identifier Code</span>
+                    <span className="text-xs text-muted-foreground uppercase tracking-wider block">
+                      Campus Identifier Code
+                    </span>
                     <span className="font-semibold font-mono text-primary">{campus.code}</span>
                   </div>
                   <div className="space-y-1 p-3 rounded-lg bg-background/40 border">
-                    <span className="text-xs text-muted-foreground uppercase tracking-wider block">Slug (URL Segment)</span>
-                    <span className="font-semibold font-mono text-muted-foreground">{campus.slug}</span>
+                    <span className="text-xs text-muted-foreground uppercase tracking-wider block">
+                      Slug (URL Segment)
+                    </span>
+                    <span className="font-semibold font-mono text-muted-foreground">
+                      {campus.slug}
+                    </span>
                   </div>
                   <div className="space-y-1 p-3 rounded-lg bg-background/40 border sm:col-span-2">
-                    <span className="text-xs text-muted-foreground uppercase tracking-wider block">Access Subdomain</span>
-                    <span className="font-semibold text-foreground">{campus.subdomain}.janhitgroup.com</span>
+                    <span className="text-xs text-muted-foreground uppercase tracking-wider block">
+                      Access Subdomain
+                    </span>
+                    <span className="font-semibold text-foreground">
+                      {campus.subdomain}.janhitgroup.com
+                    </span>
                   </div>
                 </div>
               </div>
@@ -260,31 +273,37 @@ export const CampusDetails: React.FC<CampusDetailsProps> = ({ id }) => {
                 </h2>
                 <div className="space-y-4 text-sm">
                   <div className="p-3 rounded-lg bg-background/40 border space-y-1">
-                    <span className="text-xs text-muted-foreground uppercase tracking-wider block">Street Address</span>
+                    <span className="text-xs text-muted-foreground uppercase tracking-wider block">
+                      Street Address
+                    </span>
                     <span className="font-semibold text-foreground">{campus.address || "—"}</span>
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div className="p-3 rounded-lg bg-background/40 border space-y-1">
-                      <span className="text-xs text-muted-foreground uppercase tracking-wider block">City</span>
+                      <span className="text-xs text-muted-foreground uppercase tracking-wider block">
+                        City
+                      </span>
                       <span className="font-semibold text-foreground">{campus.city || "—"}</span>
                     </div>
                     <div className="p-3 rounded-lg bg-background/40 border space-y-1">
-                      <span className="text-xs text-muted-foreground uppercase tracking-wider block">State</span>
+                      <span className="text-xs text-muted-foreground uppercase tracking-wider block">
+                        State
+                      </span>
                       <span className="font-semibold text-foreground">{campus.state || "—"}</span>
                     </div>
                     <div className="p-3 rounded-lg bg-background/40 border space-y-1">
-                      <span className="text-xs text-muted-foreground uppercase tracking-wider block">Pincode</span>
+                      <span className="text-xs text-muted-foreground uppercase tracking-wider block">
+                        Pincode
+                      </span>
                       <span className="font-semibold text-foreground">{campus.pincode || "—"}</span>
                     </div>
                   </div>
                 </div>
               </div>
-
             </div>
 
             {/* Right Column (Sidebar) */}
             <div className="space-y-6">
-              
               {/* Action panel */}
               <div className="glass rounded-2xl p-6 border border-border/80 shadow-sm space-y-3">
                 <h2 className="font-display text-xs font-bold uppercase tracking-wider text-muted-foreground pb-2 border-b border-border/40">
@@ -298,7 +317,7 @@ export const CampusDetails: React.FC<CampusDetailsProps> = ({ id }) => {
                     <Edit2 className="size-4" /> Edit Campus
                   </Link>
                 </Button>
-                
+
                 <Button
                   variant="outline"
                   onClick={() => setIsStatusModalOpen(true)}
@@ -330,8 +349,12 @@ export const CampusDetails: React.FC<CampusDetailsProps> = ({ id }) => {
                       <Mail className="size-4" />
                     </div>
                     <div className="space-y-0.5 min-w-0">
-                      <span className="text-[10px] text-muted-foreground uppercase tracking-wider block font-bold">Email Address</span>
-                      <span className="font-semibold text-foreground break-all">{campus.email || "—"}</span>
+                      <span className="text-[10px] text-muted-foreground uppercase tracking-wider block font-bold">
+                        Email Address
+                      </span>
+                      <span className="font-semibold text-foreground break-all">
+                        {campus.email || "—"}
+                      </span>
                     </div>
                   </div>
 
@@ -340,7 +363,9 @@ export const CampusDetails: React.FC<CampusDetailsProps> = ({ id }) => {
                       <Phone className="size-4" />
                     </div>
                     <div className="space-y-0.5">
-                      <span className="text-[10px] text-muted-foreground uppercase tracking-wider block font-bold">Phone Number</span>
+                      <span className="text-[10px] text-muted-foreground uppercase tracking-wider block font-bold">
+                        Phone Number
+                      </span>
                       <span className="font-semibold text-foreground">{campus.phone || "—"}</span>
                     </div>
                   </div>
@@ -356,22 +381,28 @@ export const CampusDetails: React.FC<CampusDetailsProps> = ({ id }) => {
                 <div className="space-y-4 text-sm">
                   <div className="flex gap-3 items-start">
                     <div className="space-y-0.5">
-                      <span className="text-[10px] text-muted-foreground uppercase tracking-wider block font-bold">Registered Date</span>
-                      <span className="font-medium text-foreground">{formatDate(campus.createdDate)}</span>
+                      <span className="text-[10px] text-muted-foreground uppercase tracking-wider block font-bold">
+                        Registered Date
+                      </span>
+                      <span className="font-medium text-foreground">
+                        {formatDate(campus.createdDate)}
+                      </span>
                     </div>
                   </div>
 
                   <div className="flex gap-3 items-start">
                     <div className="space-y-0.5">
-                      <span className="text-[10px] text-muted-foreground uppercase tracking-wider block font-bold">Last Modified Date</span>
-                      <span className="font-medium text-foreground">{formatDate(campus.updatedDate)}</span>
+                      <span className="text-[10px] text-muted-foreground uppercase tracking-wider block font-bold">
+                        Last Modified Date
+                      </span>
+                      <span className="font-medium text-foreground">
+                        {formatDate(campus.updatedDate)}
+                      </span>
                     </div>
                   </div>
                 </div>
               </div>
-
             </div>
-
           </div>
         </div>
       ) : (
@@ -397,14 +428,18 @@ export const CampusDetails: React.FC<CampusDetailsProps> = ({ id }) => {
 
           {campus && (
             <div className="my-2 p-3 bg-muted/40 rounded-xl border text-center">
-              <span className="text-xs text-muted-foreground uppercase tracking-wider block mb-1">Target Campus</span>
+              <span className="text-xs text-muted-foreground uppercase tracking-wider block mb-1">
+                Target Campus
+              </span>
               <span className="text-sm font-bold text-foreground">{campus.name}</span>
               <div className="mt-2 flex items-center justify-center gap-2 text-xs">
                 <span className="text-muted-foreground">Current:</span>
                 <Badge
                   variant="outline"
                   className={`rounded-full px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider ${
-                    campus.status === "active" ? "bg-green-50 text-green-700" : "bg-gray-50 text-gray-700"
+                    campus.status === "active"
+                      ? "bg-green-50 text-green-700"
+                      : "bg-gray-50 text-gray-700"
                   }`}
                 >
                   {campus.status === "active" ? "Active" : "Inactive"}
@@ -414,7 +449,9 @@ export const CampusDetails: React.FC<CampusDetailsProps> = ({ id }) => {
                 <Badge
                   variant="outline"
                   className={`rounded-full px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider ${
-                    campus.status === "inactive" ? "bg-green-50 text-green-700" : "bg-gray-50 text-gray-700"
+                    campus.status === "inactive"
+                      ? "bg-green-50 text-green-700"
+                      : "bg-gray-50 text-gray-700"
                   }`}
                 >
                   {campus.status === "inactive" ? "Active" : "Inactive"}

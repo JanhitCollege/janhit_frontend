@@ -14,20 +14,22 @@ import { getStoredCommittees, saveCommittees, Committee } from "@/data/committee
 export const CommitteeCreate: React.FC = () => {
   const navigate = useNavigate();
 
-  const handleSubmit = (formData: Omit<Committee, "id" | "members" | "documents" | "createdAt" | "updatedAt" | "slug">) => {
+  const handleSubmit = (
+    formData: Omit<Committee, "id" | "members" | "documents" | "createdAt" | "updatedAt" | "slug">,
+  ) => {
     const existing = getStoredCommittees();
-    
+
     // Generate unique slug
     const slugify = (text: string) => {
       return text
         .toString()
         .toLowerCase()
         .trim()
-        .replace(/\s+/g, '-')
-        .replace(/[^\w\-]+/g, '')
-        .replace(/\-\-+/g, '-')
-        .replace(/^-+/, '')
-        .replace(/-+$/, '');
+        .replace(/\s+/g, "-")
+        .replace(/[^\w\-]+/g, "")
+        .replace(/\-\-+/g, "-")
+        .replace(/^-+/, "")
+        .replace(/-+$/, "");
     };
 
     const baseSlug = slugify(formData.title);
@@ -51,7 +53,7 @@ export const CommitteeCreate: React.FC = () => {
 
     const updated = [...existing, newCommittee];
     saveCommittees(updated);
-    
+
     navigate({ to: "/@admin/committees" });
   };
 
@@ -90,7 +92,9 @@ export const CommitteeCreate: React.FC = () => {
 
       {/* Title Block */}
       <div className="mb-6">
-        <h1 className="font-display text-2xl md:text-3xl font-bold text-foreground">Create Committee</h1>
+        <h1 className="font-display text-2xl md:text-3xl font-bold text-foreground">
+          Create Committee
+        </h1>
         <p className="text-xs md:text-sm text-muted-foreground mt-1">
           Formulate a new academic, PoSH, or regulatory committee, and map it to campuses.
         </p>

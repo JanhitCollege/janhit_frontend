@@ -18,7 +18,9 @@ import { Committee } from "@/data/committees";
 
 interface CommitteeFormProps {
   initialData?: Committee;
-  onSubmit: (data: Omit<Committee, "id" | "members" | "documents" | "createdAt" | "updatedAt" | "slug">) => void;
+  onSubmit: (
+    data: Omit<Committee, "id" | "members" | "documents" | "createdAt" | "updatedAt" | "slug">,
+  ) => void;
   onCancel: () => void;
   submitButtonText: string;
 }
@@ -30,7 +32,7 @@ export const CommitteeForm: React.FC<CommitteeFormProps> = ({
   submitButtonText,
 }) => {
   // Load campuses
-  const campusesList = getStoredCampuses().filter(c => c.status === "active");
+  const campusesList = getStoredCampuses().filter((c) => c.status === "active");
 
   // Form states
   const [title, setTitle] = useState(initialData?.title || "");
@@ -40,7 +42,7 @@ export const CommitteeForm: React.FC<CommitteeFormProps> = ({
   const [objective, setObjective] = useState(initialData?.objective || "");
   const [committeeType, setCommitteeType] = useState(initialData?.committeeType || "Statutory");
   const [academicSession, setAcademicSession] = useState(initialData?.academicSession || "2026-27");
-  
+
   // Date helpers
   const getLocalDateOnly = (isoString?: string) => {
     if (!isoString) return "";
@@ -68,8 +70,12 @@ export const CommitteeForm: React.FC<CommitteeFormProps> = ({
   const [tenureTo, setTenureTo] = useState(getLocalDateOnly(initialData?.tenureTo) || "");
   const [publishDate, setPublishDate] = useState(getLocalDateTime(initialData?.publishDate) || "");
   const [bannerImage, setBannerImage] = useState(initialData?.bannerImage || "");
-  const [status, setStatus] = useState<"DRAFT" | "PUBLISHED" | "ARCHIVED">(initialData?.status || "DRAFT");
-  const [displayOrder, setDisplayOrder] = useState(initialData?.displayOrder !== undefined ? String(initialData.displayOrder) : "0");
+  const [status, setStatus] = useState<"DRAFT" | "PUBLISHED" | "ARCHIVED">(
+    initialData?.status || "DRAFT",
+  );
+  const [displayOrder, setDisplayOrder] = useState(
+    initialData?.displayOrder !== undefined ? String(initialData.displayOrder) : "0",
+  );
   const [isMainWebsite, setIsMainWebsite] = useState(initialData?.isMainWebsite || false);
   const [selectedCampuses, setSelectedCampuses] = useState<string[]>(initialData?.campuses || []);
 
@@ -115,9 +121,7 @@ export const CommitteeForm: React.FC<CommitteeFormProps> = ({
   // Checkbox handlers
   const handleCampusToggle = (campusId: string) => {
     setSelectedCampuses((prev) =>
-      prev.includes(campusId)
-        ? prev.filter((id) => id !== campusId)
-        : [...prev, campusId]
+      prev.includes(campusId) ? prev.filter((id) => id !== campusId) : [...prev, campusId],
     );
   };
 
@@ -132,10 +136,13 @@ export const CommitteeForm: React.FC<CommitteeFormProps> = ({
     const file = e.target.files?.[0];
     if (file) {
       if (file.size > 2 * 1024 * 1024) {
-        setErrors((prev) => ({ ...prev, bannerImage: "Banner image size exceeds allowed limit of 2MB." }));
+        setErrors((prev) => ({
+          ...prev,
+          bannerImage: "Banner image size exceeds allowed limit of 2MB.",
+        }));
         return;
       }
-      
+
       const reader = new FileReader();
       reader.onloadend = () => {
         setBannerImage(reader.result as string);
@@ -170,7 +177,9 @@ export const CommitteeForm: React.FC<CommitteeFormProps> = ({
 
     const hasErrors = Object.values(newErrors).some((err) => err !== "");
     if (hasErrors) {
-      const firstErrorKey = Object.keys(newErrors).find((k) => newErrors[k as keyof typeof newErrors] !== "");
+      const firstErrorKey = Object.keys(newErrors).find(
+        (k) => newErrors[k as keyof typeof newErrors] !== "",
+      );
       if (firstErrorKey) {
         const element = document.getElementsByName(firstErrorKey)[0];
         if (element) {
@@ -210,7 +219,9 @@ export const CommitteeForm: React.FC<CommitteeFormProps> = ({
         <div className="flex flex-col lg:flex-row gap-6">
           {/* Banner Image Uploader */}
           <div className="w-full lg:w-1/3 flex flex-col items-center">
-            <Label className="text-xs font-bold text-foreground/80 mb-2 self-start">Committee Banner Image</Label>
+            <Label className="text-xs font-bold text-foreground/80 mb-2 self-start">
+              Committee Banner Image
+            </Label>
             <div
               onClick={handleImageClick}
               className={`w-full h-44 rounded-2xl border-2 border-dashed flex flex-col items-center justify-center cursor-pointer overflow-hidden transition-all relative ${
@@ -220,12 +231,20 @@ export const CommitteeForm: React.FC<CommitteeFormProps> = ({
               }`}
             >
               {bannerImage ? (
-                <img src={bannerImage} alt="Committee Banner" className="w-full h-full object-cover" />
+                <img
+                  src={bannerImage}
+                  alt="Committee Banner"
+                  className="w-full h-full object-cover"
+                />
               ) : (
                 <div className="text-center p-4">
                   <Upload className="size-8 text-muted-foreground mx-auto mb-2" />
-                  <span className="text-xs text-muted-foreground font-semibold">Upload Banner Image</span>
-                  <p className="text-[10px] text-muted-foreground/80 mt-1">PNG, JPG, WEBP up to 2MB</p>
+                  <span className="text-xs text-muted-foreground font-semibold">
+                    Upload Banner Image
+                  </span>
+                  <p className="text-[10px] text-muted-foreground/80 mt-1">
+                    PNG, JPG, WEBP up to 2MB
+                  </p>
                 </div>
               )}
 
@@ -257,14 +276,18 @@ export const CommitteeForm: React.FC<CommitteeFormProps> = ({
               className="hidden"
             />
             {errors.bannerImage && (
-              <p className="text-destructive text-[11px] font-semibold mt-1.5">{errors.bannerImage}</p>
+              <p className="text-destructive text-[11px] font-semibold mt-1.5">
+                {errors.bannerImage}
+              </p>
             )}
           </div>
 
           {/* Title & Core Configs */}
           <div className="flex-1 space-y-4">
             <div>
-              <Label htmlFor="title" className="text-xs font-bold text-foreground/80">Committee Title <span className="text-destructive">*</span></Label>
+              <Label htmlFor="title" className="text-xs font-bold text-foreground/80">
+                Committee Title <span className="text-destructive">*</span>
+              </Label>
               <Input
                 id="title"
                 name="title"
@@ -281,7 +304,9 @@ export const CommitteeForm: React.FC<CommitteeFormProps> = ({
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="category" className="text-xs font-bold text-foreground/80">Category</Label>
+                <Label htmlFor="category" className="text-xs font-bold text-foreground/80">
+                  Category
+                </Label>
                 <Input
                   id="category"
                   value={category}
@@ -292,7 +317,9 @@ export const CommitteeForm: React.FC<CommitteeFormProps> = ({
               </div>
 
               <div>
-                <Label htmlFor="committeeType" className="text-xs font-bold text-foreground/80">Committee Type</Label>
+                <Label htmlFor="committeeType" className="text-xs font-bold text-foreground/80">
+                  Committee Type
+                </Label>
                 <div className="mt-1.5">
                   <Select value={committeeType} onValueChange={setCommitteeType}>
                     <SelectTrigger className="rounded-xl bg-background">
@@ -315,11 +342,15 @@ export const CommitteeForm: React.FC<CommitteeFormProps> = ({
 
       {/* Description & Objective details */}
       <div className="bg-card glass rounded-2xl p-6 border shadow-sm space-y-4">
-        <h3 className="font-display font-bold text-lg text-foreground border-b pb-2">Description & Objectives</h3>
-        
+        <h3 className="font-display font-bold text-lg text-foreground border-b pb-2">
+          Description & Objectives
+        </h3>
+
         <div className="space-y-4">
           <div>
-            <Label htmlFor="shortDescription" className="text-xs font-bold text-foreground/80">Short Description</Label>
+            <Label htmlFor="shortDescription" className="text-xs font-bold text-foreground/80">
+              Short Description
+            </Label>
             <Input
               id="shortDescription"
               value={shortDescription}
@@ -330,7 +361,9 @@ export const CommitteeForm: React.FC<CommitteeFormProps> = ({
           </div>
 
           <div>
-            <Label htmlFor="description" className="text-xs font-bold text-foreground/80">Detailed Description</Label>
+            <Label htmlFor="description" className="text-xs font-bold text-foreground/80">
+              Detailed Description
+            </Label>
             <Textarea
               id="description"
               value={description}
@@ -341,7 +374,9 @@ export const CommitteeForm: React.FC<CommitteeFormProps> = ({
           </div>
 
           <div>
-            <Label htmlFor="objective" className="text-xs font-bold text-foreground/80">Core Objectives</Label>
+            <Label htmlFor="objective" className="text-xs font-bold text-foreground/80">
+              Core Objectives
+            </Label>
             <Textarea
               id="objective"
               value={objective}
@@ -355,14 +390,17 @@ export const CommitteeForm: React.FC<CommitteeFormProps> = ({
 
       {/* Academic Session, Tenure dates, and Campus mappings */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        
         {/* Tenure & Sessions card */}
         <div className="bg-card glass rounded-2xl p-6 border shadow-sm space-y-4">
-          <h3 className="font-display font-bold text-lg text-foreground border-b pb-2">Tenure & Session</h3>
-          
+          <h3 className="font-display font-bold text-lg text-foreground border-b pb-2">
+            Tenure & Session
+          </h3>
+
           <div className="space-y-4">
             <div>
-              <Label htmlFor="academicSession" className="text-xs font-bold text-foreground/80">Academic Session</Label>
+              <Label htmlFor="academicSession" className="text-xs font-bold text-foreground/80">
+                Academic Session
+              </Label>
               <Input
                 id="academicSession"
                 value={academicSession}
@@ -374,7 +412,9 @@ export const CommitteeForm: React.FC<CommitteeFormProps> = ({
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="tenureFrom" className="text-xs font-bold text-foreground/80">Tenure From</Label>
+                <Label htmlFor="tenureFrom" className="text-xs font-bold text-foreground/80">
+                  Tenure From
+                </Label>
                 <Input
                   id="tenureFrom"
                   type="date"
@@ -385,7 +425,9 @@ export const CommitteeForm: React.FC<CommitteeFormProps> = ({
               </div>
 
               <div>
-                <Label htmlFor="tenureTo" className="text-xs font-bold text-foreground/80">Tenure To</Label>
+                <Label htmlFor="tenureTo" className="text-xs font-bold text-foreground/80">
+                  Tenure To
+                </Label>
                 <Input
                   id="tenureTo"
                   name="tenureTo"
@@ -396,7 +438,9 @@ export const CommitteeForm: React.FC<CommitteeFormProps> = ({
                   className={`mt-1.5 rounded-xl ${errors.tenureTo ? "border-destructive focus-visible:ring-destructive" : ""}`}
                 />
                 {errors.tenureTo && (
-                  <p className="text-destructive text-[11px] font-semibold mt-1">{errors.tenureTo}</p>
+                  <p className="text-destructive text-[11px] font-semibold mt-1">
+                    {errors.tenureTo}
+                  </p>
                 )}
               </div>
             </div>
@@ -405,9 +449,13 @@ export const CommitteeForm: React.FC<CommitteeFormProps> = ({
 
         {/* Campuses Multi-select card */}
         <div className="bg-card glass rounded-2xl p-6 border shadow-sm flex flex-col">
-          <h3 className="font-display font-bold text-lg text-foreground border-b pb-2">Associated Campuses</h3>
-          <p className="text-[11px] text-muted-foreground mt-1">Select the campus locations where this committee is active.</p>
-          
+          <h3 className="font-display font-bold text-lg text-foreground border-b pb-2">
+            Associated Campuses
+          </h3>
+          <p className="text-[11px] text-muted-foreground mt-1">
+            Select the campus locations where this committee is active.
+          </p>
+
           <div className="flex-1 mt-3.5 border rounded-xl p-4 bg-background/50 overflow-y-auto max-h-[160px] space-y-2">
             {campusesList.map((campus) => (
               <div key={campus.id} className="flex items-center space-x-2">
@@ -426,7 +474,9 @@ export const CommitteeForm: React.FC<CommitteeFormProps> = ({
               </div>
             ))}
             {campusesList.length === 0 && (
-              <p className="text-xs text-muted-foreground italic text-center py-4">No active campuses available.</p>
+              <p className="text-xs text-muted-foreground italic text-center py-4">
+                No active campuses available.
+              </p>
             )}
           </div>
         </div>
@@ -434,11 +484,15 @@ export const CommitteeForm: React.FC<CommitteeFormProps> = ({
 
       {/* Admin Settings, publish configs, display order */}
       <div className="bg-card glass rounded-2xl p-6 border shadow-sm space-y-4">
-        <h3 className="font-display font-bold text-lg text-foreground border-b pb-2">Publishing & Status Settings</h3>
-        
+        <h3 className="font-display font-bold text-lg text-foreground border-b pb-2">
+          Publishing & Status Settings
+        </h3>
+
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 items-center">
           <div>
-            <Label htmlFor="displayOrder" className="text-xs font-bold text-foreground/80">Display Order <span className="text-destructive">*</span></Label>
+            <Label htmlFor="displayOrder" className="text-xs font-bold text-foreground/80">
+              Display Order <span className="text-destructive">*</span>
+            </Label>
             <Input
               id="displayOrder"
               name="displayOrder"
@@ -450,12 +504,16 @@ export const CommitteeForm: React.FC<CommitteeFormProps> = ({
               className={`mt-1.5 rounded-xl ${errors.displayOrder ? "border-destructive focus-visible:ring-destructive" : ""}`}
             />
             {errors.displayOrder && (
-              <p className="text-destructive text-[11px] font-semibold mt-1">{errors.displayOrder}</p>
+              <p className="text-destructive text-[11px] font-semibold mt-1">
+                {errors.displayOrder}
+              </p>
             )}
           </div>
 
           <div>
-            <Label htmlFor="status" className="text-xs font-bold text-foreground/80">Publish Status</Label>
+            <Label htmlFor="status" className="text-xs font-bold text-foreground/80">
+              Publish Status
+            </Label>
             <div className="mt-1.5">
               <Select value={status} onValueChange={(val: any) => setStatus(val)}>
                 <SelectTrigger className="rounded-xl bg-background">
@@ -471,7 +529,9 @@ export const CommitteeForm: React.FC<CommitteeFormProps> = ({
           </div>
 
           <div>
-            <Label htmlFor="publishDate" className="text-xs font-bold text-foreground/80">Scheduled Publish Date</Label>
+            <Label htmlFor="publishDate" className="text-xs font-bold text-foreground/80">
+              Scheduled Publish Date
+            </Label>
             <Input
               id="publishDate"
               type="datetime-local"
@@ -483,26 +543,19 @@ export const CommitteeForm: React.FC<CommitteeFormProps> = ({
 
           <div className="flex items-center justify-between p-3 rounded-xl bg-background/50 border border-border/40">
             <div className="flex flex-col gap-0.5">
-              <Label htmlFor="isMainWebsite" className="text-xs font-bold cursor-pointer">Main Web Visibility</Label>
+              <Label htmlFor="isMainWebsite" className="text-xs font-bold cursor-pointer">
+                Main Web Visibility
+              </Label>
               <span className="text-[10px] text-muted-foreground">Show on main group website</span>
             </div>
-            <Switch
-              id="isMainWebsite"
-              checked={isMainWebsite}
-              onCheckedChange={setIsMainWebsite}
-            />
+            <Switch id="isMainWebsite" checked={isMainWebsite} onCheckedChange={setIsMainWebsite} />
           </div>
         </div>
       </div>
 
       {/* Action Buttons */}
       <div className="flex items-center justify-end gap-3 pt-4 border-t">
-        <Button
-          type="button"
-          variant="outline"
-          onClick={onCancel}
-          className="rounded-xl px-6"
-        >
+        <Button type="button" variant="outline" onClick={onCancel} className="rounded-xl px-6">
           Cancel
         </Button>
         <Button

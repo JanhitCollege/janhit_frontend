@@ -15,7 +15,7 @@ import {
   Trash2,
   CheckCircle,
   ExternalLink,
-  MapPin
+  MapPin,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -97,8 +97,8 @@ export const AdmissionLeadDetails: React.FC<AdmissionLeadDetailsProps> = ({ id }
               id: "init-1",
               text: `Admission enquiry submitted by student choosing course: ${found.course}.`,
               createdAt: found.createdAt,
-              author: "System"
-            }
+              author: "System",
+            },
           ];
           setNotes(initialNotes);
           localStorage.setItem(storedNotesKey, JSON.stringify(initialNotes));
@@ -115,7 +115,7 @@ export const AdmissionLeadDetails: React.FC<AdmissionLeadDetailsProps> = ({ id }
   const handleStatusChange = async (nextStatus: string) => {
     if (!lead) return;
     setIsUpdatingStatus(true);
-    
+
     // Simulate brief network delay
     await new Promise((resolve) => setTimeout(resolve, 400));
 
@@ -132,13 +132,13 @@ export const AdmissionLeadDetails: React.FC<AdmissionLeadDetailsProps> = ({ id }
     });
 
     saveAdmissionLeads(updated);
-    
+
     // Add timeline entry for status update
     const newNote: TimelineNote = {
       id: "note-status-" + Date.now(),
       text: `Lead status updated from ${lead.status} to ${nextStatus}.`,
       createdAt: new Date().toISOString(),
-      author: "Admin"
+      author: "Admin",
     };
     const updatedNotes = [newNote, ...notes];
     setNotes(updatedNotes);
@@ -148,7 +148,7 @@ export const AdmissionLeadDetails: React.FC<AdmissionLeadDetailsProps> = ({ id }
     setLead({ ...lead, status: nextStatus as any, updatedAt: new Date().toISOString() });
     setCurrentStatus(nextStatus);
     setIsUpdatingStatus(false);
-    
+
     toast.success(`Lead status updated to ${nextStatus} successfully.`);
   };
 
@@ -164,7 +164,7 @@ export const AdmissionLeadDetails: React.FC<AdmissionLeadDetailsProps> = ({ id }
       id: "note-" + Date.now(),
       text: newNoteText.trim(),
       createdAt: new Date().toISOString(),
-      author: "Admin"
+      author: "Admin",
     };
 
     const updatedNotes = [newNote, ...notes];
@@ -291,8 +291,12 @@ export const AdmissionLeadDetails: React.FC<AdmissionLeadDetailsProps> = ({ id }
         </Breadcrumb>
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mt-2">
           <div className="flex flex-wrap items-center gap-3">
-            <h1 className="font-display text-2xl md:text-3xl font-bold text-foreground">Lead Details</h1>
-            <Badge className={`rounded-xl text-[10px] font-semibold tracking-wide py-0.5 px-2.5 ${getStatusBadgeColor(lead.status)}`}>
+            <h1 className="font-display text-2xl md:text-3xl font-bold text-foreground">
+              Lead Details
+            </h1>
+            <Badge
+              className={`rounded-xl text-[10px] font-semibold tracking-wide py-0.5 px-2.5 ${getStatusBadgeColor(lead.status)}`}
+            >
               {lead.status}
             </Badge>
           </div>
@@ -320,20 +324,25 @@ export const AdmissionLeadDetails: React.FC<AdmissionLeadDetailsProps> = ({ id }
 
       {/* Lead info display & notes history grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        
         {/* Left column: Lead Info profile card */}
         <div className="lg:col-span-1 space-y-6">
           <div className="bg-card glass border rounded-2xl p-6 shadow-sm flex flex-col relative overflow-hidden">
             <div className="absolute top-0 right-0 w-24 h-24 bg-primary/5 blur-2xl rounded-full pointer-events-none" />
-            
+
             {/* Big Initial Badge */}
             <div className="size-20 rounded-2xl bg-gradient-gold text-gold-foreground flex items-center justify-center font-display font-bold text-2xl shadow-sm mb-4">
-              {lead.name.split(" ").map(n => n[0]).join("").toUpperCase()}
+              {lead.name
+                .split(" ")
+                .map((n) => n[0])
+                .join("")
+                .toUpperCase()}
             </div>
 
             <h2 className="font-display text-xl font-bold text-foreground">{lead.name}</h2>
-            <p className="text-xs text-muted-foreground mt-1">Enquired for Course: <span className="font-bold text-foreground">{lead.course}</span></p>
-            
+            <p className="text-xs text-muted-foreground mt-1">
+              Enquired for Course: <span className="font-bold text-foreground">{lead.course}</span>
+            </p>
+
             {/* Action buttons */}
             <div className="grid grid-cols-3 gap-2 mt-5">
               <Button
@@ -364,7 +373,11 @@ export const AdmissionLeadDetails: React.FC<AdmissionLeadDetailsProps> = ({ id }
                 className="rounded-xl text-xs py-5 px-3 flex flex-col items-center justify-center gap-1 hover:border-green-500/30 hover:bg-green-50 text-green-600"
                 title="WhatsApp Candidate"
               >
-                <a href={`https://wa.me/91${lead.mobile.replace(/\D/g, "")}`} target="_blank" rel="noopener noreferrer">
+                <a
+                  href={`https://wa.me/91${lead.mobile.replace(/\D/g, "")}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   <MessageSquare className="size-4 shrink-0" />
                   <span>WhatsApp</span>
                 </a>
@@ -374,17 +387,23 @@ export const AdmissionLeadDetails: React.FC<AdmissionLeadDetailsProps> = ({ id }
             {/* Inquirer details */}
             <div className="w-full border-t border-border/40 mt-6 pt-5 space-y-4">
               <div>
-                <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider">Mobile Number</p>
+                <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider">
+                  Mobile Number
+                </p>
                 <p className="text-xs text-foreground font-semibold mt-1">{lead.mobile}</p>
               </div>
 
               <div>
-                <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider">Email Address</p>
+                <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider">
+                  Email Address
+                </p>
                 <p className="text-xs text-foreground font-semibold mt-1 break-all">{lead.email}</p>
               </div>
 
               <div>
-                <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider">Selected Campus</p>
+                <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider">
+                  Selected Campus
+                </p>
                 <div className="flex items-center gap-1.5 mt-1">
                   <Building className="size-3.5 text-muted-foreground" />
                   <p className="text-xs text-foreground font-semibold">{campusName}</p>
@@ -393,7 +412,9 @@ export const AdmissionLeadDetails: React.FC<AdmissionLeadDetailsProps> = ({ id }
 
               {lead.city && (
                 <div>
-                  <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider">City / Location</p>
+                  <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider">
+                    City / Location
+                  </p>
                   <div className="flex items-center gap-1.5 mt-1">
                     <MapPin className="size-3.5 text-muted-foreground" />
                     <p className="text-xs text-foreground font-semibold">{lead.city}</p>
@@ -402,10 +423,14 @@ export const AdmissionLeadDetails: React.FC<AdmissionLeadDetailsProps> = ({ id }
               )}
 
               <div>
-                <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider">Submission Date</p>
+                <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider">
+                  Submission Date
+                </p>
                 <div className="flex items-center gap-1.5 mt-1">
                   <Calendar className="size-3.5 text-muted-foreground" />
-                  <p className="text-xs text-foreground font-semibold">{formatDate(lead.createdAt)}</p>
+                  <p className="text-xs text-foreground font-semibold">
+                    {formatDate(lead.createdAt)}
+                  </p>
                 </div>
               </div>
             </div>
@@ -414,7 +439,6 @@ export const AdmissionLeadDetails: React.FC<AdmissionLeadDetailsProps> = ({ id }
 
         {/* Right column: Message & Timeline / notes log */}
         <div className="lg:col-span-2 space-y-6">
-          
           {/* Enquiry message card */}
           <div className="bg-card glass border rounded-2xl p-6 shadow-sm space-y-4">
             <h3 className="font-display font-bold text-lg text-foreground border-b pb-2 flex items-center gap-2">
@@ -472,12 +496,14 @@ export const AdmissionLeadDetails: React.FC<AdmissionLeadDetailsProps> = ({ id }
                   <span className="absolute -left-[31px] top-1 rounded-full size-4 bg-background border-2 border-primary flex items-center justify-center">
                     <span className="rounded-full size-1.5 bg-primary" />
                   </span>
-                  
+
                   <div className="flex items-start justify-between gap-4">
                     <div>
                       <div className="flex items-center gap-2">
                         <span className="text-xs font-bold text-foreground">{note.author}</span>
-                        <span className="text-[10px] text-muted-foreground font-semibold">{formatDate(note.createdAt)}</span>
+                        <span className="text-[10px] text-muted-foreground font-semibold">
+                          {formatDate(note.createdAt)}
+                        </span>
                       </div>
                       <p className="text-xs text-foreground/80 leading-relaxed mt-1.5 whitespace-pre-line">
                         {note.text}
@@ -499,12 +525,13 @@ export const AdmissionLeadDetails: React.FC<AdmissionLeadDetailsProps> = ({ id }
               ))}
 
               {notes.length === 0 && (
-                <p className="text-xs text-muted-foreground italic py-4 text-center">No comments logged yet.</p>
+                <p className="text-xs text-muted-foreground italic py-4 text-center">
+                  No comments logged yet.
+                </p>
               )}
             </div>
           </div>
         </div>
-
       </div>
     </div>
   );

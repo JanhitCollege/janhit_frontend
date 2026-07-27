@@ -7,7 +7,11 @@ const sports = [
   { icon: CircleDot, title: "Cricket", desc: "Nets, pitches and structured league play." },
   { icon: TableProperties, title: "Table Tennis", desc: "Indoor courts for precision and reflex." },
   { icon: Wind, title: "Yoga & Wellness", desc: "Mindfulness, breathwork and physical strength." },
-  { icon: Sunrise, title: "Morning Sports Electives", desc: "Choose your sport. Start every day energised." },
+  {
+    icon: Sunrise,
+    title: "Morning Sports Electives",
+    desc: "Choose your sport. Start every day energised.",
+  },
   { icon: Target, title: "Indoor Shooting Range", desc: "A signature facility unique to Janhit." },
 ];
 
@@ -17,7 +21,12 @@ export function Sports() {
       <div className="max-w-7xl mx-auto px-6">
         <SectionHeader
           eyebrow="Sports & Activities"
-          title={<>Champions are built <span className="italic text-gradient-gold">on the field</span> too.</>}
+          title={
+            <>
+              Champions are built <span className="italic text-gradient-gold">on the field</span>{" "}
+              too.
+            </>
+          }
           description="A world-class athletics programme that develops grit, teamwork and the unmistakable confidence of a winner."
         />
 

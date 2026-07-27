@@ -5,9 +5,7 @@ import { ProtectedRoute } from "@/admin/components/ProtectedRoute";
 export const Route = createFileRoute("/@admin/committees/$id/edit")({
   component: CommitteeEditRouteComponent,
   head: () => ({
-    meta: [
-      { title: "Edit Committee — Janhit Group of Institutions" },
-    ],
+    meta: [{ title: "Edit Committee — Janhit Group of Institutions" }],
   }),
 });
 

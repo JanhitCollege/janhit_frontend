@@ -23,7 +23,7 @@ import {
   Camera,
   Check,
   CheckCircle2,
-  CircleAlert
+  CircleAlert,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -63,7 +63,13 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { getStoredCommittees, saveCommittees, Committee, CommitteeMember, CommitteeDocument } from "@/data/committees";
+import {
+  getStoredCommittees,
+  saveCommittees,
+  Committee,
+  CommitteeMember,
+  CommitteeDocument,
+} from "@/data/committees";
 import { getStoredCampuses } from "@/data/campuses";
 import { toast } from "sonner";
 
@@ -77,9 +83,11 @@ export const CommitteeDetails: React.FC<CommitteeDetailsProps> = ({ id, initialT
   const [campuses, setCampuses] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
-  
+
   // Tab control
-  const [activeTab, setActiveTab] = useState<"overview" | "members" | "documents">(initialTab || "overview");
+  const [activeTab, setActiveTab] = useState<"overview" | "members" | "documents">(
+    initialTab || "overview",
+  );
 
   // Sync activeTab with search parameter initialTab
   useEffect(() => {
@@ -160,7 +168,7 @@ export const CommitteeDetails: React.FC<CommitteeDetailsProps> = ({ id, initialT
         day: "numeric",
         month: "long",
         year: "numeric",
-        ...(showTime && { hour: "2-digit", minute: "2-digit" })
+        ...(showTime && { hour: "2-digit", minute: "2-digit" }),
       });
     } catch {
       return dateStr;
@@ -182,13 +190,15 @@ export const CommitteeDetails: React.FC<CommitteeDetailsProps> = ({ id, initialT
 
   const getCampusNames = () => {
     if (!committee) return "Global";
-    return committee.campuses
-      .map((cid) => {
-        const found = campuses.find((c) => c.id === cid);
-        return found ? found.shortName || found.name : null;
-      })
-      .filter(Boolean)
-      .join(", ") || "Global / All";
+    return (
+      committee.campuses
+        .map((cid) => {
+          const found = campuses.find((c) => c.id === cid);
+          return found ? found.shortName || found.name : null;
+        })
+        .filter(Boolean)
+        .join(", ") || "Global / All"
+    );
   };
 
   // ==========================================
@@ -204,8 +214,8 @@ export const CommitteeDetails: React.FC<CommitteeDetailsProps> = ({ id, initialT
       setMDepartment(member.department || "");
       setMEmail(member.email || "");
       setMPhone(member.phone || "");
-      
-      const getLocalDate = (isoStr?: string) => isoStr ? isoStr.split("T")[0] : "";
+
+      const getLocalDate = (isoStr?: string) => (isoStr ? isoStr.split("T")[0] : "");
       setMTenureFrom(getLocalDate(member.tenureFrom));
       setMTenureTo(getLocalDate(member.tenureTo));
       setMDisplayOrder(String(member.displayOrder));
@@ -337,7 +347,7 @@ export const CommitteeDetails: React.FC<CommitteeDetailsProps> = ({ id, initialT
 
     saveCommittees(updatedCommittees);
     setCommittee({ ...committee, members: updatedMembers, updatedAt: new Date().toISOString() });
-    
+
     setIsSavingMember(false);
     setIsMemberModalOpen(false);
     toast.success(editingMember ? "Member details updated." : "New member added to committee.");
@@ -398,7 +408,10 @@ export const CommitteeDetails: React.FC<CommitteeDetailsProps> = ({ id, initialT
     const file = e.target.files?.[0];
     if (file) {
       if (file.size > 5 * 1024 * 1024) {
-        setFormErrors((prev) => ({ ...prev, document: "Document size exceeds allowed limit of 5MB for mock storage." }));
+        setFormErrors((prev) => ({
+          ...prev,
+          document: "Document size exceeds allowed limit of 5MB for mock storage.",
+        }));
         return;
       }
       const reader = new FileReader();
@@ -449,11 +462,13 @@ export const CommitteeDetails: React.FC<CommitteeDetailsProps> = ({ id, initialT
       fileType: dFileType || "application/octet-stream",
       documentType: dType,
       displayOrder: orderNum,
-      createdAt: new Date().toISOString()
+      createdAt: new Date().toISOString(),
     };
 
-    const updatedDocs = [...committee.documents, newDoc].sort((a, b) => a.displayOrder - b.displayOrder);
-    
+    const updatedDocs = [...committee.documents, newDoc].sort(
+      (a, b) => a.displayOrder - b.displayOrder,
+    );
+
     // Save
     const list = getStoredCommittees();
     const updatedCommittees = list.map((c) => {
@@ -542,7 +557,9 @@ export const CommitteeDetails: React.FC<CommitteeDetailsProps> = ({ id, initialT
 
         <div className="glass rounded-2xl p-8 border border-destructive/20 bg-destructive/5 text-center flex flex-col items-center justify-center max-w-lg mx-auto my-12 z-10">
           <CircleAlert className="size-12 text-destructive mb-3" />
-          <h2 className="font-display text-lg font-bold text-foreground">Failed to Load Committee</h2>
+          <h2 className="font-display text-lg font-bold text-foreground">
+            Failed to Load Committee
+          </h2>
           <p className="text-sm text-muted-foreground mt-2">{errorMsg || "An error occurred."}</p>
           <Link
             to="/@admin/committees"
@@ -583,7 +600,9 @@ export const CommitteeDetails: React.FC<CommitteeDetailsProps> = ({ id, initialT
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>
-          <h1 className="font-display text-2xl md:text-3xl font-bold text-foreground">{committee.title}</h1>
+          <h1 className="font-display text-2xl md:text-3xl font-bold text-foreground">
+            {committee.title}
+          </h1>
         </div>
 
         <div className="flex items-center gap-3">
@@ -602,14 +621,22 @@ export const CommitteeDetails: React.FC<CommitteeDetailsProps> = ({ id, initialT
       {/* Hero card details banner */}
       <div className="bg-card glass border rounded-3xl p-6 shadow-sm flex flex-col md:flex-row gap-6 relative overflow-hidden">
         <div className="absolute top-0 right-0 w-36 h-36 bg-gradient-gold opacity-5 blur-2xl rounded-full pointer-events-none" />
-        
+
         {/* Banner image or icon fallback */}
         <div className="w-full md:w-44 h-28 rounded-2xl overflow-hidden border bg-muted flex items-center justify-center shrink-0 shadow-inner">
           {committee.bannerImage ? (
-            <img src={committee.bannerImage} alt={committee.title} className="w-full h-full object-cover" />
+            <img
+              src={committee.bannerImage}
+              alt={committee.title}
+              className="w-full h-full object-cover"
+            />
           ) : (
             <div className="size-full bg-gradient-gold flex items-center justify-center text-gold-foreground font-display font-bold text-3xl">
-              {committee.title.split(" ").map(n => n[0]).join("").toUpperCase()}
+              {committee.title
+                .split(" ")
+                .map((n) => n[0])
+                .join("")
+                .toUpperCase()}
             </div>
           )}
         </div>
@@ -621,11 +648,17 @@ export const CommitteeDetails: React.FC<CommitteeDetailsProps> = ({ id, initialT
               {committee.committeeType || "General"}
             </Badge>
             {committee.category && (
-              <Badge variant="outline" className="text-[10px] rounded-lg px-2 py-0.5 font-medium text-muted-foreground border-border bg-background/40">
+              <Badge
+                variant="outline"
+                className="text-[10px] rounded-lg px-2 py-0.5 font-medium text-muted-foreground border-border bg-background/40"
+              >
                 {committee.category}
               </Badge>
             )}
-            <Badge variant="outline" className="text-[10px] rounded-lg px-2 py-0.5 font-medium text-foreground bg-slate-200">
+            <Badge
+              variant="outline"
+              className="text-[10px] rounded-lg px-2 py-0.5 font-medium text-foreground bg-slate-200"
+            >
               Session: {committee.academicSession || "—"}
             </Badge>
           </div>
@@ -633,8 +666,16 @@ export const CommitteeDetails: React.FC<CommitteeDetailsProps> = ({ id, initialT
             {committee.shortDescription || "No short description provided."}
           </p>
           <div className="flex flex-wrap gap-x-6 gap-y-2 text-xs text-muted-foreground font-medium pt-1.5 border-t border-border/40">
-            <span className="flex items-center gap-1.5"><Building className="size-3.5" /> Campuses: <strong className="text-foreground">{getCampusNames()}</strong></span>
-            <span className="flex items-center gap-1.5"><Calendar className="size-3.5" /> Tenure: <strong className="text-foreground">{formatDate(committee.tenureFrom)} to {formatDate(committee.tenureTo)}</strong></span>
+            <span className="flex items-center gap-1.5">
+              <Building className="size-3.5" /> Campuses:{" "}
+              <strong className="text-foreground">{getCampusNames()}</strong>
+            </span>
+            <span className="flex items-center gap-1.5">
+              <Calendar className="size-3.5" /> Tenure:{" "}
+              <strong className="text-foreground">
+                {formatDate(committee.tenureFrom)} to {formatDate(committee.tenureTo)}
+              </strong>
+            </span>
           </div>
         </div>
       </div>
@@ -662,12 +703,10 @@ export const CommitteeDetails: React.FC<CommitteeDetailsProps> = ({ id, initialT
 
       {/* Tab content area */}
       <div className="space-y-6">
-        
         {/* Overview Tab */}
         {activeTab === "overview" && (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div className="lg:col-span-2 space-y-6">
-              
               {/* Detailed Description */}
               <div className="bg-card glass border rounded-2xl p-6 shadow-sm space-y-3.5">
                 <h3 className="font-display font-bold text-lg text-foreground flex items-center gap-2">
@@ -689,24 +728,29 @@ export const CommitteeDetails: React.FC<CommitteeDetailsProps> = ({ id, initialT
                   {committee.objective || "No objectives defined."}
                 </p>
               </div>
-
             </div>
 
             {/* Right sidebar of overview */}
             <div className="space-y-6">
               <div className="bg-card glass border rounded-2xl p-6 shadow-sm space-y-4">
-                <h3 className="font-display font-bold text-base text-foreground border-b pb-2">Publishing Status</h3>
-                
+                <h3 className="font-display font-bold text-base text-foreground border-b pb-2">
+                  Publishing Status
+                </h3>
+
                 <div className="space-y-3.5 text-xs">
                   <div className="flex justify-between items-center">
                     <span className="text-muted-foreground font-semibold">Publish Status</span>
-                    <Badge className={`rounded-xl text-[9px] font-bold ${getStatusBadgeColor(committee.status)}`}>
+                    <Badge
+                      className={`rounded-xl text-[9px] font-bold ${getStatusBadgeColor(committee.status)}`}
+                    >
                       {committee.status}
                     </Badge>
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-muted-foreground font-semibold">Publish Date</span>
-                    <span className="text-foreground font-medium">{formatDate(committee.publishDate, true)}</span>
+                    <span className="text-foreground font-medium">
+                      {formatDate(committee.publishDate, true)}
+                    </span>
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-muted-foreground font-semibold">Display Order</span>
@@ -714,11 +758,15 @@ export const CommitteeDetails: React.FC<CommitteeDetailsProps> = ({ id, initialT
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-muted-foreground font-semibold">Main Web Visibility</span>
-                    <span className="text-foreground font-semibold">{committee.isMainWebsite ? "Visible" : "Hidden"}</span>
+                    <span className="text-foreground font-semibold">
+                      {committee.isMainWebsite ? "Visible" : "Hidden"}
+                    </span>
                   </div>
                   <div className="flex justify-between items-center pt-2 border-t">
                     <span className="text-muted-foreground font-semibold">Created At</span>
-                    <span className="text-muted-foreground font-medium">{formatDate(committee.createdAt)}</span>
+                    <span className="text-muted-foreground font-medium">
+                      {formatDate(committee.createdAt)}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -759,22 +807,38 @@ export const CommitteeDetails: React.FC<CommitteeDetailsProps> = ({ id, initialT
                       {/* Avatar */}
                       <div className="size-16 rounded-xl overflow-hidden border bg-muted flex items-center justify-center shrink-0 shadow-sm">
                         {member.photo ? (
-                          <img src={member.photo} alt={member.name} className="w-full h-full object-cover" />
+                          <img
+                            src={member.photo}
+                            alt={member.name}
+                            className="w-full h-full object-cover"
+                          />
                         ) : (
                           <div className="size-full bg-gradient-gold text-gold-foreground flex items-center justify-center font-display font-bold text-lg">
-                            {member.name.split(" ").map(n => n[0]).join("").toUpperCase()}
+                            {member.name
+                              .split(" ")
+                              .map((n) => n[0])
+                              .join("")
+                              .toUpperCase()}
                           </div>
                         )}
                       </div>
-                      
+
                       <div className="min-w-0 flex-1">
-                        <h4 className="text-sm font-bold text-foreground truncate">{member.name}</h4>
-                        <div className="text-xs text-primary font-bold mt-0.5">{member.committeeRole}</div>
+                        <h4 className="text-sm font-bold text-foreground truncate">
+                          {member.name}
+                        </h4>
+                        <div className="text-xs text-primary font-bold mt-0.5">
+                          {member.committeeRole}
+                        </div>
                         {member.designation && (
-                          <div className="text-[11px] text-muted-foreground mt-0.5 truncate">{member.designation}</div>
+                          <div className="text-[11px] text-muted-foreground mt-0.5 truncate">
+                            {member.designation}
+                          </div>
                         )}
                         {member.department && (
-                          <div className="text-[10px] text-muted-foreground font-semibold uppercase tracking-wider mt-0.5">{member.department}</div>
+                          <div className="text-[10px] text-muted-foreground font-semibold uppercase tracking-wider mt-0.5">
+                            {member.department}
+                          </div>
                         )}
                       </div>
                     </div>
@@ -784,7 +848,12 @@ export const CommitteeDetails: React.FC<CommitteeDetailsProps> = ({ id, initialT
                       {member.email && (
                         <div className="flex items-center gap-2 truncate">
                           <Mail className="size-3.5 text-muted-foreground shrink-0" />
-                          <a href={`mailto:${member.email}`} className="hover:text-primary hover:underline">{member.email}</a>
+                          <a
+                            href={`mailto:${member.email}`}
+                            className="hover:text-primary hover:underline"
+                          >
+                            {member.email}
+                          </a>
                         </div>
                       )}
                       {member.phone && (
@@ -796,7 +865,9 @@ export const CommitteeDetails: React.FC<CommitteeDetailsProps> = ({ id, initialT
                       {(member.tenureFrom || member.tenureTo) && (
                         <div className="flex items-center gap-2">
                           <Calendar className="size-3.5 text-muted-foreground shrink-0" />
-                          <span>Tenure: {formatDate(member.tenureFrom)} to {formatDate(member.tenureTo)}</span>
+                          <span>
+                            Tenure: {formatDate(member.tenureFrom)} to {formatDate(member.tenureTo)}
+                          </span>
                         </div>
                       )}
                     </div>
@@ -828,11 +899,18 @@ export const CommitteeDetails: React.FC<CommitteeDetailsProps> = ({ id, initialT
             ) : (
               <div className="bg-card glass border border-dashed rounded-2xl p-10 text-center max-w-md mx-auto">
                 <Users className="size-10 text-muted-foreground/60 mx-auto mb-3" />
-                <h4 className="font-display font-semibold text-base text-foreground">No Members Added</h4>
+                <h4 className="font-display font-semibold text-base text-foreground">
+                  No Members Added
+                </h4>
                 <p className="text-xs text-muted-foreground mt-1">
-                  Start constructing the roster by adding chairpersons, coordinators, and member faculty profiles.
+                  Start constructing the roster by adding chairpersons, coordinators, and member
+                  faculty profiles.
                 </p>
-                <Button onClick={() => openMemberModal()} size="sm" className="mt-4 rounded-xl text-xs">
+                <Button
+                  onClick={() => openMemberModal()}
+                  size="sm"
+                  className="mt-4 rounded-xl text-xs"
+                >
                   Add Committee Member
                 </Button>
               </div>
@@ -844,7 +922,9 @@ export const CommitteeDetails: React.FC<CommitteeDetailsProps> = ({ id, initialT
         {activeTab === "documents" && (
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <h3 className="font-display font-bold text-lg text-foreground">Official Records & Orders</h3>
+              <h3 className="font-display font-bold text-lg text-foreground">
+                Official Records & Orders
+              </h3>
               <Button
                 onClick={openDocModal}
                 size="sm"
@@ -860,27 +940,43 @@ export const CommitteeDetails: React.FC<CommitteeDetailsProps> = ({ id, initialT
                 <Table>
                   <TableHeader className="bg-background/80 border-b">
                     <TableRow>
-                      <TableHead className="font-semibold text-xs py-3.5 w-1/3">Document Title</TableHead>
+                      <TableHead className="font-semibold text-xs py-3.5 w-1/3">
+                        Document Title
+                      </TableHead>
                       <TableHead className="font-semibold text-xs py-3.5">Document Type</TableHead>
                       <TableHead className="font-semibold text-xs py-3.5">File Format</TableHead>
-                      <TableHead className="font-semibold text-xs py-3.5 text-center">Display Order</TableHead>
-                      <TableHead className="font-semibold text-xs py-3.5 text-center">Uploaded Date</TableHead>
-                      <TableHead className="font-semibold text-xs py-3.5 text-right pr-6">Actions</TableHead>
+                      <TableHead className="font-semibold text-xs py-3.5 text-center">
+                        Display Order
+                      </TableHead>
+                      <TableHead className="font-semibold text-xs py-3.5 text-center">
+                        Uploaded Date
+                      </TableHead>
+                      <TableHead className="font-semibold text-xs py-3.5 text-right pr-6">
+                        Actions
+                      </TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {committee.documents.map((doc) => (
-                      <TableRow key={doc.id} className="hover:bg-accent/40 border-b last:border-0 transition-colors">
+                      <TableRow
+                        key={doc.id}
+                        className="hover:bg-accent/40 border-b last:border-0 transition-colors"
+                      >
                         <TableCell className="py-4">
                           <div>
                             <h4 className="text-sm font-semibold text-foreground">{doc.title}</h4>
                             {doc.description && (
-                              <p className="text-[11px] text-muted-foreground mt-0.5 max-w-[300px] truncate">{doc.description}</p>
+                              <p className="text-[11px] text-muted-foreground mt-0.5 max-w-[300px] truncate">
+                                {doc.description}
+                              </p>
                             )}
                           </div>
                         </TableCell>
                         <TableCell className="py-4">
-                          <Badge variant="secondary" className="bg-slate-100 text-slate-700 font-bold text-[9px] rounded px-1.5 py-0">
+                          <Badge
+                            variant="secondary"
+                            className="bg-slate-100 text-slate-700 font-bold text-[9px] rounded px-1.5 py-0"
+                          >
                             {doc.documentType}
                           </Badge>
                         </TableCell>
@@ -925,9 +1021,12 @@ export const CommitteeDetails: React.FC<CommitteeDetailsProps> = ({ id, initialT
             ) : (
               <div className="bg-card glass border border-dashed rounded-2xl p-10 text-center max-w-md mx-auto">
                 <FileText className="size-10 text-muted-foreground/60 mx-auto mb-3" />
-                <h4 className="font-display font-semibold text-base text-foreground">No Documents Uploaded</h4>
+                <h4 className="font-display font-semibold text-base text-foreground">
+                  No Documents Uploaded
+                </h4>
                 <p className="text-xs text-muted-foreground mt-1">
-                  Upload official committee orders, constitution circulars, notices or meeting minutes.
+                  Upload official committee orders, constitution circulars, notices or meeting
+                  minutes.
                 </p>
                 <Button onClick={openDocModal} size="sm" className="mt-4 rounded-xl text-xs">
                   Upload Document File
@@ -946,7 +1045,8 @@ export const CommitteeDetails: React.FC<CommitteeDetailsProps> = ({ id, initialT
               {editingMember ? "Edit Committee Member" : "Add Committee Member"}
             </DialogTitle>
             <DialogDescription className="text-xs text-muted-foreground">
-              Provide candidate information to add/modify their credentials in this committee roster.
+              Provide candidate information to add/modify their credentials in this committee
+              roster.
             </DialogDescription>
           </DialogHeader>
 
@@ -956,7 +1056,9 @@ export const CommitteeDetails: React.FC<CommitteeDetailsProps> = ({ id, initialT
               <div
                 onClick={handlePhotoClick}
                 className={`size-20 rounded-full border-2 border-dashed flex flex-col items-center justify-center cursor-pointer overflow-hidden transition-all relative ${
-                  mPhoto ? "border-primary/40" : "border-muted-foreground/30 hover:border-primary/50 bg-background/50"
+                  mPhoto
+                    ? "border-primary/40"
+                    : "border-muted-foreground/30 hover:border-primary/50 bg-background/50"
                 }`}
               >
                 {mPhoto ? (
@@ -987,14 +1089,18 @@ export const CommitteeDetails: React.FC<CommitteeDetailsProps> = ({ id, initialT
                 className="hidden"
               />
               {formErrors.photo && (
-                <p className="text-destructive text-[10px] font-semibold mt-1">{formErrors.photo}</p>
+                <p className="text-destructive text-[10px] font-semibold mt-1">
+                  {formErrors.photo}
+                </p>
               )}
             </div>
 
             {/* Inputs grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="mName" className="text-[11px] font-bold">Member Name *</Label>
+                <Label htmlFor="mName" className="text-[11px] font-bold">
+                  Member Name *
+                </Label>
                 <Input
                   id="mName"
                   value={mName}
@@ -1003,12 +1109,16 @@ export const CommitteeDetails: React.FC<CommitteeDetailsProps> = ({ id, initialT
                   className={`mt-1 h-9 rounded-lg text-xs ${formErrors.name ? "border-destructive focus-visible:ring-destructive" : ""}`}
                 />
                 {formErrors.name && (
-                  <p className="text-destructive text-[10px] font-semibold mt-1">{formErrors.name}</p>
+                  <p className="text-destructive text-[10px] font-semibold mt-1">
+                    {formErrors.name}
+                  </p>
                 )}
               </div>
 
               <div>
-                <Label htmlFor="mRole" className="text-[11px] font-bold">Committee Role *</Label>
+                <Label htmlFor="mRole" className="text-[11px] font-bold">
+                  Committee Role *
+                </Label>
                 <Input
                   id="mRole"
                   value={mRole}
@@ -1017,12 +1127,16 @@ export const CommitteeDetails: React.FC<CommitteeDetailsProps> = ({ id, initialT
                   className={`mt-1 h-9 rounded-lg text-xs ${formErrors.role ? "border-destructive focus-visible:ring-destructive" : ""}`}
                 />
                 {formErrors.role && (
-                  <p className="text-destructive text-[10px] font-semibold mt-1">{formErrors.role}</p>
+                  <p className="text-destructive text-[10px] font-semibold mt-1">
+                    {formErrors.role}
+                  </p>
                 )}
               </div>
 
               <div>
-                <Label htmlFor="mDesignation" className="text-[11px] font-bold">Designation</Label>
+                <Label htmlFor="mDesignation" className="text-[11px] font-bold">
+                  Designation
+                </Label>
                 <Input
                   id="mDesignation"
                   value={mDesignation}
@@ -1033,7 +1147,9 @@ export const CommitteeDetails: React.FC<CommitteeDetailsProps> = ({ id, initialT
               </div>
 
               <div>
-                <Label htmlFor="mDepartment" className="text-[11px] font-bold">Department</Label>
+                <Label htmlFor="mDepartment" className="text-[11px] font-bold">
+                  Department
+                </Label>
                 <Input
                   id="mDepartment"
                   value={mDepartment}
@@ -1044,7 +1160,9 @@ export const CommitteeDetails: React.FC<CommitteeDetailsProps> = ({ id, initialT
               </div>
 
               <div>
-                <Label htmlFor="mEmail" className="text-[11px] font-bold">Email Address</Label>
+                <Label htmlFor="mEmail" className="text-[11px] font-bold">
+                  Email Address
+                </Label>
                 <Input
                   id="mEmail"
                   type="email"
@@ -1056,7 +1174,9 @@ export const CommitteeDetails: React.FC<CommitteeDetailsProps> = ({ id, initialT
               </div>
 
               <div>
-                <Label htmlFor="mPhone" className="text-[11px] font-bold">Phone Number</Label>
+                <Label htmlFor="mPhone" className="text-[11px] font-bold">
+                  Phone Number
+                </Label>
                 <Input
                   id="mPhone"
                   value={mPhone}
@@ -1067,7 +1187,9 @@ export const CommitteeDetails: React.FC<CommitteeDetailsProps> = ({ id, initialT
               </div>
 
               <div>
-                <Label htmlFor="mTenureFrom" className="text-[11px] font-bold">Tenure From</Label>
+                <Label htmlFor="mTenureFrom" className="text-[11px] font-bold">
+                  Tenure From
+                </Label>
                 <Input
                   id="mTenureFrom"
                   type="date"
@@ -1078,7 +1200,9 @@ export const CommitteeDetails: React.FC<CommitteeDetailsProps> = ({ id, initialT
               </div>
 
               <div>
-                <Label htmlFor="mTenureTo" className="text-[11px] font-bold">Tenure To</Label>
+                <Label htmlFor="mTenureTo" className="text-[11px] font-bold">
+                  Tenure To
+                </Label>
                 <Input
                   id="mTenureTo"
                   type="date"
@@ -1087,12 +1211,16 @@ export const CommitteeDetails: React.FC<CommitteeDetailsProps> = ({ id, initialT
                   className={`mt-1 h-9 rounded-lg text-xs ${formErrors.tenureTo ? "border-destructive focus-visible:ring-destructive" : ""}`}
                 />
                 {formErrors.tenureTo && (
-                  <p className="text-destructive text-[10px] font-semibold mt-1">{formErrors.tenureTo}</p>
+                  <p className="text-destructive text-[10px] font-semibold mt-1">
+                    {formErrors.tenureTo}
+                  </p>
                 )}
               </div>
 
               <div>
-                <Label htmlFor="mDisplayOrder" className="text-[11px] font-bold">Display Order *</Label>
+                <Label htmlFor="mDisplayOrder" className="text-[11px] font-bold">
+                  Display Order *
+                </Label>
                 <Input
                   id="mDisplayOrder"
                   type="number"
@@ -1101,23 +1229,31 @@ export const CommitteeDetails: React.FC<CommitteeDetailsProps> = ({ id, initialT
                   className={`mt-1 h-9 rounded-lg text-xs ${formErrors.displayOrder ? "border-destructive focus-visible:ring-destructive" : ""}`}
                 />
                 {formErrors.displayOrder && (
-                  <p className="text-destructive text-[10px] font-semibold mt-1">{formErrors.displayOrder}</p>
+                  <p className="text-destructive text-[10px] font-semibold mt-1">
+                    {formErrors.displayOrder}
+                  </p>
                 )}
               </div>
 
               <div className="flex items-center justify-between p-2 rounded-xl bg-background/50 border border-border/60 self-end h-9">
-                <Label htmlFor="mIsActive" className="text-[11px] font-bold cursor-pointer select-none">Active Status</Label>
-                <Switch
-                  id="mIsActive"
-                  checked={mIsActive}
-                  onCheckedChange={setMIsActive}
-                />
+                <Label
+                  htmlFor="mIsActive"
+                  className="text-[11px] font-bold cursor-pointer select-none"
+                >
+                  Active Status
+                </Label>
+                <Switch id="mIsActive" checked={mIsActive} onCheckedChange={setMIsActive} />
               </div>
             </div>
 
             <DialogFooter className="flex items-center justify-end gap-2 pt-3 border-t">
               <DialogClose asChild>
-                <Button variant="outline" size="sm" className="rounded-xl text-xs font-semibold" disabled={isSavingMember}>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="rounded-xl text-xs font-semibold"
+                  disabled={isSavingMember}
+                >
                   Cancel
                 </Button>
               </DialogClose>
@@ -1150,13 +1286,18 @@ export const CommitteeDetails: React.FC<CommitteeDetailsProps> = ({ id, initialT
               Remove Member
             </DialogTitle>
             <DialogDescription className="text-xs text-muted-foreground mt-2 leading-relaxed">
-              Are you sure you want to remove <strong>{memberToDelete?.name}</strong> from this committee's roster?
-              This action cannot be undone.
+              Are you sure you want to remove <strong>{memberToDelete?.name}</strong> from this
+              committee's roster? This action cannot be undone.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="flex items-center justify-end gap-2 mt-4">
             <DialogClose asChild>
-              <Button variant="outline" size="sm" className="rounded-xl text-xs font-semibold" disabled={isDeletingMember}>
+              <Button
+                variant="outline"
+                size="sm"
+                className="rounded-xl text-xs font-semibold"
+                disabled={isDeletingMember}
+              >
                 Cancel
               </Button>
             </DialogClose>
@@ -1184,15 +1325,20 @@ export const CommitteeDetails: React.FC<CommitteeDetailsProps> = ({ id, initialT
       <Dialog open={isDocModalOpen} onOpenChange={setIsDocModalOpen}>
         <DialogContent className="rounded-3xl border border-border/80 max-w-md">
           <DialogHeader>
-            <DialogTitle className="font-display font-bold text-lg">Upload Committee Document</DialogTitle>
+            <DialogTitle className="font-display font-bold text-lg">
+              Upload Committee Document
+            </DialogTitle>
             <DialogDescription className="text-xs text-muted-foreground">
-              Link an official order, minutes report, circular or other documents to this committee records.
+              Link an official order, minutes report, circular or other documents to this committee
+              records.
             </DialogDescription>
           </DialogHeader>
 
           <form onSubmit={saveDocument} className="space-y-4 pt-3">
             <div>
-              <Label htmlFor="dTitle" className="text-[11px] font-bold">Document Title *</Label>
+              <Label htmlFor="dTitle" className="text-[11px] font-bold">
+                Document Title *
+              </Label>
               <Input
                 id="dTitle"
                 value={dTitle}
@@ -1201,12 +1347,16 @@ export const CommitteeDetails: React.FC<CommitteeDetailsProps> = ({ id, initialT
                 className={`mt-1 h-9 rounded-lg text-xs ${formErrors.title ? "border-destructive focus-visible:ring-destructive" : ""}`}
               />
               {formErrors.title && (
-                <p className="text-destructive text-[10px] font-semibold mt-1">{formErrors.title}</p>
+                <p className="text-destructive text-[10px] font-semibold mt-1">
+                  {formErrors.title}
+                </p>
               )}
             </div>
 
             <div>
-              <Label htmlFor="dDescription" className="text-[11px] font-bold">Description / Brief Notes</Label>
+              <Label htmlFor="dDescription" className="text-[11px] font-bold">
+                Description / Brief Notes
+              </Label>
               <Textarea
                 id="dDescription"
                 value={dDescription}
@@ -1218,7 +1368,9 @@ export const CommitteeDetails: React.FC<CommitteeDetailsProps> = ({ id, initialT
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="dType" className="text-[11px] font-bold">Document Category Type</Label>
+                <Label htmlFor="dType" className="text-[11px] font-bold">
+                  Document Category Type
+                </Label>
                 <div className="mt-1">
                   <Select value={dType} onValueChange={(val: any) => setDType(val)}>
                     <SelectTrigger className="h-9 rounded-lg bg-background text-xs">
@@ -1237,7 +1389,9 @@ export const CommitteeDetails: React.FC<CommitteeDetailsProps> = ({ id, initialT
               </div>
 
               <div>
-                <Label htmlFor="dDisplayOrder" className="text-[11px] font-bold">Display Order *</Label>
+                <Label htmlFor="dDisplayOrder" className="text-[11px] font-bold">
+                  Display Order *
+                </Label>
                 <Input
                   id="dDisplayOrder"
                   type="number"
@@ -1246,7 +1400,9 @@ export const CommitteeDetails: React.FC<CommitteeDetailsProps> = ({ id, initialT
                   className={`mt-1 h-9 rounded-lg text-xs ${formErrors.displayOrder ? "border-destructive focus-visible:ring-destructive" : ""}`}
                 />
                 {formErrors.displayOrder && (
-                  <p className="text-destructive text-[10px] font-semibold mt-1">{formErrors.displayOrder}</p>
+                  <p className="text-destructive text-[10px] font-semibold mt-1">
+                    {formErrors.displayOrder}
+                  </p>
                 )}
               </div>
             </div>
@@ -1257,13 +1413,20 @@ export const CommitteeDetails: React.FC<CommitteeDetailsProps> = ({ id, initialT
               <div
                 onClick={handleDocClick}
                 className={`w-full py-6 border-2 border-dashed rounded-xl cursor-pointer flex flex-col items-center justify-center transition ${
-                  dFileBase64 ? "border-primary/40 bg-background/50" : "border-border hover:border-primary/40 bg-background/20"
+                  dFileBase64
+                    ? "border-primary/40 bg-background/50"
+                    : "border-border hover:border-primary/40 bg-background/20"
                 }`}
               >
                 {dFileBase64 ? (
                   <div className="text-center px-4 flex items-center gap-2">
                     <Check className="size-5 text-emerald-500 shrink-0" />
-                    <span className="text-xs font-semibold text-foreground truncate max-w-[200px]" title={dFileName}>{dFileName}</span>
+                    <span
+                      className="text-xs font-semibold text-foreground truncate max-w-[200px]"
+                      title={dFileName}
+                    >
+                      {dFileName}
+                    </span>
                     <button
                       type="button"
                       onClick={(e) => {
@@ -1278,8 +1441,12 @@ export const CommitteeDetails: React.FC<CommitteeDetailsProps> = ({ id, initialT
                 ) : (
                   <div className="text-center p-2">
                     <Upload className="size-6 text-muted-foreground mx-auto mb-1.5" />
-                    <span className="text-[11px] font-semibold text-muted-foreground">Click to upload file document</span>
-                    <p className="text-[9px] text-muted-foreground/80 mt-0.5">PDF, DOC, DOCX, JPG, PNG up to 5MB</p>
+                    <span className="text-[11px] font-semibold text-muted-foreground">
+                      Click to upload file document
+                    </span>
+                    <p className="text-[9px] text-muted-foreground/80 mt-0.5">
+                      PDF, DOC, DOCX, JPG, PNG up to 5MB
+                    </p>
                   </div>
                 )}
               </div>
@@ -1291,13 +1458,20 @@ export const CommitteeDetails: React.FC<CommitteeDetailsProps> = ({ id, initialT
                 className="hidden"
               />
               {formErrors.document && (
-                <p className="text-destructive text-[10px] font-semibold mt-1">{formErrors.document}</p>
+                <p className="text-destructive text-[10px] font-semibold mt-1">
+                  {formErrors.document}
+                </p>
               )}
             </div>
 
             <DialogFooter className="flex items-center justify-end gap-2 pt-3 border-t">
               <DialogClose asChild>
-                <Button variant="outline" size="sm" className="rounded-xl text-xs font-semibold" disabled={isUploadingDoc}>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="rounded-xl text-xs font-semibold"
+                  disabled={isUploadingDoc}
+                >
                   Cancel
                 </Button>
               </DialogClose>
@@ -1330,13 +1504,19 @@ export const CommitteeDetails: React.FC<CommitteeDetailsProps> = ({ id, initialT
               Delete Document
             </DialogTitle>
             <DialogDescription className="text-xs text-muted-foreground mt-2 leading-relaxed">
-              Are you sure you want to delete the committee document <strong>{docToDelete?.title}</strong>?
-              This will permanently delete the file record. This action cannot be undone.
+              Are you sure you want to delete the committee document{" "}
+              <strong>{docToDelete?.title}</strong>? This will permanently delete the file record.
+              This action cannot be undone.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="flex items-center justify-end gap-2 mt-4">
             <DialogClose asChild>
-              <Button variant="outline" size="sm" className="rounded-xl text-xs font-semibold" disabled={isDeletingDoc}>
+              <Button
+                variant="outline"
+                size="sm"
+                className="rounded-xl text-xs font-semibold"
+                disabled={isDeletingDoc}
+              >
                 Cancel
               </Button>
             </DialogClose>
@@ -1359,7 +1539,6 @@ export const CommitteeDetails: React.FC<CommitteeDetailsProps> = ({ id, initialT
           </DialogFooter>
         </DialogContent>
       </Dialog>
-
     </div>
   );
 };

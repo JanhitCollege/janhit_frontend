@@ -3,10 +3,26 @@ import { useEffect, useRef, useState } from "react";
 import { Award, Percent, Crown, Sparkles } from "lucide-react";
 
 const benefits = [
-  { icon: Percent, title: "Admission Fee Waiver", desc: "Save the full admission fee as a founding family." },
-  { icon: Award, title: "Founder's Batch Discount", desc: "Locked tuition advantage for foundational years." },
-  { icon: Crown, title: "Priority Access to Clubs", desc: "First pick of clubs, electives and leadership tracks." },
-  { icon: Sparkles, title: "Limited Seats Available", desc: "Curated cohort, deeper teacher attention." },
+  {
+    icon: Percent,
+    title: "Admission Fee Waiver",
+    desc: "Save the full admission fee as a founding family.",
+  },
+  {
+    icon: Award,
+    title: "Founder's Batch Discount",
+    desc: "Locked tuition advantage for foundational years.",
+  },
+  {
+    icon: Crown,
+    title: "Priority Access to Clubs",
+    desc: "First pick of clubs, electives and leadership tracks.",
+  },
+  {
+    icon: Sparkles,
+    title: "Limited Seats Available",
+    desc: "Curated cohort, deeper teacher attention.",
+  },
 ];
 
 function Counter({ target }: { target: number }) {
@@ -42,11 +58,12 @@ export function FounderBatch() {
               <span className="h-px w-8 bg-gold/60" /> Founder's Batch
             </div>
             <h2 className="mt-5 font-serif text-4xl md:text-5xl lg:text-6xl text-white leading-[1.05]">
-              Privilege reserved for our <span className="italic text-gradient-gold">first families.</span>
+              Privilege reserved for our{" "}
+              <span className="italic text-gradient-gold">first families.</span>
             </h2>
             <p className="mt-6 text-white/70 text-lg max-w-xl leading-relaxed">
-              Joining the founder's batch is more than admission — it is a lifelong relationship with
-              the school. A handful of seats remain.
+              Joining the founder's batch is more than admission — it is a lifelong relationship
+              with the school. A handful of seats remain.
             </p>
 
             <motion.div

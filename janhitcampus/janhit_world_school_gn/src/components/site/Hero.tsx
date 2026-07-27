@@ -29,7 +29,6 @@ export function Hero() {
         Expanded width to max-w-[1360px] and adjusted right padding to pull the card closer to the right margin.
       */}
       <div className="relative z-10 w-full md:absolute md:inset-0 md:z-20 md:max-w-[1360px] md:mx-auto md:pl-6 md:pr-4 lg:pr-8 md:pb-8 lg:pb-12 md:flex md:items-end md:justify-end">
-        
         {/* Floating White Glassmorphic Card (Shifted further Right & Compact) */}
         <motion.div
           initial={{ opacity: 0, x: 30, y: 15 }}
@@ -50,13 +49,14 @@ export function Hero() {
 
           {/* Compact Title */}
           <h1 className="mt-4 font-serif text-[#0B2566] text-2xl sm:text-3xl lg:text-4xl leading-tight tracking-tight">
-            Building Future <span className="italic text-gradient-gold">Leaders</span> <br /> From Day One.
+            Building Future <span className="italic text-gradient-gold">Leaders</span> <br /> From
+            Day One.
           </h1>
 
           {/* Compact Subtitle Description */}
           <p className="mt-4 text-[#0B2566]/85 text-xs sm:text-sm leading-relaxed font-sans font-normal">
-            A next-generation school blending academics, innovation, sports, creativity, and life skills —
-            designed for the founding cohort of 2026-27 in Greater Noida.
+            A next-generation school blending academics, innovation, sports, creativity, and life
+            skills — designed for the founding cohort of 2026-27 in Greater Noida.
           </p>
 
           {/* Compact Differentiators Checklist */}
@@ -65,19 +65,25 @@ export function Hero() {
               <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-gold/15 text-gold border border-gold/25">
                 <Sparkles className="size-2.5" />
               </div>
-              <span className="text-[11px] font-semibold tracking-wide font-sans">Ivy-League Inspired Green Campus</span>
+              <span className="text-[11px] font-semibold tracking-wide font-sans">
+                Ivy-League Inspired Green Campus
+              </span>
             </div>
             <div className="flex items-center gap-2.5 text-[#0B2566]/90">
               <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-gold/15 text-gold border border-gold/25">
                 <Sparkles className="size-2.5" />
               </div>
-              <span className="text-[11px] font-semibold tracking-wide font-sans">Future-Ready Robotics & AI Labs</span>
+              <span className="text-[11px] font-semibold tracking-wide font-sans">
+                Future-Ready Robotics & AI Labs
+              </span>
             </div>
             <div className="flex items-center gap-2.5 text-[#0B2566]/90">
               <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-gold/15 text-gold border border-gold/25">
                 <Sparkles className="size-2.5" />
               </div>
-              <span className="text-[11px] font-semibold tracking-wide font-sans">Olympic-Standard Arena & Shooting Range</span>
+              <span className="text-[11px] font-semibold tracking-wide font-sans">
+                Olympic-Standard Arena & Shooting Range
+              </span>
             </div>
           </div>
 
@@ -96,7 +102,6 @@ export function Hero() {
               Apply for Admission <ArrowRight className="size-3.5" />
             </a>
           </div>
-          
         </motion.div>
       </div>
     </section>

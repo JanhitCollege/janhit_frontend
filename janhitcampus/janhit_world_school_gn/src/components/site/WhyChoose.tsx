@@ -13,15 +13,51 @@ import {
 import { SectionHeader } from "./SectionHeader";
 
 const features = [
-  { icon: Target, title: "Indoor Shooting Range", desc: "A first-of-its-kind facility for precision, focus and Olympic-track exposure." },
-  { icon: Cpu, title: "Robotics & STEM Labs", desc: "Hands-on innovation labs for coding, robotics and design thinking." },
-  { icon: Coins, title: "Financial Literacy", desc: "Money, markets and mindful decisions — taught from an early age." },
-  { icon: Baby, title: "Montessori Foundation", desc: "Joyful, child-led discovery built on the proven Montessori method." },
-  { icon: Monitor, title: "Tech-Integrated Smart Classes", desc: "Every classroom is digital-first, immersive and interactive." },
-  { icon: Lightbulb, title: "Project-Based Learning", desc: "Real problems, real outcomes — learning that sticks for life." },
-  { icon: Globe, title: "International Curriculum", desc: "Globally benchmarked standards woven into the CBSE framework." },
-  { icon: Users, title: "Individual Attention", desc: "Small classes and personalised pathways for every learner." },
-  { icon: FlaskConical, title: "Experiential Learning", desc: "Outdoor labs, field trips and exhibitions that ignite curiosity." },
+  {
+    icon: Target,
+    title: "Indoor Shooting Range",
+    desc: "A first-of-its-kind facility for precision, focus and Olympic-track exposure.",
+  },
+  {
+    icon: Cpu,
+    title: "Robotics & STEM Labs",
+    desc: "Hands-on innovation labs for coding, robotics and design thinking.",
+  },
+  {
+    icon: Coins,
+    title: "Financial Literacy",
+    desc: "Money, markets and mindful decisions — taught from an early age.",
+  },
+  {
+    icon: Baby,
+    title: "Montessori Foundation",
+    desc: "Joyful, child-led discovery built on the proven Montessori method.",
+  },
+  {
+    icon: Monitor,
+    title: "Tech-Integrated Smart Classes",
+    desc: "Every classroom is digital-first, immersive and interactive.",
+  },
+  {
+    icon: Lightbulb,
+    title: "Project-Based Learning",
+    desc: "Real problems, real outcomes — learning that sticks for life.",
+  },
+  {
+    icon: Globe,
+    title: "International Curriculum",
+    desc: "Globally benchmarked standards woven into the CBSE framework.",
+  },
+  {
+    icon: Users,
+    title: "Individual Attention",
+    desc: "Small classes and personalised pathways for every learner.",
+  },
+  {
+    icon: FlaskConical,
+    title: "Experiential Learning",
+    desc: "Outdoor labs, field trips and exhibitions that ignite curiosity.",
+  },
 ];
 
 export function WhyChoose() {
@@ -30,7 +66,12 @@ export function WhyChoose() {
       <div className="max-w-7xl mx-auto px-6">
         <SectionHeader
           eyebrow="Why Janhit"
-          title={<>An education designed <span className="italic text-gradient-gold">without compromise.</span></>}
+          title={
+            <>
+              An education designed{" "}
+              <span className="italic text-gradient-gold">without compromise.</span>
+            </>
+          }
           description="Every detail — from the curriculum to the corridor — has been engineered to give your child a decisive head-start."
         />
 

@@ -5,9 +5,7 @@ import { ProtectedRoute } from "@/admin/components/ProtectedRoute";
 export const Route = createFileRoute("/@admin/gallery/")({
   component: GalleryListingRouteComponent,
   head: () => ({
-    meta: [
-      { title: "Gallery Management — Janhit Group of Institutions" },
-    ],
+    meta: [{ title: "Gallery Management — Janhit Group of Institutions" }],
   }),
 });
 

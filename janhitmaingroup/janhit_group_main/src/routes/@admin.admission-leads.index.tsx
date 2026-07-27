@@ -5,9 +5,7 @@ import { ProtectedRoute } from "@/admin/components/ProtectedRoute";
 export const Route = createFileRoute("/@admin/admission-leads/")({
   component: AdmissionLeadsListingRouteComponent,
   head: () => ({
-    meta: [
-      { title: "Admission Leads — Janhit Group of Institutions" },
-    ],
+    meta: [{ title: "Admission Leads — Janhit Group of Institutions" }],
   }),
 });
 

@@ -1,6 +1,6 @@
 /**
  * AuthService provides authentication services for the Admin panel.
- * 
+ *
  * TODO: Integrate with backend API endpoints (e.g., /api/admin/login, /api/admin/forgot-password).
  */
 
@@ -16,7 +16,7 @@ export interface AdminUser {
 export const authService = {
   /**
    * Performs authentication using email and password.
-   * 
+   *
    * TODO: Implement actual backend POST call to '/api/admin/login'.
    * @param email The admin email address
    * @param password The admin password
@@ -58,7 +58,7 @@ export const authService = {
 
   /**
    * Requests a password reset link for the provided email address.
-   * 
+   *
    * TODO: Implement actual backend POST call to '/api/admin/forgot-password'.
    * @param email The registered admin email address
    */

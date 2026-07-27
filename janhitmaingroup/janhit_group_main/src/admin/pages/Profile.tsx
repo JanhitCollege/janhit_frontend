@@ -1,6 +1,17 @@
 import React, { useState, useRef } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
-import { GraduationCap, User, LogOut, ChevronDown, ArrowLeft, Camera, Edit2, Check, X, Loader2 } from "lucide-react";
+import {
+  GraduationCap,
+  User,
+  LogOut,
+  ChevronDown,
+  ArrowLeft,
+  Camera,
+  Edit2,
+  Check,
+  X,
+  Loader2,
+} from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -25,7 +36,7 @@ export const ProfilePage: React.FC = () => {
   const [phone, setPhone] = useState(user?.phone || "");
   const [role] = useState(user?.role || "Super Admin");
   const [avatarUrl, setAvatarUrl] = useState(user?.avatarUrl || "");
-  
+
   const [isSaving, setIsSaving] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -37,17 +48,17 @@ export const ProfilePage: React.FC = () => {
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSaving(true);
-    
+
     // Simulate short network delay
     await new Promise((resolve) => setTimeout(resolve, 600));
-    
+
     updateUser({
       name,
       email,
       phone,
       avatarUrl,
     });
-    
+
     setIsSaving(false);
     setIsEditing(false);
   };
@@ -108,7 +119,9 @@ export const ProfilePage: React.FC = () => {
         <div className="glass shadow-elegant rounded-2xl p-6 md:p-8 border border-border/80">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
             <div>
-              <h1 className="font-display text-2xl md:text-3xl font-bold text-foreground">Admin Profile</h1>
+              <h1 className="font-display text-2xl md:text-3xl font-bold text-foreground">
+                Admin Profile
+              </h1>
               <p className="text-sm text-muted-foreground mt-1">
                 View and manage your administration account details.
               </p>
@@ -135,10 +148,16 @@ export const ProfilePage: React.FC = () => {
                 >
                   <AvatarImage src={avatarUrl} alt={name} />
                   <AvatarFallback className="bg-gradient-gold text-gold-foreground text-2xl font-bold font-sans">
-                    {name ? name.split(" ").map((n) => n[0]).join("").toUpperCase() : "A"}
+                    {name
+                      ? name
+                          .split(" ")
+                          .map((n) => n[0])
+                          .join("")
+                          .toUpperCase()
+                      : "A"}
                   </AvatarFallback>
                 </Avatar>
-                
+
                 {isEditing && (
                   <div
                     onClick={handlePhotoClick}
@@ -147,7 +166,7 @@ export const ProfilePage: React.FC = () => {
                     <Camera className="size-6 text-white" />
                   </div>
                 )}
-                
+
                 <input
                   type="file"
                   ref={fileInputRef}
@@ -238,9 +257,7 @@ export const ProfilePage: React.FC = () => {
 
               {/* Role (Read-only) */}
               <div className="space-y-2">
-                <Label className="text-foreground/80 font-semibold">
-                  Role
-                </Label>
+                <Label className="text-foreground/80 font-semibold">Role</Label>
                 <div className="h-10 px-3.5 flex items-center bg-accent/60 rounded-xl text-muted-foreground font-semibold text-xs uppercase tracking-wider">
                   {role}
                 </div>

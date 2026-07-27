@@ -1,4 +1,10 @@
-import { createRootRouteWithContext, Outlet, useRouter, Link, useLocation } from "@tanstack/react-router";
+import {
+  createRootRouteWithContext,
+  Outlet,
+  useRouter,
+  Link,
+  useLocation,
+} from "@tanstack/react-router";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
@@ -10,7 +16,10 @@ function NotFoundComponent() {
       <div className="text-center max-w-md">
         <h1 className="text-8xl font-display font-bold text-gradient-gold">404</h1>
         <p className="mt-4 text-lg opacity-90">The page you're looking for doesn't exist.</p>
-        <Link to="/" className="mt-6 inline-flex px-5 py-2.5 rounded-xl bg-gradient-gold text-gold-foreground font-semibold">
+        <Link
+          to="/"
+          className="mt-6 inline-flex px-5 py-2.5 rounded-xl bg-gradient-gold text-gold-foreground font-semibold"
+        >
           Back to Home
         </Link>
       </div>
@@ -27,7 +36,10 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
         <h1 className="text-2xl font-display font-bold">Something went wrong</h1>
         <p className="mt-2 text-sm text-muted-foreground">{error.message}</p>
         <button
-          onClick={() => { router.invalidate(); reset(); }}
+          onClick={() => {
+            router.invalidate();
+            reset();
+          }}
           className="mt-6 px-5 py-2.5 rounded-xl bg-primary text-primary-foreground font-semibold"
         >
           Try again

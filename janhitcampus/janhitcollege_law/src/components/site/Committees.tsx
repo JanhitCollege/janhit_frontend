@@ -4,25 +4,29 @@ const committeeList = [
   {
     icon: AlertOctagon,
     title: "Anti-Ragging Committee",
-    description: "Janhit College of Law maintains a strict zero-tolerance policy towards ragging. The committee monitors student behavior, conducts sensitization, and addresses any concerns instantly.",
+    description:
+      "Janhit College of Law maintains a strict zero-tolerance policy towards ragging. The committee monitors student behavior, conducts sensitization, and addresses any concerns instantly.",
     head: "Dr. Ashok Kumar Sharma (Presiding Officer)",
   },
   {
     icon: HelpCircle,
     title: "Grievance Redressal Cell",
-    description: "Formed to address student queries, general infrastructure issues, and academic grievances. Ensures a highly transparent, friendly, and objective solution matrix.",
+    description:
+      "Formed to address student queries, general infrastructure issues, and academic grievances. Ensures a highly transparent, friendly, and objective solution matrix.",
     head: "Ms. Priyanka Chaudhary (Convener)",
   },
   {
     icon: UserCheck,
     title: "Legal Aid & Awareness Committee",
-    description: "Coordinates free consulting drives in association with DLSA, creates legal awareness camps in rural spots, and allows students to participate in social activism.",
+    description:
+      "Coordinates free consulting drives in association with DLSA, creates legal awareness camps in rural spots, and allows students to participate in social activism.",
     head: "Ms. Neha Dwivedi (In-Charge)",
   },
   {
     icon: ShieldCheck,
     title: "Internal Complaint Committee (ICC)",
-    description: "Ensures safety, equality, and dignity of female students and staff members. Handles matters relating to gender discrimination and harassment, as per POSH Act guidelines.",
+    description:
+      "Ensures safety, equality, and dignity of female students and staff members. Handles matters relating to gender discrimination and harassment, as per POSH Act guidelines.",
     head: "Ms. Priyanka Chaudhary (Presiding Officer)",
   },
 ];
@@ -33,13 +37,16 @@ export function Committees() {
       <div className="max-w-7xl mx-auto px-6">
         {/* Section Header */}
         <div className="text-center space-y-3 max-w-2xl mx-auto mb-16">
-          <span className="text-xs font-bold uppercase tracking-wider text-gold">Regulatory Compliance</span>
+          <span className="text-xs font-bold uppercase tracking-wider text-gold">
+            Regulatory Compliance
+          </span>
           <h2 className="text-3xl md:text-4xl font-serif font-bold text-navy">
             College Committees
           </h2>
           <div className="h-1 w-20 bg-gold mx-auto rounded" />
           <p className="text-sm text-navy/70">
-            Mandatory committees established in accordance with BCI, UGC, and CCS University regulations to ensure a safe, ethical campus environment.
+            Mandatory committees established in accordance with BCI, UGC, and CCS University
+            regulations to ensure a safe, ethical campus environment.
           </p>
         </div>
 

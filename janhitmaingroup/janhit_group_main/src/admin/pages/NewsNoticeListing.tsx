@@ -17,7 +17,7 @@ import {
   ArrowUpDown,
   AlertCircle,
   SlidersHorizontal,
-  Loader2
+  Loader2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -54,13 +54,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
 import { getStoredNewsNotices, saveNewsNotices, NewsNotice } from "@/data/newsNotices";
@@ -83,7 +77,9 @@ export const NewsNoticeListing: React.FC = () => {
   const [filterPublishDate, setFilterPublishDate] = useState<string>("");
 
   // Sort state
-  const [sortBy, setSortBy] = useState<"publishDate" | "createdDate" | "title" | "viewCount" | "downloadCount">("publishDate");
+  const [sortBy, setSortBy] = useState<
+    "publishDate" | "createdDate" | "title" | "viewCount" | "downloadCount"
+  >("publishDate");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
 
   // Pagination state
@@ -116,7 +112,7 @@ export const NewsNoticeListing: React.FC = () => {
       return d.toLocaleDateString("en-IN", {
         day: "numeric",
         month: "short",
-        year: "numeric"
+        year: "numeric",
       });
     } catch {
       return dateStr;
@@ -153,7 +149,7 @@ export const NewsNoticeListing: React.FC = () => {
     const updated = records.filter((r) => r.id !== recordToDelete.id);
     setRecords(updated);
     saveNewsNotices(updated);
-    
+
     setIsDeleting(false);
     setIsDeleteModalOpen(false);
     setRecordToDelete(null);
@@ -163,9 +159,10 @@ export const NewsNoticeListing: React.FC = () => {
   // Filter logic
   const filteredRecords = records.filter((r) => {
     const q = searchQuery.toLowerCase().trim();
-    
+
     // Search query match
-    const matchesSearch = !q || r.title.toLowerCase().includes(q) || r.excerpt.toLowerCase().includes(q);
+    const matchesSearch =
+      !q || r.title.toLowerCase().includes(q) || r.excerpt.toLowerCase().includes(q);
 
     // Type match
     const matchesType = filterType === "all" || r.type === filterType;
@@ -183,7 +180,8 @@ export const NewsNoticeListing: React.FC = () => {
     const matchesFeatured = filterFeatured === "all" || r.featured === filterFeatured;
 
     // Campus mapping match
-    const matchesCampus = filterCampus === "all" || (r.visibility === "campus" && r.campusIds.includes(filterCampus));
+    const matchesCampus =
+      filterCampus === "all" || (r.visibility === "campus" && r.campusIds.includes(filterCampus));
 
     // Date filter: record publishDate must be on or after the selected filter date
     let matchesDate = true;
@@ -196,7 +194,16 @@ export const NewsNoticeListing: React.FC = () => {
       matchesDate = recordDateObj >= filterDateObj;
     }
 
-    return matchesSearch && matchesType && matchesVisibility && matchesStatus && matchesPriority && matchesFeatured && matchesCampus && matchesDate;
+    return (
+      matchesSearch &&
+      matchesType &&
+      matchesVisibility &&
+      matchesStatus &&
+      matchesPriority &&
+      matchesFeatured &&
+      matchesCampus &&
+      matchesDate
+    );
   });
 
   // Sort logic
@@ -228,7 +235,7 @@ export const NewsNoticeListing: React.FC = () => {
   // Helper for Campus Chip names
   const getCampusNames = (ids: string[]) => {
     if (!ids || ids.length === 0) return "—";
-    const names = ids.map(id => campuses.find(c => c.id === id)?.shortName || id);
+    const names = ids.map((id) => campuses.find((c) => c.id === id)?.shortName || id);
     return names.join(", ");
   };
 
@@ -236,8 +243,16 @@ export const NewsNoticeListing: React.FC = () => {
     <div className="space-y-4 lg:space-y-0 lg:grid lg:grid-cols-3 xl:grid-cols-6 gap-3">
       {/* Type */}
       <div className="space-y-1">
-        <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block">Type</span>
-        <Select value={filterType} onValueChange={(val) => { setFilterType(val); setCurrentPage(1); }}>
+        <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block">
+          Type
+        </span>
+        <Select
+          value={filterType}
+          onValueChange={(val) => {
+            setFilterType(val);
+            setCurrentPage(1);
+          }}
+        >
           <SelectTrigger className="h-9 rounded-lg border-border bg-background/50 text-xs">
             <SelectValue />
           </SelectTrigger>
@@ -251,8 +266,16 @@ export const NewsNoticeListing: React.FC = () => {
 
       {/* Visibility */}
       <div className="space-y-1">
-        <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block">Visibility</span>
-        <Select value={filterVisibility} onValueChange={(val) => { setFilterVisibility(val); setCurrentPage(1); }}>
+        <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block">
+          Visibility
+        </span>
+        <Select
+          value={filterVisibility}
+          onValueChange={(val) => {
+            setFilterVisibility(val);
+            setCurrentPage(1);
+          }}
+        >
           <SelectTrigger className="h-9 rounded-lg border-border bg-background/50 text-xs">
             <SelectValue />
           </SelectTrigger>
@@ -266,8 +289,16 @@ export const NewsNoticeListing: React.FC = () => {
 
       {/* Status */}
       <div className="space-y-1">
-        <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block">Status</span>
-        <Select value={filterStatus} onValueChange={(val) => { setFilterStatus(val); setCurrentPage(1); }}>
+        <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block">
+          Status
+        </span>
+        <Select
+          value={filterStatus}
+          onValueChange={(val) => {
+            setFilterStatus(val);
+            setCurrentPage(1);
+          }}
+        >
           <SelectTrigger className="h-9 rounded-lg border-border bg-background/50 text-xs">
             <SelectValue />
           </SelectTrigger>
@@ -282,15 +313,25 @@ export const NewsNoticeListing: React.FC = () => {
 
       {/* Campus */}
       <div className="space-y-1">
-        <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block">Campus Mapped</span>
-        <Select value={filterCampus} onValueChange={(val) => { setFilterCampus(val); setCurrentPage(1); }}>
+        <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block">
+          Campus Mapped
+        </span>
+        <Select
+          value={filterCampus}
+          onValueChange={(val) => {
+            setFilterCampus(val);
+            setCurrentPage(1);
+          }}
+        >
           <SelectTrigger className="h-9 rounded-lg border-border bg-background/50 text-xs">
             <SelectValue />
           </SelectTrigger>
           <SelectContent className="rounded-lg">
             <SelectItem value="all">All Campuses</SelectItem>
-            {campuses.map(c => (
-              <SelectItem key={c.id} value={c.id}>{c.shortName}</SelectItem>
+            {campuses.map((c) => (
+              <SelectItem key={c.id} value={c.id}>
+                {c.shortName}
+              </SelectItem>
             ))}
           </SelectContent>
         </Select>
@@ -298,11 +339,16 @@ export const NewsNoticeListing: React.FC = () => {
 
       {/* Publish Date */}
       <div className="space-y-1">
-        <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block">Published After</span>
+        <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block">
+          Published After
+        </span>
         <Input
           type="date"
           value={filterPublishDate}
-          onChange={(e) => { setFilterPublishDate(e.target.value); setCurrentPage(1); }}
+          onChange={(e) => {
+            setFilterPublishDate(e.target.value);
+            setCurrentPage(1);
+          }}
           className="h-9 rounded-lg border-border bg-background/50 text-xs"
         />
       </div>
@@ -330,7 +376,9 @@ export const NewsNoticeListing: React.FC = () => {
       {/* Header Block */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 z-10">
         <div>
-          <h1 className="font-display text-2xl md:text-3xl font-bold text-foreground">News & Notices</h1>
+          <h1 className="font-display text-2xl md:text-3xl font-bold text-foreground">
+            News & Notices
+          </h1>
           <p className="text-xs md:text-sm text-muted-foreground mt-1">
             Publish announcements, school notices, event updates, and news bulletins.
           </p>
@@ -365,7 +413,9 @@ export const NewsNoticeListing: React.FC = () => {
 
           {/* Sort selection */}
           <div className="hidden lg:flex items-center gap-2">
-            <span className="text-xs font-semibold text-muted-foreground whitespace-nowrap">Sort</span>
+            <span className="text-xs font-semibold text-muted-foreground whitespace-nowrap">
+              Sort
+            </span>
             <Select value={sortBy} onValueChange={(val: any) => setSortBy(val)}>
               <SelectTrigger className="h-10 w-[120px] rounded-lg border-border bg-background/50 text-xs">
                 <SelectValue />
@@ -380,7 +430,7 @@ export const NewsNoticeListing: React.FC = () => {
               variant="outline"
               size="icon"
               className="size-10 rounded-lg border-border bg-background/50 hover:bg-accent"
-              onClick={() => setSortOrder(prev => prev === "asc" ? "desc" : "asc")}
+              onClick={() => setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"))}
               title="Toggle Sort Order"
             >
               <ArrowUpDown className="size-4 text-muted-foreground" />
@@ -400,7 +450,10 @@ export const NewsNoticeListing: React.FC = () => {
                   <SlidersHorizontal className="size-4" />
                 </Button>
               </SheetTrigger>
-              <SheetContent side="right" className="w-[300px] sm:w-[350px] p-6 border-l border-border/80 bg-background/95 backdrop-blur-md">
+              <SheetContent
+                side="right"
+                className="w-[300px] sm:w-[350px] p-6 border-l border-border/80 bg-background/95 backdrop-blur-md"
+              >
                 <SheetHeader className="pb-4 border-b border-border/40 mb-4">
                   <SheetTitle className="font-display font-bold text-lg flex items-center gap-2">
                     <Filter className="size-4 text-primary" /> Filter Options
@@ -429,7 +482,10 @@ export const NewsNoticeListing: React.FC = () => {
               <Skeleton className="h-6 w-1/12" />
             </div>
             {[...Array(5)].map((_, i) => (
-              <div key={i} className="flex gap-4 items-center py-2.5 border-b border-border/40 last:border-0">
+              <div
+                key={i}
+                className="flex gap-4 items-center py-2.5 border-b border-border/40 last:border-0"
+              >
                 <Skeleton className="size-12 rounded-lg shrink-0" />
                 <div className="flex-1 space-y-2">
                   <Skeleton className="h-4 w-1/2" />
@@ -447,22 +503,46 @@ export const NewsNoticeListing: React.FC = () => {
               <Table className="w-full min-w-[700px] border-collapse">
                 <TableHeader className="bg-muted/40">
                   <TableRow>
-                    <TableHead className="w-[60px] pl-5 text-xs font-bold uppercase tracking-wider text-muted-foreground py-3.5">Post</TableHead>
-                    <TableHead className="min-w-[220px] text-xs font-bold uppercase tracking-wider text-muted-foreground py-3.5">Details</TableHead>
-                    <TableHead className="w-[80px] text-xs font-bold uppercase tracking-wider text-muted-foreground py-3.5">Type</TableHead>
-                    <TableHead className="w-[100px] text-xs font-bold uppercase tracking-wider text-muted-foreground py-3.5">Visibility</TableHead>
-                    <TableHead className="w-[130px] text-xs font-bold uppercase tracking-wider text-muted-foreground py-3.5">Mapped Campus</TableHead>
-                    <TableHead className="w-[90px] text-xs font-bold uppercase tracking-wider text-muted-foreground py-3.5">Status</TableHead>
-                    <TableHead className="w-[100px] text-xs font-bold uppercase tracking-wider text-muted-foreground py-3.5">Publish Date</TableHead>
-                    <TableHead className="pr-5 text-right text-xs font-bold uppercase tracking-wider text-muted-foreground py-3.5">Actions</TableHead>
+                    <TableHead className="w-[60px] pl-5 text-xs font-bold uppercase tracking-wider text-muted-foreground py-3.5">
+                      Post
+                    </TableHead>
+                    <TableHead className="min-w-[220px] text-xs font-bold uppercase tracking-wider text-muted-foreground py-3.5">
+                      Details
+                    </TableHead>
+                    <TableHead className="w-[80px] text-xs font-bold uppercase tracking-wider text-muted-foreground py-3.5">
+                      Type
+                    </TableHead>
+                    <TableHead className="w-[100px] text-xs font-bold uppercase tracking-wider text-muted-foreground py-3.5">
+                      Visibility
+                    </TableHead>
+                    <TableHead className="w-[130px] text-xs font-bold uppercase tracking-wider text-muted-foreground py-3.5">
+                      Mapped Campus
+                    </TableHead>
+                    <TableHead className="w-[90px] text-xs font-bold uppercase tracking-wider text-muted-foreground py-3.5">
+                      Status
+                    </TableHead>
+                    <TableHead className="w-[100px] text-xs font-bold uppercase tracking-wider text-muted-foreground py-3.5">
+                      Publish Date
+                    </TableHead>
+                    <TableHead className="pr-5 text-right text-xs font-bold uppercase tracking-wider text-muted-foreground py-3.5">
+                      Actions
+                    </TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {paginatedRecords.map((record) => {
-                    const initials = record.title.split(" ").slice(0, 2).map(w => w[0]).join("").toUpperCase();
+                    const initials = record.title
+                      .split(" ")
+                      .slice(0, 2)
+                      .map((w) => w[0])
+                      .join("")
+                      .toUpperCase();
 
                     return (
-                      <TableRow key={record.id} className="hover:bg-gold/5 dark:hover:bg-gold/5 transition-colors border-b border-border/60">
+                      <TableRow
+                        key={record.id}
+                        className="hover:bg-gold/5 dark:hover:bg-gold/5 transition-colors border-b border-border/60"
+                      >
                         {/* Thumbnail cell */}
                         <TableCell className="pl-5 py-3.5">
                           <div className="size-11 rounded-lg overflow-hidden border border-border bg-background grid place-items-center shrink-0">
@@ -491,7 +571,10 @@ export const NewsNoticeListing: React.FC = () => {
                             >
                               {record.title}
                             </Link>
-                            <span className="text-[10px] text-muted-foreground block truncate mt-0.5" title={record.excerpt}>
+                            <span
+                              className="text-[10px] text-muted-foreground block truncate mt-0.5"
+                              title={record.excerpt}
+                            >
                               {record.excerpt}
                             </span>
                           </div>
@@ -542,8 +625,8 @@ export const NewsNoticeListing: React.FC = () => {
                               record.status === "published"
                                 ? "bg-green-150 text-green-700 dark:bg-green-950/30 dark:text-green-400 border-green-200"
                                 : record.status === "draft"
-                                ? "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-400 border-gray-200"
-                                : "bg-red-100 text-red-800 dark:bg-red-950/30 dark:text-red-400 border-red-200"
+                                  ? "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-400 border-gray-200"
+                                  : "bg-red-100 text-red-800 dark:bg-red-950/30 dark:text-red-400 border-red-200"
                             }`}
                           >
                             {record.status}
@@ -613,9 +696,11 @@ export const NewsNoticeListing: React.FC = () => {
                   </span>{" "}
                   of <span className="font-semibold text-foreground">{totalItems}</span> notices
                 </div>
-                
+
                 <div className="flex items-center gap-1.5">
-                  <span className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider">Rows</span>
+                  <span className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider">
+                    Rows
+                  </span>
                   <Select
                     value={String(pageSize)}
                     onValueChange={(val) => {
@@ -646,10 +731,14 @@ export const NewsNoticeListing: React.FC = () => {
                               setCurrentPage((prev) => prev - 1);
                             }
                           }}
-                          className={currentPage === 1 ? "pointer-events-none opacity-50 select-none" : "cursor-pointer"}
+                          className={
+                            currentPage === 1
+                              ? "pointer-events-none opacity-50 select-none"
+                              : "cursor-pointer"
+                          }
                         />
                       </PaginationItem>
-                      
+
                       {[...Array(totalPages)].map((_, index) => {
                         const p = index + 1;
                         return (
@@ -672,7 +761,11 @@ export const NewsNoticeListing: React.FC = () => {
                               setCurrentPage((prev) => prev + 1);
                             }
                           }}
-                          className={currentPage === totalPages ? "pointer-events-none opacity-50 select-none" : "cursor-pointer"}
+                          className={
+                            currentPage === totalPages
+                              ? "pointer-events-none opacity-50 select-none"
+                              : "cursor-pointer"
+                          }
                         />
                       </PaginationItem>
                     </PaginationContent>
@@ -687,12 +780,22 @@ export const NewsNoticeListing: React.FC = () => {
             <div className="size-16 rounded-2xl bg-muted/60 grid place-items-center mb-4 border border-border">
               <Newspaper className="size-8 text-muted-foreground" />
             </div>
-            <h2 className="font-display text-xl font-bold text-foreground">No Announcements Found</h2>
+            <h2 className="font-display text-xl font-bold text-foreground">
+              No Announcements Found
+            </h2>
             <p className="text-sm text-muted-foreground mt-2 max-w-sm leading-relaxed">
-              Create your first news post or notice to get started, or change filters to find matching records.
+              Create your first news post or notice to get started, or change filters to find
+              matching records.
             </p>
             <div className="mt-6 flex flex-col sm:flex-row gap-3">
-              {(searchQuery || filterType !== "all" || filterStatus !== "all" || filterVisibility !== "all" || filterPriority !== "all" || filterFeatured !== "all" || filterCampus !== "all" || filterPublishDate) && (
+              {(searchQuery ||
+                filterType !== "all" ||
+                filterStatus !== "all" ||
+                filterVisibility !== "all" ||
+                filterPriority !== "all" ||
+                filterFeatured !== "all" ||
+                filterCampus !== "all" ||
+                filterPublishDate) && (
                 <Button
                   variant="outline"
                   onClick={handleResetFilters}
@@ -731,7 +834,9 @@ export const NewsNoticeListing: React.FC = () => {
 
           {recordToDelete && (
             <div className="my-2 p-3 bg-muted/40 rounded-xl border text-center">
-              <span className="text-xs text-muted-foreground uppercase tracking-wider block mb-1">Target Record</span>
+              <span className="text-xs text-muted-foreground uppercase tracking-wider block mb-1">
+                Target Record
+              </span>
               <span className="text-xs font-bold text-foreground block max-w-[280px] mx-auto truncate">
                 {recordToDelete.title}
               </span>

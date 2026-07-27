@@ -1,6 +1,15 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { institutions, type Institution } from "@/data/institutions";
-import { Award, Calendar, ExternalLink, Mail, MapPin, Phone, ArrowRight, Check } from "lucide-react";
+import {
+  Award,
+  Calendar,
+  ExternalLink,
+  Mail,
+  MapPin,
+  Phone,
+  ArrowRight,
+  Check,
+} from "lucide-react";
 import { FadeIn, SectionHeader } from "@/components/Section";
 import { SchoolAdmissions } from "@/components/SchoolAdmissions";
 import lib from "@/assets/gallery-library.jpg";
@@ -35,7 +44,9 @@ export const Route = createFileRoute("/institutions/$slug")({
   notFoundComponent: () => (
     <div className="py-32 text-center">
       <h1 className="text-3xl font-bold">Institution not found</h1>
-      <Link to="/institutions" className="text-primary mt-4 inline-block">Browse all institutions</Link>
+      <Link to="/institutions" className="text-primary mt-4 inline-block">
+        Browse all institutions
+      </Link>
     </div>
   ),
   errorComponent: ({ error }) => <div className="py-32 text-center">{error.message}</div>,
@@ -53,7 +64,10 @@ function Detail() {
           <FadeIn>
             <div className="flex flex-wrap gap-2 mb-3">
               {inst.approvals.map((a) => (
-                <span key={a} className="px-3 py-1 rounded-full bg-gradient-gold text-gold-foreground text-xs font-bold">
+                <span
+                  key={a}
+                  className="px-3 py-1 rounded-full bg-gradient-gold text-gold-foreground text-xs font-bold"
+                >
                   {a} Approved
                 </span>
               ))}
@@ -61,7 +75,9 @@ function Detail() {
                 Est. {inst.established}
               </span>
             </div>
-            <h1 className="text-4xl md:text-6xl font-display font-bold leading-tight max-w-3xl">{inst.name}</h1>
+            <h1 className="text-4xl md:text-6xl font-display font-bold leading-tight max-w-3xl">
+              {inst.name}
+            </h1>
             <div className="mt-3 flex items-center gap-2 opacity-90">
               <MapPin className="size-4" /> {inst.location}
             </div>
@@ -114,8 +130,13 @@ function Detail() {
                   "Auditorium",
                   "Medical room",
                 ].map((f) => (
-                  <div key={f} className="flex items-center gap-3 p-4 rounded-xl bg-card border border-border">
-                    <div className="size-7 rounded-md bg-gradient-gold grid place-items-center"><Check className="size-4 text-gold-foreground" /></div>
+                  <div
+                    key={f}
+                    className="flex items-center gap-3 p-4 rounded-xl bg-card border border-border"
+                  >
+                    <div className="size-7 rounded-md bg-gradient-gold grid place-items-center">
+                      <Check className="size-4 text-gold-foreground" />
+                    </div>
                     <span className="text-sm font-medium">{f}</span>
                   </div>
                 ))}
@@ -127,7 +148,12 @@ function Detail() {
               <div className="mt-5 grid grid-cols-2 md:grid-cols-3 gap-3">
                 {gallery.map((g, i) => (
                   <div key={i} className="aspect-square rounded-xl overflow-hidden">
-                    <img src={g} alt="" loading="lazy" className="size-full object-cover hover:scale-110 transition duration-700" />
+                    <img
+                      src={g}
+                      alt=""
+                      loading="lazy"
+                      className="size-full object-cover hover:scale-110 transition duration-700"
+                    />
                   </div>
                 ))}
               </div>
@@ -164,16 +190,34 @@ function Detail() {
             <div className="p-6 rounded-2xl bg-gradient-primary text-primary-foreground shadow-elegant">
               <h3 className="font-display text-xl font-bold">Quick Facts</h3>
               <ul className="mt-4 space-y-3 text-sm">
-                <li className="flex items-center gap-2"><Calendar className="size-4 text-gold" /> Established {inst.established}</li>
-                <li className="flex items-center gap-2"><Award className="size-4 text-gold" /> {inst.affiliation}</li>
-                <li className="flex items-center gap-2"><MapPin className="size-4 text-gold" /> {inst.location}</li>
-                <li className="flex items-center gap-2"><Phone className="size-4 text-gold" /> {inst.phone}</li>
-                <li className="flex items-center gap-2"><Mail className="size-4 text-gold" /> {inst.email}</li>
+                <li className="flex items-center gap-2">
+                  <Calendar className="size-4 text-gold" /> Established {inst.established}
+                </li>
+                <li className="flex items-center gap-2">
+                  <Award className="size-4 text-gold" /> {inst.affiliation}
+                </li>
+                <li className="flex items-center gap-2">
+                  <MapPin className="size-4 text-gold" /> {inst.location}
+                </li>
+                <li className="flex items-center gap-2">
+                  <Phone className="size-4 text-gold" /> {inst.phone}
+                </li>
+                <li className="flex items-center gap-2">
+                  <Mail className="size-4 text-gold" /> {inst.email}
+                </li>
               </ul>
-              <Link to="/admissions" className="mt-6 w-full inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-gradient-gold text-gold-foreground font-semibold">
+              <Link
+                to="/admissions"
+                className="mt-6 w-full inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-gradient-gold text-gold-foreground font-semibold"
+              >
                 Apply Now <ArrowRight className="size-4" />
               </Link>
-              <a href={inst.website} target="_blank" rel="noreferrer" className="mt-2 w-full inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl glass-dark font-semibold">
+              <a
+                href={inst.website}
+                target="_blank"
+                rel="noreferrer"
+                className="mt-2 w-full inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl glass-dark font-semibold"
+              >
                 Visit Website <ExternalLink className="size-4" />
               </a>
             </div>

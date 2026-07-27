@@ -1,5 +1,16 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Camera, X, Upload, Info, Bold, Italic, Underline, List, Link as LinkIcon, FileText } from "lucide-react";
+import {
+  Camera,
+  X,
+  Upload,
+  Info,
+  Bold,
+  Italic,
+  Underline,
+  List,
+  Link as LinkIcon,
+  FileText,
+} from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -50,7 +61,7 @@ export const NewsNoticeForm: React.FC<NewsNoticeFormProps> = ({
   submitButtonText,
 }) => {
   // Load campuses from store
-  const campusesList = getStoredCampuses().filter(c => c.status === "active");
+  const campusesList = getStoredCampuses().filter((c) => c.status === "active");
 
   // Form states
   const [title, setTitle] = useState(initialData?.title || "");
@@ -58,12 +69,18 @@ export const NewsNoticeForm: React.FC<NewsNoticeFormProps> = ({
   const [excerpt, setExcerpt] = useState(initialData?.excerpt || "");
   const [description, setDescription] = useState(initialData?.description || "");
   const [type, setType] = useState<"news" | "notice">(initialData?.type || "news");
-  const [visibility, setVisibility] = useState<"group" | "campus">(initialData?.visibility || "group");
-  const [priority, setPriority] = useState<"high" | "medium" | "low">(initialData?.priority || "medium");
-  const [status, setStatus] = useState<"draft" | "published" | "archived">(initialData?.status || "draft");
+  const [visibility, setVisibility] = useState<"group" | "campus">(
+    initialData?.visibility || "group",
+  );
+  const [priority, setPriority] = useState<"high" | "medium" | "low">(
+    initialData?.priority || "medium",
+  );
+  const [status, setStatus] = useState<"draft" | "published" | "archived">(
+    initialData?.status || "draft",
+  );
   const [featured, setFeatured] = useState<"yes" | "no">(initialData?.featured || "no");
   const [campusIds, setCampusIds] = useState<string[]>(initialData?.campusIds || []);
-  
+
   // Convert ISO to local datetime string for input
   const getLocalDateTime = (isoString?: string) => {
     if (!isoString) return "";
@@ -77,7 +94,9 @@ export const NewsNoticeForm: React.FC<NewsNoticeFormProps> = ({
     }
   };
 
-  const [publishDate, setPublishDate] = useState(getLocalDateTime(initialData?.publishDate) || getLocalDateTime(new Date().toISOString()));
+  const [publishDate, setPublishDate] = useState(
+    getLocalDateTime(initialData?.publishDate) || getLocalDateTime(new Date().toISOString()),
+  );
   const [expiryDate, setExpiryDate] = useState(getLocalDateTime(initialData?.expiryDate) || "");
 
   // Media upload states
@@ -182,7 +201,9 @@ export const NewsNoticeForm: React.FC<NewsNoticeFormProps> = ({
       setAttachmentName(file.name);
       // Format file size
       const sizeInMB = file.size / (1024 * 1024);
-      setAttachmentSize(sizeInMB < 0.1 ? `${Math.round(file.size / 1024)} KB` : `${sizeInMB.toFixed(1)} MB`);
+      setAttachmentSize(
+        sizeInMB < 0.1 ? `${Math.round(file.size / 1024)} KB` : `${sizeInMB.toFixed(1)} MB`,
+      );
     }
   };
 
@@ -199,7 +220,7 @@ export const NewsNoticeForm: React.FC<NewsNoticeFormProps> = ({
     const updated = campusIds.includes(campusId)
       ? campusIds.filter((id) => id !== campusId)
       : [...campusIds, campusId];
-    
+
     handleFieldChange("campusIds", updated, setCampusIds);
   };
 
@@ -231,7 +252,9 @@ export const NewsNoticeForm: React.FC<NewsNoticeFormProps> = ({
     const hasErrors = Object.values(newErrors).some((err) => err !== "");
     if (hasErrors) {
       // Scroll to first error
-      const firstErrorField = Object.keys(newErrors).find((key) => newErrors[key as keyof typeof newErrors] !== "");
+      const firstErrorField = Object.keys(newErrors).find(
+        (key) => newErrors[key as keyof typeof newErrors] !== "",
+      );
       if (firstErrorField) {
         const element = document.getElementById(firstErrorField);
         if (element) {
@@ -269,16 +292,16 @@ export const NewsNoticeForm: React.FC<NewsNoticeFormProps> = ({
   const insertMockTag = (tagOpen: string, tagClose: string) => {
     const textEl = document.getElementById("description") as HTMLTextAreaElement;
     if (!textEl) return;
-    
+
     const start = textEl.selectionStart;
     const end = textEl.selectionEnd;
     const text = textEl.value;
     const selected = text.substring(start, end);
     const replacement = tagOpen + selected + tagClose;
-    
+
     const newValue = text.substring(0, start) + replacement + text.substring(end);
     setDescription(newValue);
-    
+
     setTimeout(() => {
       textEl.focus();
       textEl.setSelectionRange(start + tagOpen.length, start + tagOpen.length + selected.length);
@@ -288,20 +311,23 @@ export const NewsNoticeForm: React.FC<NewsNoticeFormProps> = ({
   return (
     <form onSubmit={(e) => handleSubmit(e)} className="space-y-6 pb-24">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        
         {/* Left Column (2 spans wide) - Core Content */}
         <div className="lg:col-span-2 space-y-6">
-          
           {/* Section: Basic Information */}
           <div className="glass rounded-2xl p-6 border border-border/80 shadow-sm space-y-4">
             <h2 className="font-display text-lg font-bold text-foreground pb-2 border-b border-border/40 flex items-center gap-2">
-              <span className="size-6 rounded bg-primary/10 text-primary flex items-center justify-center text-xs">1</span>
+              <span className="size-6 rounded bg-primary/10 text-primary flex items-center justify-center text-xs">
+                1
+              </span>
               Content Information
             </h2>
 
             {/* Title */}
             <div className="space-y-1.5">
-              <Label htmlFor="title" className="text-xs font-semibold text-foreground/80 uppercase tracking-wider pl-0.5">
+              <Label
+                htmlFor="title"
+                className="text-xs font-semibold text-foreground/80 uppercase tracking-wider pl-0.5"
+              >
                 Title <span className="text-destructive">*</span>
               </Label>
               <Input
@@ -315,12 +341,17 @@ export const NewsNoticeForm: React.FC<NewsNoticeFormProps> = ({
                   errors.title ? "border-destructive focus-visible:ring-destructive" : ""
                 }`}
               />
-              {errors.title && <p className="text-destructive text-xs mt-1 pl-0.5">{errors.title}</p>}
+              {errors.title && (
+                <p className="text-destructive text-xs mt-1 pl-0.5">{errors.title}</p>
+              )}
             </div>
 
             {/* Excerpt */}
             <div className="space-y-1.5">
-              <Label htmlFor="excerpt" className="text-xs font-semibold text-foreground/80 uppercase tracking-wider pl-0.5">
+              <Label
+                htmlFor="excerpt"
+                className="text-xs font-semibold text-foreground/80 uppercase tracking-wider pl-0.5"
+              >
                 Excerpt (Brief summary) <span className="text-destructive">*</span>
               </Label>
               <Textarea
@@ -334,18 +365,25 @@ export const NewsNoticeForm: React.FC<NewsNoticeFormProps> = ({
                   errors.excerpt ? "border-destructive focus-visible:ring-destructive" : ""
                 }`}
               />
-              {errors.excerpt && <p className="text-destructive text-xs mt-1 pl-0.5">{errors.excerpt}</p>}
+              {errors.excerpt && (
+                <p className="text-destructive text-xs mt-1 pl-0.5">{errors.excerpt}</p>
+              )}
             </div>
 
             {/* Rich Text Editor Mock UI */}
             <div className="space-y-1.5">
-              <Label htmlFor="description" className="text-xs font-semibold text-foreground/80 uppercase tracking-wider pl-0.5">
+              <Label
+                htmlFor="description"
+                className="text-xs font-semibold text-foreground/80 uppercase tracking-wider pl-0.5"
+              >
                 Description <span className="text-destructive">*</span>
               </Label>
-              
-              <div className={`rounded-xl border bg-background/30 overflow-hidden flex flex-col ${
-                errors.description ? "border-destructive" : "border-border"
-              }`}>
+
+              <div
+                className={`rounded-xl border bg-background/30 overflow-hidden flex flex-col ${
+                  errors.description ? "border-destructive" : "border-border"
+                }`}
+              >
                 {/* Formatting Toolbar */}
                 <div className="flex flex-wrap items-center gap-1.5 p-2 bg-muted/40 border-b border-border/80">
                   <Button
@@ -431,14 +469,18 @@ export const NewsNoticeForm: React.FC<NewsNoticeFormProps> = ({
                   className="border-0 focus-visible:ring-0 focus-visible:ring-offset-0 rounded-none bg-transparent text-sm leading-relaxed p-4 min-h-[220px]"
                 />
               </div>
-              {errors.description && <p className="text-destructive text-xs mt-1 pl-0.5">{errors.description}</p>}
+              {errors.description && (
+                <p className="text-destructive text-xs mt-1 pl-0.5">{errors.description}</p>
+              )}
             </div>
           </div>
 
           {/* Section: Media Uploads */}
           <div className="glass rounded-2xl p-6 border border-border/80 shadow-sm space-y-4">
             <h2 className="font-display text-lg font-bold text-foreground pb-2 border-b border-border/40 flex items-center gap-2">
-              <span className="size-6 rounded bg-primary/10 text-primary flex items-center justify-center text-xs">2</span>
+              <span className="size-6 rounded bg-primary/10 text-primary flex items-center justify-center text-xs">
+                2
+              </span>
               Media Attachments
             </h2>
 
@@ -451,14 +493,22 @@ export const NewsNoticeForm: React.FC<NewsNoticeFormProps> = ({
                 <div className="flex items-center gap-4 p-4 rounded-xl bg-background/40 border border-dashed border-border min-h-[120px]">
                   <div className="size-20 rounded-lg bg-muted border border-border flex items-center justify-center overflow-hidden shrink-0 shadow-sm">
                     {thumbnail ? (
-                      <img src={thumbnail} alt="Thumbnail Preview" className="size-full object-cover" />
+                      <img
+                        src={thumbnail}
+                        alt="Thumbnail Preview"
+                        className="size-full object-cover"
+                      />
                     ) : (
                       <Upload className="size-6 text-muted-foreground" />
                     )}
                   </div>
                   <div className="space-y-1">
-                    <span className="text-xs font-medium text-foreground block">Upload thumbnail image</span>
-                    <span className="text-[10px] text-muted-foreground block">PNG, JPG up to 1MB.</span>
+                    <span className="text-xs font-medium text-foreground block">
+                      Upload thumbnail image
+                    </span>
+                    <span className="text-[10px] text-muted-foreground block">
+                      PNG, JPG up to 1MB.
+                    </span>
                     <input
                       type="file"
                       ref={thumbnailInputRef}
@@ -506,8 +556,12 @@ export const NewsNoticeForm: React.FC<NewsNoticeFormProps> = ({
                   <div className="space-y-1 flex-1 min-w-0">
                     {attachmentName ? (
                       <>
-                        <span className="text-xs font-semibold text-foreground block truncate">{attachmentName}</span>
-                        <span className="text-[10px] text-muted-foreground block mb-1">{attachmentSize}</span>
+                        <span className="text-xs font-semibold text-foreground block truncate">
+                          {attachmentName}
+                        </span>
+                        <span className="text-[10px] text-muted-foreground block mb-1">
+                          {attachmentSize}
+                        </span>
                         <Button
                           type="button"
                           variant="ghost"
@@ -519,8 +573,12 @@ export const NewsNoticeForm: React.FC<NewsNoticeFormProps> = ({
                       </>
                     ) : (
                       <>
-                        <span className="text-xs font-medium text-foreground block">Upload notice document</span>
-                        <span className="text-[10px] text-muted-foreground block">PDF, DOCX up to 5MB.</span>
+                        <span className="text-xs font-medium text-foreground block">
+                          Upload notice document
+                        </span>
+                        <span className="text-[10px] text-muted-foreground block">
+                          PDF, DOCX up to 5MB.
+                        </span>
                         <input
                           type="file"
                           ref={attachmentInputRef}
@@ -547,16 +605,23 @@ export const NewsNoticeForm: React.FC<NewsNoticeFormProps> = ({
           {/* Section: SEO */}
           <div className="glass rounded-2xl p-6 border border-border/80 shadow-sm space-y-4">
             <h2 className="font-display text-lg font-bold text-foreground pb-2 border-b border-border/40 flex items-center gap-2">
-              <span className="size-6 rounded bg-primary/10 text-primary flex items-center justify-center text-xs">3</span>
+              <span className="size-6 rounded bg-primary/10 text-primary flex items-center justify-center text-xs">
+                3
+              </span>
               SEO Settings
             </h2>
 
             <div className="space-y-4">
               {/* Meta Title */}
               <div className="space-y-1.5">
-                <Label htmlFor="metaTitle" className="text-xs font-semibold text-foreground/80 uppercase tracking-wider pl-0.5 flex justify-between">
+                <Label
+                  htmlFor="metaTitle"
+                  className="text-xs font-semibold text-foreground/80 uppercase tracking-wider pl-0.5 flex justify-between"
+                >
                   <span>Meta Title</span>
-                  <span className="text-[10px] text-muted-foreground">{metaTitle.length}/60 chars</span>
+                  <span className="text-[10px] text-muted-foreground">
+                    {metaTitle.length}/60 chars
+                  </span>
                 </Label>
                 <Input
                   id="metaTitle"
@@ -570,9 +635,14 @@ export const NewsNoticeForm: React.FC<NewsNoticeFormProps> = ({
 
               {/* Meta Description */}
               <div className="space-y-1.5">
-                <Label htmlFor="metaDescription" className="text-xs font-semibold text-foreground/80 uppercase tracking-wider pl-0.5 flex justify-between">
+                <Label
+                  htmlFor="metaDescription"
+                  className="text-xs font-semibold text-foreground/80 uppercase tracking-wider pl-0.5 flex justify-between"
+                >
                   <span>Meta Description</span>
-                  <span className="text-[10px] text-muted-foreground">{metaDescription.length}/160 chars</span>
+                  <span className="text-[10px] text-muted-foreground">
+                    {metaDescription.length}/160 chars
+                  </span>
                 </Label>
                 <Textarea
                   id="metaDescription"
@@ -586,7 +656,10 @@ export const NewsNoticeForm: React.FC<NewsNoticeFormProps> = ({
 
               {/* Meta Keywords */}
               <div className="space-y-1.5">
-                <Label htmlFor="metaKeywords" className="text-xs font-semibold text-foreground/80 uppercase tracking-wider pl-0.5">
+                <Label
+                  htmlFor="metaKeywords"
+                  className="text-xs font-semibold text-foreground/80 uppercase tracking-wider pl-0.5"
+                >
                   Meta Keywords
                 </Label>
                 <Input
@@ -604,17 +677,20 @@ export const NewsNoticeForm: React.FC<NewsNoticeFormProps> = ({
 
         {/* Right Column (1 span wide) - Meta and Classifications */}
         <div className="space-y-6">
-          
           {/* Section: Publishing Parameters */}
           <div className="glass rounded-2xl p-6 border border-border/80 shadow-sm space-y-4">
             <h2 className="font-display text-lg font-bold text-foreground pb-2 border-b border-border/40 flex items-center gap-2">
-              <span className="size-6 rounded bg-primary/10 text-primary flex items-center justify-center text-xs">4</span>
+              <span className="size-6 rounded bg-primary/10 text-primary flex items-center justify-center text-xs">
+                4
+              </span>
               Publishing Options
             </h2>
 
             {/* Type selection */}
             <div className="space-y-1.5">
-              <Label className="text-xs font-semibold text-foreground/80 uppercase tracking-wider pl-0.5">Type</Label>
+              <Label className="text-xs font-semibold text-foreground/80 uppercase tracking-wider pl-0.5">
+                Type
+              </Label>
               <Select value={type} onValueChange={(val: any) => setType(val)}>
                 <SelectTrigger className="h-11 rounded-xl bg-background/50 border-border text-sm">
                   <SelectValue />
@@ -628,7 +704,9 @@ export const NewsNoticeForm: React.FC<NewsNoticeFormProps> = ({
 
             {/* Visibility selection */}
             <div className="space-y-1.5">
-              <Label className="text-xs font-semibold text-foreground/80 uppercase tracking-wider pl-0.5">Visibility</Label>
+              <Label className="text-xs font-semibold text-foreground/80 uppercase tracking-wider pl-0.5">
+                Visibility
+              </Label>
               <Select value={visibility} onValueChange={(val: any) => setVisibility(val)}>
                 <SelectTrigger className="h-11 rounded-xl bg-background/50 border-border text-sm">
                   <SelectValue />
@@ -642,7 +720,9 @@ export const NewsNoticeForm: React.FC<NewsNoticeFormProps> = ({
 
             {/* Priority selection */}
             <div className="space-y-1.5">
-              <Label className="text-xs font-semibold text-foreground/80 uppercase tracking-wider pl-0.5">Priority</Label>
+              <Label className="text-xs font-semibold text-foreground/80 uppercase tracking-wider pl-0.5">
+                Priority
+              </Label>
               <Select value={priority} onValueChange={(val: any) => setPriority(val)}>
                 <SelectTrigger className="h-11 rounded-xl bg-background/50 border-border text-sm">
                   <SelectValue />
@@ -657,7 +737,9 @@ export const NewsNoticeForm: React.FC<NewsNoticeFormProps> = ({
 
             {/* Status selection */}
             <div className="space-y-1.5">
-              <Label className="text-xs font-semibold text-foreground/80 uppercase tracking-wider pl-0.5">Default Status</Label>
+              <Label className="text-xs font-semibold text-foreground/80 uppercase tracking-wider pl-0.5">
+                Default Status
+              </Label>
               <Select value={status} onValueChange={(val: any) => setStatus(val)}>
                 <SelectTrigger className="h-11 rounded-xl bg-background/50 border-border text-sm">
                   <SelectValue />
@@ -674,7 +756,9 @@ export const NewsNoticeForm: React.FC<NewsNoticeFormProps> = ({
             <div className="flex items-center justify-between p-3 rounded-xl bg-background/40 border border-border/60">
               <div className="space-y-0.5">
                 <span className="text-xs font-semibold text-foreground">Featured Post</span>
-                <span className="text-[10px] text-muted-foreground block">Highlight on main page</span>
+                <span className="text-[10px] text-muted-foreground block">
+                  Highlight on main page
+                </span>
               </div>
               <Switch
                 checked={featured === "yes"}
@@ -684,13 +768,18 @@ export const NewsNoticeForm: React.FC<NewsNoticeFormProps> = ({
 
             {/* Slug manual override */}
             <div className="space-y-1.5 pt-2">
-              <Label htmlFor="slug" className="text-xs font-semibold text-foreground/80 uppercase tracking-wider pl-0.5">URL Slug</Label>
+              <Label
+                htmlFor="slug"
+                className="text-xs font-semibold text-foreground/80 uppercase tracking-wider pl-0.5"
+              >
+                URL Slug
+              </Label>
               <Input
                 id="slug"
                 type="text"
                 value={slug}
                 onChange={(e) => {
-                  setIsTouched(prev => ({ ...prev, slug: true }));
+                  setIsTouched((prev) => ({ ...prev, slug: true }));
                   setSlug(e.target.value.toLowerCase());
                 }}
                 onBlur={(e) => handleBlur("slug", e.target.value)}
@@ -705,13 +794,18 @@ export const NewsNoticeForm: React.FC<NewsNoticeFormProps> = ({
           {/* Section: Dates */}
           <div className="glass rounded-2xl p-6 border border-border/80 shadow-sm space-y-4">
             <h2 className="font-display text-lg font-bold text-foreground pb-2 border-b border-border/40 flex items-center gap-2">
-              <span className="size-6 rounded bg-primary/10 text-primary flex items-center justify-center text-xs">5</span>
+              <span className="size-6 rounded bg-primary/10 text-primary flex items-center justify-center text-xs">
+                5
+              </span>
               Scheduling
             </h2>
 
             {/* Publish Date */}
             <div className="space-y-1.5">
-              <Label htmlFor="publishDate" className="text-xs font-semibold text-foreground/80 uppercase tracking-wider pl-0.5">
+              <Label
+                htmlFor="publishDate"
+                className="text-xs font-semibold text-foreground/80 uppercase tracking-wider pl-0.5"
+              >
                 Publish Date & Time <span className="text-destructive">*</span>
               </Label>
               <Input
@@ -724,12 +818,17 @@ export const NewsNoticeForm: React.FC<NewsNoticeFormProps> = ({
                   errors.publishDate ? "border-destructive" : ""
                 }`}
               />
-              {errors.publishDate && <p className="text-destructive text-xs mt-1 pl-0.5">{errors.publishDate}</p>}
+              {errors.publishDate && (
+                <p className="text-destructive text-xs mt-1 pl-0.5">{errors.publishDate}</p>
+              )}
             </div>
 
             {/* Expiry Date */}
             <div className="space-y-1.5">
-              <Label htmlFor="expiryDate" className="text-xs font-semibold text-foreground/80 uppercase tracking-wider pl-0.5">
+              <Label
+                htmlFor="expiryDate"
+                className="text-xs font-semibold text-foreground/80 uppercase tracking-wider pl-0.5"
+              >
                 Expiry Date & Time (Optional)
               </Label>
               <Input
@@ -746,13 +845,18 @@ export const NewsNoticeForm: React.FC<NewsNoticeFormProps> = ({
           {visibility === "campus" && (
             <div className="glass rounded-2xl p-6 border border-border/80 shadow-sm space-y-4 animate-in fade-in duration-300">
               <h2 className="font-display text-lg font-bold text-foreground pb-2 border-b border-border/40 flex items-center gap-2">
-                <span className="size-6 rounded bg-primary/10 text-primary flex items-center justify-center text-xs">6</span>
+                <span className="size-6 rounded bg-primary/10 text-primary flex items-center justify-center text-xs">
+                  6
+                </span>
                 Campus Mapping
               </h2>
-              
+
               <div className="space-y-2.5 max-h-[220px] overflow-y-auto pr-1">
                 {campusesList.map((campus) => (
-                  <div key={campus.id} className="flex items-center gap-3 p-2 rounded-lg hover:bg-accent/40 transition">
+                  <div
+                    key={campus.id}
+                    className="flex items-center gap-3 p-2 rounded-lg hover:bg-accent/40 transition"
+                  >
                     <Checkbox
                       id={`campus-${campus.id}`}
                       checked={campusIds.includes(campus.id)}
@@ -768,10 +872,11 @@ export const NewsNoticeForm: React.FC<NewsNoticeFormProps> = ({
                   </div>
                 ))}
               </div>
-              {errors.campusIds && <p className="text-destructive text-xs mt-1 pl-0.5">{errors.campusIds}</p>}
+              {errors.campusIds && (
+                <p className="text-destructive text-xs mt-1 pl-0.5">{errors.campusIds}</p>
+              )}
             </div>
           )}
-
         </div>
       </div>
 
@@ -786,7 +891,7 @@ export const NewsNoticeForm: React.FC<NewsNoticeFormProps> = ({
           >
             Cancel
           </Button>
-          
+
           <div className="flex gap-2">
             <Button
               type="button"

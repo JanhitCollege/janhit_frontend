@@ -35,7 +35,11 @@ export function Testimonials() {
       <div className="max-w-5xl mx-auto px-6">
         <SectionHeader
           eyebrow="Parent Voices"
-          title={<>Trusted by <span className="italic text-gradient-gold">founding families.</span></>}
+          title={
+            <>
+              Trusted by <span className="italic text-gradient-gold">founding families.</span>
+            </>
+          }
         />
 
         <div className="mt-16 relative">

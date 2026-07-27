@@ -32,7 +32,12 @@ export const NewsNoticeEdit: React.FC<NewsNoticeEditProps> = ({ id }) => {
     }
   }, [id]);
 
-  const handleSubmit = (formData: Omit<NewsNotice, "id" | "viewCount" | "downloadCount" | "createdDate" | "updatedDate">) => {
+  const handleSubmit = (
+    formData: Omit<
+      NewsNotice,
+      "id" | "viewCount" | "downloadCount" | "createdDate" | "updatedDate"
+    >,
+  ) => {
     if (!record) return;
 
     const list = getStoredNewsNotices();
@@ -88,7 +93,9 @@ export const NewsNoticeEdit: React.FC<NewsNoticeEditProps> = ({ id }) => {
       {errorMsg ? (
         <div className="glass rounded-2xl p-8 border border-destructive/20 bg-destructive/5 text-center flex flex-col items-center justify-center max-w-lg mx-auto my-12 z-10">
           <AlertCircle className="size-12 text-destructive mb-3" />
-          <h2 className="font-display text-lg font-bold text-foreground">Failed to Load Announcement</h2>
+          <h2 className="font-display text-lg font-bold text-foreground">
+            Failed to Load Announcement
+          </h2>
           <p className="text-sm text-muted-foreground mt-2">{errorMsg}</p>
           <Link
             to="/@admin/news"

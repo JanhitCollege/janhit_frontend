@@ -16,7 +16,7 @@ import {
   GraduationCap,
   Sparkles,
   ArrowUpDown,
-  BookOpen
+  BookOpen,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -94,7 +94,7 @@ export const FacultyListing: React.FC = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       setFaculties(getStoredFaculties());
-      setCampuses(getStoredCampuses().filter(c => c.status === "active"));
+      setCampuses(getStoredCampuses().filter((c) => c.status === "active"));
       setIsLoading(false);
     }, 400);
     return () => clearTimeout(timer);
@@ -102,11 +102,7 @@ export const FacultyListing: React.FC = () => {
 
   // Get unique departments for filters
   const departmentsList = Array.from(
-    new Set(
-      faculties
-        .map((f) => f.department)
-        .filter((d) => d && d.trim() !== "")
-    )
+    new Set(faculties.map((f) => f.department).filter((d) => d && d.trim() !== "")),
   ).sort();
 
   // Reset all filters
@@ -131,7 +127,7 @@ export const FacultyListing: React.FC = () => {
   const confirmStatusToggle = async () => {
     if (!facultyToToggle) return;
     setIsTogglingStatus(true);
-    
+
     // Simulate brief network delay
     await new Promise((resolve) => setTimeout(resolve, 300));
 
@@ -172,7 +168,7 @@ export const FacultyListing: React.FC = () => {
     const updated = faculties.filter((f) => f.id !== facultyToDelete.id);
     setFaculties(updated);
     saveFaculties(updated);
-    
+
     setIsDeleting(false);
     setIsDeleteModalOpen(false);
     setFacultyToDelete(null);
@@ -275,9 +271,12 @@ export const FacultyListing: React.FC = () => {
       {/* Header Block */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="font-display text-2xl md:text-3xl font-bold text-foreground">Faculty profiles</h1>
+          <h1 className="font-display text-2xl md:text-3xl font-bold text-foreground">
+            Faculty profiles
+          </h1>
           <p className="text-xs md:text-sm text-muted-foreground mt-1">
-            Manage academic and school faculty profiles, designations, contact details, and display visibility.
+            Manage academic and school faculty profiles, designations, contact details, and display
+            visibility.
           </p>
         </div>
 
@@ -299,7 +298,12 @@ export const FacultyListing: React.FC = () => {
             <Filter className="size-4 text-primary" />
             Filters & Search
           </div>
-          {(searchQuery || filterCampus !== "all" || filterDepartment !== "all" || filterStatus !== "all" || filterHod !== "all" || filterFeatured !== "all") && (
+          {(searchQuery ||
+            filterCampus !== "all" ||
+            filterDepartment !== "all" ||
+            filterStatus !== "all" ||
+            filterHod !== "all" ||
+            filterFeatured !== "all") && (
             <button
               onClick={handleResetFilters}
               className="text-xs text-primary font-semibold flex items-center gap-1 hover:underline transition-all"
@@ -436,8 +440,12 @@ export const FacultyListing: React.FC = () => {
                       <ArrowUpDown className="size-3 text-muted-foreground" />
                     </button>
                   </TableHead>
-                  <TableHead className="text-xs font-bold uppercase tracking-wider text-muted-foreground py-3.5 w-1/4">Campus</TableHead>
-                  <TableHead className="text-xs font-bold uppercase tracking-wider text-muted-foreground py-3.5 w-1/4">Role / Department</TableHead>
+                  <TableHead className="text-xs font-bold uppercase tracking-wider text-muted-foreground py-3.5 w-1/4">
+                    Campus
+                  </TableHead>
+                  <TableHead className="text-xs font-bold uppercase tracking-wider text-muted-foreground py-3.5 w-1/4">
+                    Role / Department
+                  </TableHead>
                   <TableHead className="text-xs font-bold uppercase tracking-wider text-muted-foreground py-3.5 text-center">
                     <button
                       onClick={() => handleSort("displayOrder")}
@@ -447,27 +455,44 @@ export const FacultyListing: React.FC = () => {
                       <ArrowUpDown className="size-3 text-muted-foreground" />
                     </button>
                   </TableHead>
-                  <TableHead className="text-xs font-bold uppercase tracking-wider text-muted-foreground py-3.5 text-center">Status</TableHead>
-                  <TableHead className="text-xs font-bold uppercase tracking-wider text-muted-foreground py-3.5 text-right pr-6">Actions</TableHead>
+                  <TableHead className="text-xs font-bold uppercase tracking-wider text-muted-foreground py-3.5 text-center">
+                    Status
+                  </TableHead>
+                  <TableHead className="text-xs font-bold uppercase tracking-wider text-muted-foreground py-3.5 text-right pr-6">
+                    Actions
+                  </TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {paginatedFaculties.map((f) => (
-                  <TableRow key={f.id} className="hover:bg-accent/40 border-b last:border-0 transition-colors">
+                  <TableRow
+                    key={f.id}
+                    className="hover:bg-accent/40 border-b last:border-0 transition-colors"
+                  >
                     {/* Faculty profile details column */}
                     <TableCell className="py-4">
                       <div className="flex items-center gap-3">
                         <div className="size-11 rounded-xl overflow-hidden border bg-muted flex items-center justify-center shrink-0 shadow-sm">
                           {f.image ? (
-                            <img src={f.image} alt={f.name} className="w-full h-full object-cover" />
+                            <img
+                              src={f.image}
+                              alt={f.name}
+                              className="w-full h-full object-cover"
+                            />
                           ) : (
                             <div className="size-full bg-gradient-gold text-gold-foreground flex items-center justify-center font-sans font-bold text-sm">
-                              {f.name.split(" ").map(n => n[0]).join("").toUpperCase()}
+                              {f.name
+                                .split(" ")
+                                .map((n) => n[0])
+                                .join("")
+                                .toUpperCase()}
                             </div>
                           )}
                         </div>
                         <div className="min-w-0">
-                          <h3 className="font-sans text-sm font-semibold text-foreground truncate">{f.name}</h3>
+                          <h3 className="font-sans text-sm font-semibold text-foreground truncate">
+                            {f.name}
+                          </h3>
                           <div className="flex items-center gap-1.5 mt-0.5">
                             {f.isHod && (
                               <Badge className="bg-amber-500/10 text-amber-600 hover:bg-amber-500/10 border border-amber-500/20 text-[9px] rounded-md px-1.5 py-0">
@@ -487,7 +512,10 @@ export const FacultyListing: React.FC = () => {
 
                     {/* Campus Column */}
                     <TableCell className="py-4 text-xs font-semibold text-foreground/80">
-                      <div className="flex items-center gap-1.5 max-w-[180px] truncate" title={getCampusName(f.campusId)}>
+                      <div
+                        className="flex items-center gap-1.5 max-w-[180px] truncate"
+                        title={getCampusName(f.campusId)}
+                      >
                         <Building className="size-3.5 text-muted-foreground shrink-0" />
                         <span>{getCampusName(f.campusId)}</span>
                       </div>
@@ -495,8 +523,12 @@ export const FacultyListing: React.FC = () => {
 
                     {/* Role & Dept Column */}
                     <TableCell className="py-4">
-                      <div className="text-xs font-medium text-foreground">{f.designation || "—"}</div>
-                      <div className="text-[10px] text-muted-foreground font-semibold mt-0.5 uppercase tracking-wider">{f.department || "—"}</div>
+                      <div className="text-xs font-medium text-foreground">
+                        {f.designation || "—"}
+                      </div>
+                      <div className="text-[10px] text-muted-foreground font-semibold mt-0.5 uppercase tracking-wider">
+                        {f.department || "—"}
+                      </div>
                     </TableCell>
 
                     {/* Display Order Column */}
@@ -566,9 +598,12 @@ export const FacultyListing: React.FC = () => {
             <div className="size-12 rounded-2xl bg-primary/5 text-primary grid place-items-center mx-auto mb-4 border border-primary/10 shadow-inner">
               <GraduationCap className="size-6" />
             </div>
-            <h3 className="font-display text-lg font-bold text-foreground">No Faculty Profiles Found</h3>
+            <h3 className="font-display text-lg font-bold text-foreground">
+              No Faculty Profiles Found
+            </h3>
             <p className="text-xs text-muted-foreground mt-2 leading-relaxed">
-              No results match your search queries or filter selections. Try clearing your filters or add a new faculty member.
+              No results match your search queries or filter selections. Try clearing your filters
+              or add a new faculty member.
             </p>
             <div className="flex items-center justify-center gap-3 mt-6">
               <Button
@@ -584,9 +619,7 @@ export const FacultyListing: React.FC = () => {
                 size="sm"
                 className="bg-primary text-primary-foreground hover:bg-primary/95 shadow-sm rounded-xl text-xs font-semibold"
               >
-                <Link to="/@admin/faculties/create">
-                  Add Faculty
-                </Link>
+                <Link to="/@admin/faculties/create">Add Faculty</Link>
               </Button>
             </div>
           </div>
@@ -606,7 +639,9 @@ export const FacultyListing: React.FC = () => {
             <div className="flex items-center gap-4">
               {/* Items per page selector */}
               <div className="flex items-center gap-2">
-                <span className="text-[11px] text-muted-foreground font-semibold">Rows per page</span>
+                <span className="text-[11px] text-muted-foreground font-semibold">
+                  Rows per page
+                </span>
                 <Select
                   value={String(pageSize)}
                   onValueChange={(val) => {
@@ -639,7 +674,20 @@ export const FacultyListing: React.FC = () => {
                         className="size-8 rounded-lg"
                       >
                         <span className="sr-only">Previous Page</span>
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="size-4"><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" /></svg>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          strokeWidth={2}
+                          stroke="currentColor"
+                          className="size-4"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M15.75 19.5L8.25 12l7.5-7.5"
+                          />
+                        </svg>
                       </Button>
                     </PaginationItem>
 
@@ -652,7 +700,9 @@ export const FacultyListing: React.FC = () => {
                             size="icon"
                             onClick={() => setCurrentPage(pageNum)}
                             className={`size-8 rounded-lg text-xs ${
-                              currentPage === pageNum ? "bg-primary text-primary-foreground font-bold" : "text-muted-foreground"
+                              currentPage === pageNum
+                                ? "bg-primary text-primary-foreground font-bold"
+                                : "text-muted-foreground"
                             }`}
                           >
                             {pageNum}
@@ -670,7 +720,20 @@ export const FacultyListing: React.FC = () => {
                         className="size-8 rounded-lg"
                       >
                         <span className="sr-only">Next Page</span>
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="size-4"><path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          strokeWidth={2}
+                          stroke="currentColor"
+                          className="size-4"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M8.25 4.5l7.5 7.5-7.5 7.5"
+                          />
+                        </svg>
                       </Button>
                     </PaginationItem>
                   </PaginationContent>
@@ -692,17 +755,26 @@ export const FacultyListing: React.FC = () => {
               Toggle Active Status
             </DialogTitle>
             <DialogDescription className="text-xs text-muted-foreground mt-2 leading-relaxed">
-              Are you sure you want to change the active status of <strong>{facultyToToggle?.name}</strong>?
+              Are you sure you want to change the active status of{" "}
+              <strong>{facultyToToggle?.name}</strong>?
               {facultyToToggle?.isActive ? (
                 <span> Deactivating this profile will hide it from all public lists.</span>
               ) : (
-                <span> Activating this profile will make it visible in directories on the public portal.</span>
+                <span>
+                  {" "}
+                  Activating this profile will make it visible in directories on the public portal.
+                </span>
               )}
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="flex items-center justify-end gap-2 mt-4">
             <DialogClose asChild>
-              <Button variant="outline" size="sm" className="rounded-xl text-xs font-semibold" disabled={isTogglingStatus}>
+              <Button
+                variant="outline"
+                size="sm"
+                className="rounded-xl text-xs font-semibold"
+                disabled={isTogglingStatus}
+              >
                 Cancel
               </Button>
             </DialogClose>
@@ -734,13 +806,19 @@ export const FacultyListing: React.FC = () => {
               Delete Faculty Profile
             </DialogTitle>
             <DialogDescription className="text-xs text-muted-foreground mt-2 leading-relaxed">
-              Are you sure you want to delete the faculty profile for <strong>{facultyToDelete?.name}</strong>? 
-              This action cannot be undone and will permanently remove the record from the directory database.
+              Are you sure you want to delete the faculty profile for{" "}
+              <strong>{facultyToDelete?.name}</strong>? This action cannot be undone and will
+              permanently remove the record from the directory database.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="flex items-center justify-end gap-2 mt-4">
             <DialogClose asChild>
-              <Button variant="outline" size="sm" className="rounded-xl text-xs font-semibold" disabled={isDeleting}>
+              <Button
+                variant="outline"
+                size="sm"
+                className="rounded-xl text-xs font-semibold"
+                disabled={isDeleting}
+              >
                 Cancel
               </Button>
             </DialogClose>

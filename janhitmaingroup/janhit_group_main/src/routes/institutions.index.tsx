@@ -8,7 +8,11 @@ export const Route = createFileRoute("/institutions/")({
   head: () => ({
     meta: [
       { title: "Institutions — Janhit Group" },
-      { name: "description", content: "Explore all colleges and schools in the Janhit Group across Greater Noida, Ghaziabad and Saharanpur." },
+      {
+        name: "description",
+        content:
+          "Explore all colleges and schools in the Janhit Group across Greater Noida, Ghaziabad and Saharanpur.",
+      },
       { property: "og:title", content: "Our Institutions — Janhit Group" },
       { property: "og:description", content: "Seven institutions across three cities." },
     ],
@@ -53,7 +57,9 @@ function InstitutionsPage() {
             onChange={(e) => setCity(e.target.value)}
             className="px-4 py-2.5 rounded-xl border border-border bg-card text-sm font-semibold"
           >
-            {cities.map((c) => <option key={c}>{c}</option>)}
+            {cities.map((c) => (
+              <option key={c}>{c}</option>
+            ))}
           </select>
         </div>
 
@@ -63,7 +69,9 @@ function InstitutionsPage() {
           ))}
         </div>
         {list.length === 0 && (
-          <p className="text-center text-muted-foreground py-20">No institutions match your filters.</p>
+          <p className="text-center text-muted-foreground py-20">
+            No institutions match your filters.
+          </p>
         )}
       </div>
     </section>

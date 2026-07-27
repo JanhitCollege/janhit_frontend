@@ -192,9 +192,7 @@ function InstitutionsDropdown() {
                     <div className="text-xs font-semibold text-foreground group-hover:text-gold transition-colors leading-tight">
                       {inst.name}
                     </div>
-                    <div className="text-[10px] text-muted-foreground mt-1">
-                      {inst.location}
-                    </div>
+                    <div className="text-[10px] text-muted-foreground mt-1">{inst.location}</div>
                   </Link>
                 ))}
               </div>
@@ -217,9 +215,7 @@ function InstitutionsDropdown() {
                     <div className="text-xs font-semibold text-foreground group-hover:text-gold transition-colors leading-tight">
                       {inst.name}
                     </div>
-                    <div className="text-[10px] text-muted-foreground mt-1">
-                      {inst.location}
-                    </div>
+                    <div className="text-[10px] text-muted-foreground mt-1">{inst.location}</div>
                   </Link>
                 ))}
               </div>
@@ -472,10 +468,30 @@ function DisclosuresDropdown() {
               </div>
               <div className="flex flex-col gap-1">
                 {[
-                  { label: "Current Openings", to: "/career", hash: "openings", desc: "Faculty & admin jobs." },
-                  { label: "Apply Online", to: "/career", hash: "apply", desc: "Online job registration." },
-                  { label: "Public Disclosures", to: "/disclosures", hash: "disclosures", desc: "Affiliations, RTI & syllabus." },
-                  { label: "College Committees", to: "/disclosures", hash: "committees", desc: "Anti-ragging, POSH & GRC." },
+                  {
+                    label: "Current Openings",
+                    to: "/career",
+                    hash: "openings",
+                    desc: "Faculty & admin jobs.",
+                  },
+                  {
+                    label: "Apply Online",
+                    to: "/career",
+                    hash: "apply",
+                    desc: "Online job registration.",
+                  },
+                  {
+                    label: "Public Disclosures",
+                    to: "/disclosures",
+                    hash: "disclosures",
+                    desc: "Affiliations, RTI & syllabus.",
+                  },
+                  {
+                    label: "College Committees",
+                    to: "/disclosures",
+                    hash: "committees",
+                    desc: "Anti-ragging, POSH & GRC.",
+                  },
                 ].map((item) => (
                   <Link
                     key={item.hash}
@@ -507,12 +523,42 @@ function DisclosuresDropdown() {
               </div>
               <div className="flex flex-col gap-1">
                 {[
-                  { label: "News & Notices", to: "/news", hash: "announcements", desc: "Exam sheets & holiday alerts." },
-                  { label: "Academic Events", to: "/news", hash: "academic-events", desc: "Orientations & guest lectures." },
-                  { label: "Legal Awareness Camps", to: "/news", hash: "legal-awareness", desc: "Social legal cell activities." },
-                  { label: "Moot Court Trials", to: "/news", hash: "moot-court", desc: "Practice rounds & selections." },
-                  { label: "Seminars & Workshops", to: "/news", hash: "seminars", desc: "IPR & tech workshops." },
-                  { label: "Extension Activities", to: "/news", hash: "extension", desc: "NSS & blood donation drives." },
+                  {
+                    label: "News & Notices",
+                    to: "/news",
+                    hash: "announcements",
+                    desc: "Exam sheets & holiday alerts.",
+                  },
+                  {
+                    label: "Academic Events",
+                    to: "/news",
+                    hash: "academic-events",
+                    desc: "Orientations & guest lectures.",
+                  },
+                  {
+                    label: "Legal Awareness Camps",
+                    to: "/news",
+                    hash: "legal-awareness",
+                    desc: "Social legal cell activities.",
+                  },
+                  {
+                    label: "Moot Court Trials",
+                    to: "/news",
+                    hash: "moot-court",
+                    desc: "Practice rounds & selections.",
+                  },
+                  {
+                    label: "Seminars & Workshops",
+                    to: "/news",
+                    hash: "seminars",
+                    desc: "IPR & tech workshops.",
+                  },
+                  {
+                    label: "Extension Activities",
+                    to: "/news",
+                    hash: "extension",
+                    desc: "NSS & blood donation drives.",
+                  },
                 ].map((item) => (
                   <Link
                     key={item.hash}
@@ -544,14 +590,54 @@ function DisclosuresDropdown() {
               </div>
               <div className="flex flex-col gap-1">
                 {[
-                  { label: "IQAC Reports", to: "/naac", hash: "iqac", desc: "Cell members & AQAR." },
-                  { label: "IIQA Status", to: "/naac", hash: "iiqa", desc: "IIQA submission tracking." },
-                  { label: "SSR Criteria (1-7)", to: "/naac", hash: "ssr", desc: "Self Study Report download." },
-                  { label: "Satisfaction Survey", to: "/naac", hash: "survey", desc: "Student survey ratings." },
-                  { label: "DVV Clarifications", to: "/naac", hash: "dvv", desc: "Metric levels clarified." },
-                  { label: "Best Practices", to: "/naac", hash: "practices", desc: "Outreach & distinctiveness." },
-                  { label: "Feedback System", to: "/naac", hash: "feedback", desc: "Stakeholder feedback forms." },
-                  { label: "Placements & Honors", to: "/achievements", hash: "placements", desc: "Recruiters & placements." },
+                  {
+                    label: "IQAC Reports",
+                    to: "/naac",
+                    hash: "iqac",
+                    desc: "Cell members & AQAR.",
+                  },
+                  {
+                    label: "IIQA Status",
+                    to: "/naac",
+                    hash: "iiqa",
+                    desc: "IIQA submission tracking.",
+                  },
+                  {
+                    label: "SSR Criteria (1-7)",
+                    to: "/naac",
+                    hash: "ssr",
+                    desc: "Self Study Report download.",
+                  },
+                  {
+                    label: "Satisfaction Survey",
+                    to: "/naac",
+                    hash: "survey",
+                    desc: "Student survey ratings.",
+                  },
+                  {
+                    label: "DVV Clarifications",
+                    to: "/naac",
+                    hash: "dvv",
+                    desc: "Metric levels clarified.",
+                  },
+                  {
+                    label: "Best Practices",
+                    to: "/naac",
+                    hash: "practices",
+                    desc: "Outreach & distinctiveness.",
+                  },
+                  {
+                    label: "Feedback System",
+                    to: "/naac",
+                    hash: "feedback",
+                    desc: "Stakeholder feedback forms.",
+                  },
+                  {
+                    label: "Placements & Honors",
+                    to: "/achievements",
+                    hash: "placements",
+                    desc: "Recruiters & placements.",
+                  },
                 ].map((item) => (
                   <Link
                     key={item.hash}
@@ -687,11 +773,15 @@ export function Header() {
                 return (
                   <div key={n.to} className="flex flex-col">
                     <button
-                      onClick={() => setActiveMobileSection(activeMobileSection === "About" ? null : "About")}
+                      onClick={() =>
+                        setActiveMobileSection(activeMobileSection === "About" ? null : "About")
+                      }
                       className="w-full text-left px-3 py-2.5 rounded-lg text-sm font-bold hover:bg-accent text-primary flex items-center justify-between transition-colors"
                     >
                       <span>{n.label}</span>
-                      <ChevronDown className={`size-4 transition-transform duration-200 ${activeMobileSection === "About" ? "rotate-180" : ""}`} />
+                      <ChevronDown
+                        className={`size-4 transition-transform duration-200 ${activeMobileSection === "About" ? "rotate-180" : ""}`}
+                      />
                     </button>
                     {activeMobileSection === "About" && (
                       <div className="pl-4 flex flex-col border-l border-border/80 ml-3 mt-1 mb-2 gap-0.5">
@@ -729,11 +819,17 @@ export function Header() {
                 return (
                   <div key={n.to} className="flex flex-col">
                     <button
-                      onClick={() => setActiveMobileSection(activeMobileSection === "Institutions" ? null : "Institutions")}
+                      onClick={() =>
+                        setActiveMobileSection(
+                          activeMobileSection === "Institutions" ? null : "Institutions",
+                        )
+                      }
                       className="w-full text-left px-3 py-2.5 rounded-lg text-sm font-bold hover:bg-accent text-primary flex items-center justify-between transition-colors"
                     >
                       <span>{n.label}</span>
-                      <ChevronDown className={`size-4 transition-transform duration-200 ${activeMobileSection === "Institutions" ? "rotate-180" : ""}`} />
+                      <ChevronDown
+                        className={`size-4 transition-transform duration-200 ${activeMobileSection === "Institutions" ? "rotate-180" : ""}`}
+                      />
                     </button>
                     {activeMobileSection === "Institutions" && (
                       <div className="pl-4 flex flex-col border-l border-border/80 ml-3 mt-1 mb-2 gap-0.5">
@@ -757,11 +853,17 @@ export function Header() {
                 return (
                   <div key={n.to} className="flex flex-col">
                     <button
-                      onClick={() => setActiveMobileSection(activeMobileSection === "Admissions" ? null : "Admissions")}
+                      onClick={() =>
+                        setActiveMobileSection(
+                          activeMobileSection === "Admissions" ? null : "Admissions",
+                        )
+                      }
                       className="w-full text-left px-3 py-2.5 rounded-lg text-sm font-bold hover:bg-accent text-primary flex items-center justify-between transition-colors"
                     >
                       <span>{n.label}</span>
-                      <ChevronDown className={`size-4 transition-transform duration-200 ${activeMobileSection === "Admissions" ? "rotate-180" : ""}`} />
+                      <ChevronDown
+                        className={`size-4 transition-transform duration-200 ${activeMobileSection === "Admissions" ? "rotate-180" : ""}`}
+                      />
                     </button>
                     {activeMobileSection === "Admissions" && (
                       <div className="pl-4 flex flex-col border-l border-border/80 ml-3 mt-1 mb-2 gap-0.5">
@@ -799,11 +901,15 @@ export function Header() {
                 return (
                   <div key={n.to} className="flex flex-col">
                     <button
-                      onClick={() => setActiveMobileSection(activeMobileSection === "Gallery" ? null : "Gallery")}
+                      onClick={() =>
+                        setActiveMobileSection(activeMobileSection === "Gallery" ? null : "Gallery")
+                      }
                       className="w-full text-left px-3 py-2.5 rounded-lg text-sm font-bold hover:bg-accent text-primary flex items-center justify-between transition-colors"
                     >
                       <span>{n.label}</span>
-                      <ChevronDown className={`size-4 transition-transform duration-200 ${activeMobileSection === "Gallery" ? "rotate-180" : ""}`} />
+                      <ChevronDown
+                        className={`size-4 transition-transform duration-200 ${activeMobileSection === "Gallery" ? "rotate-180" : ""}`}
+                      />
                     </button>
                     {activeMobileSection === "Gallery" && (
                       <div className="pl-4 flex flex-col border-l border-border/80 ml-3 mt-1 mb-2 gap-0.5">
@@ -838,11 +944,17 @@ export function Header() {
                 return (
                   <div key={n.to} className="flex flex-col">
                     <button
-                      onClick={() => setActiveMobileSection(activeMobileSection === "Disclosures" ? null : "Disclosures")}
+                      onClick={() =>
+                        setActiveMobileSection(
+                          activeMobileSection === "Disclosures" ? null : "Disclosures",
+                        )
+                      }
                       className="w-full text-left px-3 py-2.5 rounded-lg text-sm font-bold hover:bg-accent text-primary flex items-center justify-between transition-colors"
                     >
                       <span>{n.label}</span>
-                      <ChevronDown className={`size-4 transition-transform duration-200 ${activeMobileSection === "Disclosures" ? "rotate-180" : ""}`} />
+                      <ChevronDown
+                        className={`size-4 transition-transform duration-200 ${activeMobileSection === "Disclosures" ? "rotate-180" : ""}`}
+                      />
                     </button>
                     {activeMobileSection === "Disclosures" && (
                       <div className="pl-4 flex flex-col border-l border-border/80 ml-3 mt-1 mb-2 gap-0.5">
@@ -933,4 +1045,3 @@ export function Header() {
     </header>
   );
 }
-

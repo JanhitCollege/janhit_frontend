@@ -9,7 +9,9 @@ export function About() {
           {/* Text content */}
           <div className="lg:col-span-7 space-y-6">
             <div className="space-y-2">
-              <span className="text-xs font-bold uppercase tracking-wider text-gold">About Institution</span>
+              <span className="text-xs font-bold uppercase tracking-wider text-gold">
+                About Institution
+              </span>
               <h2 className="text-3xl md:text-4xl font-serif font-bold text-navy">
                 Janhit College of Law
               </h2>
@@ -17,11 +19,18 @@ export function About() {
             </div>
 
             <p className="text-base text-navy/80 leading-relaxed">
-              Janhit College of Law, situated in the premium educational hub of Greater Noida, is a premier institution dedicated to cultivating legal professionals of the highest calibre. Approved by the Bar Council of India (BCI) and affiliated with Chaudhary Charan Singh (CCS) University, Meerut, we provide a rigorous academic ecosystem combined with extensive practical exposure.
+              Janhit College of Law, situated in the premium educational hub of Greater Noida, is a
+              premier institution dedicated to cultivating legal professionals of the highest
+              calibre. Approved by the Bar Council of India (BCI) and affiliated with Chaudhary
+              Charan Singh (CCS) University, Meerut, we provide a rigorous academic ecosystem
+              combined with extensive practical exposure.
             </p>
 
             <p className="text-base text-navy/80 leading-relaxed">
-              Our campus fosters legal advocacy, research-driven learning, and social consciousness. With state-of-the-art facilities including a dedicated Moot Court Hall, free Legal Aid Clinic, and a comprehensive law library, we prepare our students to excel in courts, corporate legal chambers, and civil services.
+              Our campus fosters legal advocacy, research-driven learning, and social consciousness.
+              With state-of-the-art facilities including a dedicated Moot Court Hall, free Legal Aid
+              Clinic, and a comprehensive law library, we prepare our students to excel in courts,
+              corporate legal chambers, and civil services.
             </p>
 
             {/* Vision & Mission grid */}
@@ -32,7 +41,9 @@ export function About() {
                   <span>Our Vision</span>
                 </div>
                 <p className="text-base text-navy/70 leading-relaxed">
-                  To be a leading center for legal education and research, producing ethical advocate leaders who champion justice, public interest, and constitutional values worldwide.
+                  To be a leading center for legal education and research, producing ethical
+                  advocate leaders who champion justice, public interest, and constitutional values
+                  worldwide.
                 </p>
               </div>
 
@@ -42,7 +53,8 @@ export function About() {
                   <span>Our Mission</span>
                 </div>
                 <p className="text-base text-navy/70 leading-relaxed">
-                  To deliver a comprehensive legal curriculum that integrates academic excellence with hands-on practice, legal aid sensitization, and professional integrity.
+                  To deliver a comprehensive legal curriculum that integrates academic excellence
+                  with hands-on practice, legal aid sensitization, and professional integrity.
                 </p>
               </div>
             </div>
@@ -100,7 +112,8 @@ export function About() {
                   <div>
                     <h4 className="font-bold text-navy text-base">Distinguished Mentors</h4>
                     <p className="text-sm text-navy/70 mt-0.5">
-                      Classes conducted by senior academicians, practicing advocates, and legal writers.
+                      Classes conducted by senior academicians, practicing advocates, and legal
+                      writers.
                     </p>
                   </div>
                 </div>

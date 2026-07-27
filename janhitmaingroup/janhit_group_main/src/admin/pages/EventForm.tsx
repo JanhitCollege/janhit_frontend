@@ -1,5 +1,15 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Upload, X, AlertCircle, Info, Calendar, Clock, MapPin, CheckCircle2, ChevronRight } from "lucide-react";
+import {
+  Upload,
+  X,
+  AlertCircle,
+  Info,
+  Calendar,
+  Clock,
+  MapPin,
+  CheckCircle2,
+  ChevronRight,
+} from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -46,7 +56,7 @@ export const EventForm: React.FC<EventFormProps> = ({
   submitButtonText,
 }) => {
   // Load campuses
-  const activeCampuses = getStoredCampuses().filter(c => c.status === "active");
+  const activeCampuses = getStoredCampuses().filter((c) => c.status === "active");
 
   // Form states
   const [title, setTitle] = useState(initialData?.title || "");
@@ -60,12 +70,18 @@ export const EventForm: React.FC<EventFormProps> = ({
   const [venue, setVenue] = useState(initialData?.venue || "");
   const [organizer, setOrganizer] = useState(initialData?.organizer || "");
   const [registrationLink, setRegistrationLink] = useState(initialData?.registrationLink || "");
-  const [isMainWebsite, setIsMainWebsite] = useState<boolean>(initialData?.isMainWebsite !== undefined ? initialData.isMainWebsite : true);
-  const [status, setStatus] = useState<"DRAFT" | "PUBLISHED" | "ARCHIVED">(initialData?.status || "DRAFT");
+  const [isMainWebsite, setIsMainWebsite] = useState<boolean>(
+    initialData?.isMainWebsite !== undefined ? initialData.isMainWebsite : true,
+  );
+  const [status, setStatus] = useState<"DRAFT" | "PUBLISHED" | "ARCHIVED">(
+    initialData?.status || "DRAFT",
+  );
   const [campusIds, setCampusIds] = useState<string[]>(initialData?.campusIds || []);
 
   // Banner upload states
-  const [bannerName, setBannerName] = useState(initialData?.bannerImage ? "current_banner_image.jpg" : "");
+  const [bannerName, setBannerName] = useState(
+    initialData?.bannerImage ? "current_banner_image.jpg" : "",
+  );
   const [bannerSize, setBannerSize] = useState<number>(0);
   const [bannerImage, setBannerImage] = useState<string | null>(initialData?.bannerImage || null);
   const [uploadProgress, setUploadProgress] = useState<number | null>(null);
@@ -118,23 +134,23 @@ export const EventForm: React.FC<EventFormProps> = ({
   };
 
   const handleBlur = (fieldName: string, value: any) => {
-    setIsTouched(prev => ({ ...prev, [fieldName]: true }));
+    setIsTouched((prev) => ({ ...prev, [fieldName]: true }));
     const errorMsg = validateField(fieldName, value);
-    setErrors(prev => ({ ...prev, [fieldName]: errorMsg }));
+    setErrors((prev) => ({ ...prev, [fieldName]: errorMsg }));
   };
 
   const handleFieldChange = (fieldName: string, value: any, setter: (val: any) => void) => {
     setter(value);
     if (isTouched[fieldName]) {
       const errorMsg = validateField(fieldName, value);
-      setErrors(prev => ({ ...prev, [fieldName]: errorMsg }));
+      setErrors((prev) => ({ ...prev, [fieldName]: errorMsg }));
     }
   };
 
   // Multiple Campus Checkbox toggle
   const handleCampusToggle = (id: string) => {
     const updated = campusIds.includes(id)
-      ? campusIds.filter(cid => cid !== id)
+      ? campusIds.filter((cid) => cid !== id)
       : [...campusIds, id];
     setCampusIds(updated);
   };
@@ -147,29 +163,29 @@ export const EventForm: React.FC<EventFormProps> = ({
   const processFile = (file: File) => {
     const allowedExtensions = [".jpg", ".jpeg", ".png", ".webp"];
     const ext = "." + file.name.split(".").pop()?.toLowerCase();
-    
+
     if (!allowedExtensions.includes(ext)) {
-      setErrors(prev => ({
+      setErrors((prev) => ({
         ...prev,
-        banner: "Invalid file type. Allowed formats: JPG, JPEG, PNG, WEBP"
+        banner: "Invalid file type. Allowed formats: JPG, JPEG, PNG, WEBP",
       }));
       return;
     }
 
     const maxSize = 20 * 1024 * 1024; // 20MB
     if (file.size > maxSize) {
-      setErrors(prev => ({
+      setErrors((prev) => ({
         ...prev,
-        banner: "Banner file size exceeds the 20 MB limit."
+        banner: "Banner file size exceeds the 20 MB limit.",
       }));
       return;
     }
 
-    setErrors(prev => ({ ...prev, banner: "" }));
+    setErrors((prev) => ({ ...prev, banner: "" }));
     setUploadProgress(0);
 
     const interval = setInterval(() => {
-      setUploadProgress(prev => {
+      setUploadProgress((prev) => {
         if (prev === null) return null;
         if (prev >= 100) {
           clearInterval(interval);
@@ -243,7 +259,7 @@ export const EventForm: React.FC<EventFormProps> = ({
       endDate: true,
     });
 
-    const hasErrors = Object.values(newErrors).some(err => err !== "");
+    const hasErrors = Object.values(newErrors).some((err) => err !== "");
     if (hasErrors) {
       return;
     }
@@ -270,20 +286,23 @@ export const EventForm: React.FC<EventFormProps> = ({
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        
         {/* Left Column (2 spans) - Form Fields */}
         <div className="lg:col-span-2 space-y-6">
-          
           {/* Section: Basic Details */}
           <div className="glass rounded-2xl p-6 border border-border/80 shadow-sm space-y-4">
             <h2 className="font-display text-lg font-bold text-foreground pb-2 border-b border-border/40 flex items-center gap-2">
-              <span className="size-6 rounded bg-primary/10 text-primary flex items-center justify-center text-xs">1</span>
+              <span className="size-6 rounded bg-primary/10 text-primary flex items-center justify-center text-xs">
+                1
+              </span>
               General Information
             </h2>
 
             {/* Title field */}
             <div className="space-y-1.5">
-              <Label htmlFor="title" className="text-xs font-semibold text-foreground/80 uppercase tracking-wider pl-0.5">
+              <Label
+                htmlFor="title"
+                className="text-xs font-semibold text-foreground/80 uppercase tracking-wider pl-0.5"
+              >
                 Event Title <span className="text-destructive">*</span>
               </Label>
               <Input
@@ -297,12 +316,17 @@ export const EventForm: React.FC<EventFormProps> = ({
                   errors.title ? "border-destructive focus-visible:ring-destructive" : ""
                 }`}
               />
-              {errors.title && <p className="text-destructive text-xs mt-1 pl-0.5">{errors.title}</p>}
+              {errors.title && (
+                <p className="text-destructive text-xs mt-1 pl-0.5">{errors.title}</p>
+              )}
             </div>
 
             {/* Short Description */}
             <div className="space-y-1.5">
-              <Label htmlFor="shortDescription" className="text-xs font-semibold text-foreground/80 uppercase tracking-wider pl-0.5">
+              <Label
+                htmlFor="shortDescription"
+                className="text-xs font-semibold text-foreground/80 uppercase tracking-wider pl-0.5"
+              >
                 Short Description (Optional)
               </Label>
               <Input
@@ -317,7 +341,10 @@ export const EventForm: React.FC<EventFormProps> = ({
 
             {/* Full Description field */}
             <div className="space-y-1.5">
-              <Label htmlFor="description" className="text-xs font-semibold text-foreground/80 uppercase tracking-wider pl-0.5">
+              <Label
+                htmlFor="description"
+                className="text-xs font-semibold text-foreground/80 uppercase tracking-wider pl-0.5"
+              >
                 Detailed Event Description <span className="text-destructive">*</span>
               </Label>
               <Textarea
@@ -331,22 +358,30 @@ export const EventForm: React.FC<EventFormProps> = ({
                   errors.description ? "border-destructive focus-visible:ring-destructive" : ""
                 }`}
               />
-              {errors.description && <p className="text-destructive text-xs mt-1 pl-0.5">{errors.description}</p>}
+              {errors.description && (
+                <p className="text-destructive text-xs mt-1 pl-0.5">{errors.description}</p>
+              )}
             </div>
           </div>
 
           {/* Section: Event Logistics (Dates, Venues, Links) */}
           <div className="glass rounded-2xl p-6 border border-border/80 shadow-sm space-y-4">
             <h2 className="font-display text-lg font-bold text-foreground pb-2 border-b border-border/40 flex items-center gap-2">
-              <span className="size-6 rounded bg-primary/10 text-primary flex items-center justify-center text-xs">2</span>
+              <span className="size-6 rounded bg-primary/10 text-primary flex items-center justify-center text-xs">
+                2
+              </span>
               Date, Venue & Logistics
             </h2>
 
             {/* Dates Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-1.5">
-                <Label htmlFor="startDate" className="text-xs font-semibold text-foreground/80 uppercase tracking-wider pl-0.5 flex items-center gap-1">
-                  <Calendar className="size-3.5 text-gold" /> Start Date <span className="text-destructive">*</span>
+                <Label
+                  htmlFor="startDate"
+                  className="text-xs font-semibold text-foreground/80 uppercase tracking-wider pl-0.5 flex items-center gap-1"
+                >
+                  <Calendar className="size-3.5 text-gold" /> Start Date{" "}
+                  <span className="text-destructive">*</span>
                 </Label>
                 <Input
                   id="startDate"
@@ -358,11 +393,16 @@ export const EventForm: React.FC<EventFormProps> = ({
                     errors.startDate ? "border-destructive focus-visible:ring-destructive" : ""
                   }`}
                 />
-                {errors.startDate && <p className="text-destructive text-xs mt-1 pl-0.5">{errors.startDate}</p>}
+                {errors.startDate && (
+                  <p className="text-destructive text-xs mt-1 pl-0.5">{errors.startDate}</p>
+                )}
               </div>
 
               <div className="space-y-1.5">
-                <Label htmlFor="endDate" className="text-xs font-semibold text-foreground/80 uppercase tracking-wider pl-0.5 flex items-center gap-1">
+                <Label
+                  htmlFor="endDate"
+                  className="text-xs font-semibold text-foreground/80 uppercase tracking-wider pl-0.5 flex items-center gap-1"
+                >
                   <Calendar className="size-3.5 text-gold" /> End Date (Optional)
                 </Label>
                 <Input
@@ -375,14 +415,19 @@ export const EventForm: React.FC<EventFormProps> = ({
                     errors.endDate ? "border-destructive focus-visible:ring-destructive" : ""
                   }`}
                 />
-                {errors.endDate && <p className="text-destructive text-xs mt-1 pl-0.5">{errors.endDate}</p>}
+                {errors.endDate && (
+                  <p className="text-destructive text-xs mt-1 pl-0.5">{errors.endDate}</p>
+                )}
               </div>
             </div>
 
             {/* Time Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-1.5">
-                <Label htmlFor="startTime" className="text-xs font-semibold text-foreground/80 uppercase tracking-wider pl-0.5 flex items-center gap-1">
+                <Label
+                  htmlFor="startTime"
+                  className="text-xs font-semibold text-foreground/80 uppercase tracking-wider pl-0.5 flex items-center gap-1"
+                >
                   <Clock className="size-3.5 text-gold" /> Start Time
                 </Label>
                 <Input
@@ -395,7 +440,10 @@ export const EventForm: React.FC<EventFormProps> = ({
               </div>
 
               <div className="space-y-1.5">
-                <Label htmlFor="endTime" className="text-xs font-semibold text-foreground/80 uppercase tracking-wider pl-0.5 flex items-center gap-1">
+                <Label
+                  htmlFor="endTime"
+                  className="text-xs font-semibold text-foreground/80 uppercase tracking-wider pl-0.5 flex items-center gap-1"
+                >
                   <Clock className="size-3.5 text-gold" /> End Time
                 </Label>
                 <Input
@@ -411,7 +459,10 @@ export const EventForm: React.FC<EventFormProps> = ({
             {/* Venue & Organizer */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-1.5">
-                <Label htmlFor="venue" className="text-xs font-semibold text-foreground/80 uppercase tracking-wider pl-0.5 flex items-center gap-1">
+                <Label
+                  htmlFor="venue"
+                  className="text-xs font-semibold text-foreground/80 uppercase tracking-wider pl-0.5 flex items-center gap-1"
+                >
                   <MapPin className="size-3.5 text-gold" /> Venue
                 </Label>
                 <Input
@@ -425,7 +476,10 @@ export const EventForm: React.FC<EventFormProps> = ({
               </div>
 
               <div className="space-y-1.5">
-                <Label htmlFor="organizer" className="text-xs font-semibold text-foreground/80 uppercase tracking-wider pl-0.5">
+                <Label
+                  htmlFor="organizer"
+                  className="text-xs font-semibold text-foreground/80 uppercase tracking-wider pl-0.5"
+                >
                   Organizing Committee / Dept
                 </Label>
                 <Input
@@ -441,7 +495,10 @@ export const EventForm: React.FC<EventFormProps> = ({
 
             {/* Registration URL */}
             <div className="space-y-1.5">
-              <Label htmlFor="registrationLink" className="text-xs font-semibold text-foreground/80 uppercase tracking-wider pl-0.5">
+              <Label
+                htmlFor="registrationLink"
+                className="text-xs font-semibold text-foreground/80 uppercase tracking-wider pl-0.5"
+              >
                 External Registration / Details Link (Optional)
               </Label>
               <Input
@@ -458,7 +515,9 @@ export const EventForm: React.FC<EventFormProps> = ({
           {/* Section: Banner Image */}
           <div className="glass rounded-2xl p-6 border border-border/80 shadow-sm space-y-4">
             <h2 className="font-display text-lg font-bold text-foreground pb-2 border-b border-border/40 flex items-center gap-2">
-              <span className="size-6 rounded bg-primary/10 text-primary flex items-center justify-center text-xs">3</span>
+              <span className="size-6 rounded bg-primary/10 text-primary flex items-center justify-center text-xs">
+                3
+              </span>
               Event Banner Image
             </h2>
 
@@ -501,7 +560,7 @@ export const EventForm: React.FC<EventFormProps> = ({
                     Processing Banner... {uploadProgress}%
                   </span>
                   <div className="w-full max-w-xs bg-muted h-2 rounded-full overflow-hidden border border-border">
-                    <div 
+                    <div
                       className="bg-gradient-gold h-full rounded-full transition-all duration-100"
                       style={{ width: `${uploadProgress}%` }}
                     />
@@ -511,7 +570,11 @@ export const EventForm: React.FC<EventFormProps> = ({
                 <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 p-4 rounded-xl border border-border bg-background/60 shadow-sm">
                   <div className="flex items-center gap-4">
                     <div className="h-16 w-28 rounded-lg bg-muted border border-border flex items-center justify-center overflow-hidden shrink-0 shadow-sm">
-                      <img src={bannerImage} alt="Banner Preview" className="size-full object-cover" />
+                      <img
+                        src={bannerImage}
+                        alt="Banner Preview"
+                        className="size-full object-cover"
+                      />
                     </div>
                     <div className="space-y-1">
                       <span className="text-sm font-semibold text-foreground block max-w-xs truncate">
@@ -553,18 +616,24 @@ export const EventForm: React.FC<EventFormProps> = ({
                 </div>
               )}
 
-              {errors.banner && <p className="text-destructive text-xs mt-1.5 pl-0.5 flex items-center gap-1"><AlertCircle className="size-3.5" />{errors.banner}</p>}
+              {errors.banner && (
+                <p className="text-destructive text-xs mt-1.5 pl-0.5 flex items-center gap-1">
+                  <AlertCircle className="size-3.5" />
+                  {errors.banner}
+                </p>
+              )}
             </div>
           </div>
         </div>
 
         {/* Right Column (1 span) - Settings & Multiple Campus Selections */}
         <div className="space-y-6">
-          
           {/* Section: Publishing Parameters */}
           <div className="glass rounded-2xl p-6 border border-border/80 shadow-sm space-y-4">
             <h2 className="font-display text-lg font-bold text-foreground pb-2 border-b border-border/40 flex items-center gap-2">
-              <span className="size-6 rounded bg-primary/10 text-primary flex items-center justify-center text-xs">4</span>
+              <span className="size-6 rounded bg-primary/10 text-primary flex items-center justify-center text-xs">
+                4
+              </span>
               Configurations
             </h2>
 
@@ -589,23 +658,27 @@ export const EventForm: React.FC<EventFormProps> = ({
             <div className="flex items-center justify-between p-3 rounded-xl bg-background/40 border border-border/60">
               <div className="space-y-0.5 pr-2">
                 <span className="text-xs font-semibold text-foreground block">Main Website</span>
-                <span className="text-[10px] text-muted-foreground block leading-tight">Show on global institutions page</span>
+                <span className="text-[10px] text-muted-foreground block leading-tight">
+                  Show on global institutions page
+                </span>
               </div>
-              <Switch
-                checked={isMainWebsite}
-                onCheckedChange={setIsMainWebsite}
-              />
+              <Switch checked={isMainWebsite} onCheckedChange={setIsMainWebsite} />
             </div>
 
             {/* Slug manual override */}
             <div className="space-y-1.5 pt-2">
-              <Label htmlFor="slug" className="text-xs font-semibold text-foreground/80 uppercase tracking-wider pl-0.5">URL Slug</Label>
+              <Label
+                htmlFor="slug"
+                className="text-xs font-semibold text-foreground/80 uppercase tracking-wider pl-0.5"
+              >
+                URL Slug
+              </Label>
               <Input
                 id="slug"
                 type="text"
                 value={slug}
                 onChange={(e) => {
-                  setIsTouched(prev => ({ ...prev, slug: true }));
+                  setIsTouched((prev) => ({ ...prev, slug: true }));
                   setSlug(e.target.value.toLowerCase().replace(/\s+/g, "-"));
                 }}
                 onBlur={(e) => handleBlur("slug", e.target.value)}
@@ -620,10 +693,12 @@ export const EventForm: React.FC<EventFormProps> = ({
           {/* Section: Multi-Campus Mapping */}
           <div className="glass rounded-2xl p-6 border border-border/80 shadow-sm space-y-4">
             <h2 className="font-display text-lg font-bold text-foreground pb-2 border-b border-border/40 flex items-center gap-2">
-              <span className="size-6 rounded bg-primary/10 text-primary flex items-center justify-center text-xs">5</span>
+              <span className="size-6 rounded bg-primary/10 text-primary flex items-center justify-center text-xs">
+                5
+              </span>
               Campus Mappings
             </h2>
-            
+
             <p className="text-[10px] text-muted-foreground leading-normal pl-0.5">
               <Info className="size-3.5 inline mr-1 text-gold" />
               Select all schools/colleges where this event is hosted or should be published.
@@ -631,11 +706,13 @@ export const EventForm: React.FC<EventFormProps> = ({
 
             <div className="space-y-2.5 pt-1">
               {activeCampuses.length === 0 ? (
-                <span className="text-xs text-muted-foreground block pl-0.5">No active campuses available.</span>
+                <span className="text-xs text-muted-foreground block pl-0.5">
+                  No active campuses available.
+                </span>
               ) : (
                 activeCampuses.map((c) => (
-                  <div 
-                    key={c.id} 
+                  <div
+                    key={c.id}
                     className="flex items-start gap-2.5 p-2 rounded-lg hover:bg-muted/30 transition-colors"
                   >
                     <Checkbox
@@ -645,13 +722,15 @@ export const EventForm: React.FC<EventFormProps> = ({
                       className="mt-0.5 rounded border-border data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground"
                     />
                     <div className="leading-tight">
-                      <Label 
-                        htmlFor={`campus-${c.id}`} 
+                      <Label
+                        htmlFor={`campus-${c.id}`}
                         className="text-xs font-semibold text-foreground cursor-pointer block"
                       >
                         {c.name}
                       </Label>
-                      <span className="text-[9px] text-muted-foreground uppercase mt-0.5 block">{c.shortName} • {c.city}</span>
+                      <span className="text-[9px] text-muted-foreground uppercase mt-0.5 block">
+                        {c.shortName} • {c.city}
+                      </span>
                     </div>
                   </div>
                 ))
@@ -676,9 +755,7 @@ export const EventForm: React.FC<EventFormProps> = ({
               Cancel
             </Button>
           </div>
-
         </div>
-
       </div>
     </form>
   );

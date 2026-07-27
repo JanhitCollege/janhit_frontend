@@ -2,7 +2,7 @@ import * as React from "react";
 import { Slot } from "@radix-ui/react-slot";
 import { cva, type VariantProps } from "class-variance-authority";
 
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils/utils";
 
 const buttonVariants = cva(
   "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium cursor-pointer transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 disabled:cursor-not-allowed [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
@@ -18,7 +18,8 @@ const buttonVariants = cva(
         link: "text-primary underline-offset-4 hover:underline",
         gold: "gradient-gold text-[oklch(0.18_0.05_264)] shadow-gold hover:shadow-luxury hover:-translate-y-0.5 transition-all duration-300 font-semibold tracking-wide",
         navy: "gradient-navy text-[oklch(0.96_0.018_85)] border border-[color-mix(in_oklab,var(--gold)_30%,transparent)] hover:border-[var(--gold)] hover:-translate-y-0.5 transition-all duration-300 font-semibold tracking-wide",
-        ghostGold: "border border-[color-mix(in_oklab,var(--gold)_40%,transparent)] text-[var(--gold)] hover:bg-[color-mix(in_oklab,var(--gold)_15%,transparent)] transition-all duration-300 font-medium tracking-wide backdrop-blur-sm",
+        ghostGold:
+          "border border-[color-mix(in_oklab,var(--gold)_40%,transparent)] text-[var(--gold)] hover:bg-[color-mix(in_oklab,var(--gold)_15%,transparent)] transition-all duration-300 font-medium tracking-wide backdrop-blur-sm",
       },
       size: {
         default: "h-9 px-4 py-2",

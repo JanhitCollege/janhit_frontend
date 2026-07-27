@@ -15,7 +15,7 @@ import {
   Calendar,
   Layers,
   MapPin,
-  ExternalLink
+  ExternalLink,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -78,7 +78,7 @@ export const AdmissionLeadListing: React.FC = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       setLeads(getStoredAdmissionLeads());
-      setCampuses(getStoredCampuses().filter(c => c.status === "active"));
+      setCampuses(getStoredCampuses().filter((c) => c.status === "active"));
       setIsLoading(false);
     }, 400);
     return () => clearTimeout(timer);
@@ -104,7 +104,7 @@ export const AdmissionLeadListing: React.FC = () => {
   const confirmStatusToggle = async () => {
     if (!leadToToggle || !nextStatus) return;
     setIsTogglingStatus(true);
-    
+
     // Simulate brief network delay
     await new Promise((resolve) => setTimeout(resolve, 350));
 
@@ -127,13 +127,17 @@ export const AdmissionLeadListing: React.FC = () => {
     const storedNotes = localStorage.getItem(storedNotesKey);
     let notes = [];
     if (storedNotes) {
-      try { notes = JSON.parse(storedNotes); } catch { notes = []; }
+      try {
+        notes = JSON.parse(storedNotes);
+      } catch {
+        notes = [];
+      }
     }
     const newNote = {
       id: "note-status-" + Date.now(),
       text: `Lead status updated from ${leadToToggle.status} to ${nextStatus} via Listing Panel.`,
       createdAt: new Date().toISOString(),
-      author: "Admin"
+      author: "Admin",
     };
     localStorage.setItem(storedNotesKey, JSON.stringify([newNote, ...notes]));
 
@@ -250,9 +254,12 @@ export const AdmissionLeadListing: React.FC = () => {
 
       {/* Header Block */}
       <div>
-        <h1 className="font-display text-2xl md:text-3xl font-bold text-foreground">Admission Leads</h1>
+        <h1 className="font-display text-2xl md:text-3xl font-bold text-foreground">
+          Admission Leads
+        </h1>
         <p className="text-xs md:text-sm text-muted-foreground mt-1">
-          Review, filter, track student queries, and transition candidates through the enrollment funnel.
+          Review, filter, track student queries, and transition candidates through the enrollment
+          funnel.
         </p>
       </div>
 
@@ -368,7 +375,9 @@ export const AdmissionLeadListing: React.FC = () => {
                       <ArrowUpDown className="size-3 text-muted-foreground" />
                     </button>
                   </TableHead>
-                  <TableHead className="text-xs font-bold uppercase tracking-wider text-muted-foreground py-3.5 w-1/4">Selected Campus</TableHead>
+                  <TableHead className="text-xs font-bold uppercase tracking-wider text-muted-foreground py-3.5 w-1/4">
+                    Selected Campus
+                  </TableHead>
                   <TableHead className="text-xs font-bold uppercase tracking-wider text-muted-foreground py-3.5 text-center">
                     <button
                       onClick={() => handleSort("createdAt")}
@@ -387,27 +396,41 @@ export const AdmissionLeadListing: React.FC = () => {
                       <ArrowUpDown className="size-3 text-muted-foreground" />
                     </button>
                   </TableHead>
-                  <TableHead className="font-semibold text-xs py-3.5 text-right pr-6">Details</TableHead>
+                  <TableHead className="font-semibold text-xs py-3.5 text-right pr-6">
+                    Details
+                  </TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {paginatedLeads.map((l) => (
-                  <TableRow key={l.id} className="hover:bg-accent/40 border-b last:border-0 transition-colors">
-                    
+                  <TableRow
+                    key={l.id}
+                    className="hover:bg-accent/40 border-b last:border-0 transition-colors"
+                  >
                     {/* Candidate Info */}
                     <TableCell className="py-4">
                       <div>
                         <h3 className="font-sans text-sm font-semibold text-foreground flex items-center gap-1.5">
                           {l.name}
                           {l.city && (
-                            <Badge variant="outline" className="text-[9px] rounded-md px-1 py-0 font-medium text-muted-foreground border-border bg-background/50">
+                            <Badge
+                              variant="outline"
+                              className="text-[9px] rounded-md px-1 py-0 font-medium text-muted-foreground border-border bg-background/50"
+                            >
                               {l.city}
                             </Badge>
                           )}
                         </h3>
                         <div className="flex flex-col gap-0.5 mt-1 text-[11px] text-muted-foreground">
-                          <a href={`mailto:${l.email}`} className="hover:text-primary hover:underline">{l.email}</a>
-                          <a href={`tel:${l.mobile}`} className="hover:text-primary font-medium">{l.mobile}</a>
+                          <a
+                            href={`mailto:${l.email}`}
+                            className="hover:text-primary hover:underline"
+                          >
+                            {l.email}
+                          </a>
+                          <a href={`tel:${l.mobile}`} className="hover:text-primary font-medium">
+                            {l.mobile}
+                          </a>
                         </div>
                       </div>
                     </TableCell>
@@ -419,7 +442,10 @@ export const AdmissionLeadListing: React.FC = () => {
 
                     {/* Campus Column */}
                     <TableCell className="py-4 text-xs font-semibold text-foreground/80">
-                      <div className="flex items-center gap-1.5 max-w-[190px] truncate" title={getCampusName(l.campusId)}>
+                      <div
+                        className="flex items-center gap-1.5 max-w-[190px] truncate"
+                        title={getCampusName(l.campusId)}
+                      >
                         <Building className="size-3.5 text-muted-foreground shrink-0" />
                         <span>{getCampusName(l.campusId)}</span>
                       </div>
@@ -440,7 +466,9 @@ export const AdmissionLeadListing: React.FC = () => {
                           value={l.status}
                           onValueChange={(val) => handleOpenStatusModal(l, val)}
                         >
-                          <SelectTrigger className={`w-32 h-8 rounded-lg text-[10px] font-bold ${getStatusBadgeColor(l.status)}`}>
+                          <SelectTrigger
+                            className={`w-32 h-8 rounded-lg text-[10px] font-bold ${getStatusBadgeColor(l.status)}`}
+                          >
                             <SelectValue />
                           </SelectTrigger>
                           <SelectContent className="rounded-xl text-[10px] border border-border/80">
@@ -479,7 +507,8 @@ export const AdmissionLeadListing: React.FC = () => {
             </div>
             <h3 className="font-display text-lg font-bold text-foreground">No Enquiries Found</h3>
             <p className="text-xs text-muted-foreground mt-2 leading-relaxed">
-              No admission enquiries match your search queries or filter selections. Try clearing your filters.
+              No admission enquiries match your search queries or filter selections. Try clearing
+              your filters.
             </p>
             <Button
               variant="outline"
@@ -506,7 +535,9 @@ export const AdmissionLeadListing: React.FC = () => {
             <div className="flex items-center gap-4">
               {/* Rows per page */}
               <div className="flex items-center gap-2">
-                <span className="text-[11px] text-muted-foreground font-semibold">Rows per page</span>
+                <span className="text-[11px] text-muted-foreground font-semibold">
+                  Rows per page
+                </span>
                 <Select
                   value={String(pageSize)}
                   onValueChange={(val) => {
@@ -537,7 +568,20 @@ export const AdmissionLeadListing: React.FC = () => {
                     className="size-8 rounded-lg"
                   >
                     <span className="sr-only">Previous Page</span>
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="size-4"><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" /></svg>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth={2}
+                      stroke="currentColor"
+                      className="size-4"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M15.75 19.5L8.25 12l7.5-7.5"
+                      />
+                    </svg>
                   </Button>
 
                   {Array.from({ length: totalPages }).map((_, index) => {
@@ -549,7 +593,9 @@ export const AdmissionLeadListing: React.FC = () => {
                         size="icon"
                         onClick={() => setCurrentPage(pageNum)}
                         className={`size-8 rounded-lg text-xs ${
-                          currentPage === pageNum ? "bg-primary text-primary-foreground font-bold" : "text-muted-foreground"
+                          currentPage === pageNum
+                            ? "bg-primary text-primary-foreground font-bold"
+                            : "text-muted-foreground"
                         }`}
                       >
                         {pageNum}
@@ -565,7 +611,20 @@ export const AdmissionLeadListing: React.FC = () => {
                     className="size-8 rounded-lg"
                   >
                     <span className="sr-only">Next Page</span>
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="size-4"><path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth={2}
+                      stroke="currentColor"
+                      className="size-4"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M8.25 4.5l7.5 7.5-7.5 7.5"
+                      />
+                    </svg>
                   </Button>
                 </div>
               )}
@@ -585,13 +644,18 @@ export const AdmissionLeadListing: React.FC = () => {
               Update Lead Status
             </DialogTitle>
             <DialogDescription className="text-xs text-muted-foreground mt-2 leading-relaxed">
-              Are you sure you want to change the status of <strong>{leadToToggle?.name}</strong>'s enquiry from{" "}
-              <strong>{leadToToggle?.status}</strong> to <strong>{nextStatus}</strong>?
+              Are you sure you want to change the status of <strong>{leadToToggle?.name}</strong>'s
+              enquiry from <strong>{leadToToggle?.status}</strong> to <strong>{nextStatus}</strong>?
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="flex items-center justify-end gap-2 mt-4">
             <DialogClose asChild>
-              <Button variant="outline" size="sm" className="rounded-xl text-xs font-semibold" disabled={isTogglingStatus}>
+              <Button
+                variant="outline"
+                size="sm"
+                className="rounded-xl text-xs font-semibold"
+                disabled={isTogglingStatus}
+              >
                 Cancel
               </Button>
             </DialogClose>

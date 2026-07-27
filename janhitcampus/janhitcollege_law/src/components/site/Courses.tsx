@@ -1,6 +1,14 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { FileText, Download, CheckCircle, GraduationCap, Clock, FileCheck, Shirt } from "lucide-react";
+import {
+  FileText,
+  Download,
+  CheckCircle,
+  GraduationCap,
+  Clock,
+  FileCheck,
+  Shirt,
+} from "lucide-react";
 
 // Import PDF assets
 import ballbStructure from "@/assets/B.A.LL.B. (Course Structure).pdf";
@@ -16,13 +24,14 @@ export function Courses() {
       <div className="max-w-7xl mx-auto px-6">
         {/* Section Header */}
         <div className="text-center space-y-3 max-w-2xl mx-auto mb-12">
-          <span className="text-xs font-bold uppercase tracking-wider text-gold">Courses Offered</span>
-          <h2 className="text-3xl md:text-4xl font-serif font-bold text-navy">
-            Academic Programs
-          </h2>
+          <span className="text-xs font-bold uppercase tracking-wider text-gold">
+            Courses Offered
+          </span>
+          <h2 className="text-3xl md:text-4xl font-serif font-bold text-navy">Academic Programs</h2>
           <div className="h-1 w-20 bg-gold mx-auto rounded" />
           <p className="text-sm text-navy/70">
-            Janhit College of Law offers recognized programs tailored to equip students with sound legal logic and practical advocacy.
+            Janhit College of Law offers recognized programs tailored to equip students with sound
+            legal logic and practical advocacy.
           </p>
         </div>
 
@@ -69,12 +78,18 @@ export function Courses() {
                   {/* Title & Duration */}
                   <div className="flex flex-col md:flex-row md:items-center justify-between border-b border-gold/10 pb-5 gap-4">
                     <div>
-                      <h3 className="font-serif text-2xl font-bold text-navy">Bachelor of Arts & Bachelor of Laws (B.A.LL.B)</h3>
-                      <p className="text-xs text-navy/60 mt-1">Integrated 5-Year Dual Degree Course</p>
+                      <h3 className="font-serif text-2xl font-bold text-navy">
+                        Bachelor of Arts & Bachelor of Laws (B.A.LL.B)
+                      </h3>
+                      <p className="text-xs text-navy/60 mt-1">
+                        Integrated 5-Year Dual Degree Course
+                      </p>
                     </div>
                     <div className="flex items-center gap-2 bg-gold/10 text-gold px-4 py-2 rounded-lg border border-gold/20 shrink-0 self-start md:self-center">
                       <Clock className="h-4.5 w-4.5" />
-                      <span className="text-xs font-bold uppercase tracking-wider">5 Years / 10 Semesters</span>
+                      <span className="text-xs font-bold uppercase tracking-wider">
+                        5 Years / 10 Semesters
+                      </span>
                     </div>
                   </div>
 
@@ -87,15 +102,24 @@ export function Courses() {
                     <ul className="space-y-2.5 text-sm text-navy/80 pl-2">
                       <li className="flex items-start gap-2.5">
                         <CheckCircle className="h-4 w-4 text-gold shrink-0 mt-0.5" />
-                        <span>Completed 10+2 in any stream from a recognized University / Board.</span>
+                        <span>
+                          Completed 10+2 in any stream from a recognized University / Board.
+                        </span>
                       </li>
                       <li className="flex items-start gap-2.5">
                         <CheckCircle className="h-4 w-4 text-gold shrink-0 mt-0.5" />
-                        <span>Minimum of <strong>45% marks for General</strong> candidates and <strong>40% marks for SC / ST</strong> candidates (As per BCI / University Norms).</span>
+                        <span>
+                          Minimum of <strong>45% marks for General</strong> candidates and{" "}
+                          <strong>40% marks for SC / ST</strong> candidates (As per BCI / University
+                          Norms).
+                        </span>
                       </li>
                       <li className="flex items-start gap-2.5">
                         <CheckCircle className="h-4 w-4 text-gold shrink-0 mt-0.5" />
-                        <span>Candidates appearing/appeared for the Annual Examination in March/April are also eligible to apply.</span>
+                        <span>
+                          Candidates appearing/appeared for the Annual Examination in March/April
+                          are also eligible to apply.
+                        </span>
                       </li>
                       <li className="flex items-start gap-2.5">
                         <CheckCircle className="h-4 w-4 text-gold shrink-0 mt-0.5" />
@@ -117,7 +141,10 @@ export function Courses() {
                       </li>
                       <li className="flex items-start gap-2.5">
                         <CheckCircle className="h-4 w-4 text-gold shrink-0 mt-0.5" />
-                        <span>Each academic year is divided into two semesters (July-Dec. & Feb.-June) / Annual System (Aug-May).</span>
+                        <span>
+                          Each academic year is divided into two semesters (July-Dec. & Feb.-June) /
+                          Annual System (Aug-May).
+                        </span>
                       </li>
                     </ul>
                   </div>
@@ -129,18 +156,29 @@ export function Courses() {
                       <span>Prescribed Dress Code</span>
                     </h4>
                     <p className="text-sm text-navy/70 leading-relaxed pl-2 mb-2">
-                      Students must follow the prescribed college dress code from Tuesday to Saturday and during Inter-Class Moot Court Competitions, Guest Lectures, Seminars, Presentations etc.
+                      Students must follow the prescribed college dress code from Tuesday to
+                      Saturday and during Inter-Class Moot Court Competitions, Guest Lectures,
+                      Seminars, Presentations etc.
                     </p>
                     <div className="grid md:grid-cols-2 gap-4 pl-2">
                       <div className="bg-navy-deep/5 border border-navy/10 p-4 rounded-lg">
-                        <span className="text-sm font-bold text-navy uppercase tracking-wider block mb-1">Boys</span>
-                        <p className="text-base text-navy/80">White Shirt, Black Trousers, Tie, Black Blazer, Black Shoes.</p>
+                        <span className="text-sm font-bold text-navy uppercase tracking-wider block mb-1">
+                          Boys
+                        </span>
+                        <p className="text-base text-navy/80">
+                          White Shirt, Black Trousers, Tie, Black Blazer, Black Shoes.
+                        </p>
                       </div>
                       <div className="bg-navy-deep/5 border border-navy/10 p-4 rounded-lg">
-                        <span className="text-sm font-bold text-navy uppercase tracking-wider block mb-1">Girls</span>
+                        <span className="text-sm font-bold text-navy uppercase tracking-wider block mb-1">
+                          Girls
+                        </span>
                         <p className="text-base text-navy/80">
-                          White Shalwar Kameez, White Dupatta, Black Blazer, Black Shoes <br className="hidden md:inline" />
-                          <strong className="text-xs text-gold uppercase tracking-widest block my-1">OR</strong>
+                          White Shalwar Kameez, White Dupatta, Black Blazer, Black Shoes{" "}
+                          <br className="hidden md:inline" />
+                          <strong className="text-xs text-gold uppercase tracking-widest block my-1">
+                            OR
+                          </strong>
                           White Shirt, Black Trousers, Tie, Black Blazer, Black Shoes.
                         </p>
                       </div>
@@ -227,12 +265,18 @@ export function Courses() {
                   {/* Title & Duration */}
                   <div className="flex flex-col md:flex-row md:items-center justify-between border-b border-gold/10 pb-5 gap-4">
                     <div>
-                      <h3 className="font-serif text-2xl font-bold text-navy">Bachelor of Laws (LL.B)</h3>
-                      <p className="text-xs text-navy/60 mt-1">Professional Graduate 3-Year Degree Course</p>
+                      <h3 className="font-serif text-2xl font-bold text-navy">
+                        Bachelor of Laws (LL.B)
+                      </h3>
+                      <p className="text-xs text-navy/60 mt-1">
+                        Professional Graduate 3-Year Degree Course
+                      </p>
                     </div>
                     <div className="flex items-center gap-2 bg-gold/10 text-gold px-4 py-2 rounded-lg border border-gold/20 shrink-0 self-start md:self-center">
                       <Clock className="h-4.5 w-4.5" />
-                      <span className="text-xs font-bold uppercase tracking-wider">3 Years / 6 Semesters</span>
+                      <span className="text-xs font-bold uppercase tracking-wider">
+                        3 Years / 6 Semesters
+                      </span>
                     </div>
                   </div>
 
@@ -245,15 +289,25 @@ export function Courses() {
                     <ul className="space-y-2.5 text-sm text-navy/80 pl-2">
                       <li className="flex items-start gap-2.5">
                         <CheckCircle className="h-4 w-4 text-gold shrink-0 mt-0.5" />
-                        <span>Completed 10+2+3 (Graduation) in any discipline from a recognized College / University.</span>
+                        <span>
+                          Completed 10+2+3 (Graduation) in any discipline from a recognized College
+                          / University.
+                        </span>
                       </li>
                       <li className="flex items-start gap-2.5">
                         <CheckCircle className="h-4 w-4 text-gold shrink-0 mt-0.5" />
-                        <span>Minimum of <strong>45% marks for General</strong> candidates and <strong>40% marks for SC / ST</strong> candidates (As per BCI / University Norms).</span>
+                        <span>
+                          Minimum of <strong>45% marks for General</strong> candidates and{" "}
+                          <strong>40% marks for SC / ST</strong> candidates (As per BCI / University
+                          Norms).
+                        </span>
                       </li>
                       <li className="flex items-start gap-2.5">
                         <CheckCircle className="h-4 w-4 text-gold shrink-0 mt-0.5" />
-                        <span>Candidates appearing/appeared for the Annual Examination in March/April are also eligible to apply.</span>
+                        <span>
+                          Candidates appearing/appeared for the Annual Examination in March/April
+                          are also eligible to apply.
+                        </span>
                       </li>
                       <li className="flex items-start gap-2.5">
                         <CheckCircle className="h-4 w-4 text-gold shrink-0 mt-0.5" />
@@ -275,7 +329,10 @@ export function Courses() {
                       </li>
                       <li className="flex items-start gap-2.5">
                         <CheckCircle className="h-4 w-4 text-gold shrink-0 mt-0.5" />
-                        <span>Each academic year is divided into two semesters (July-Dec. & Feb.-June) / Annual System (Aug-May).</span>
+                        <span>
+                          Each academic year is divided into two semesters (July-Dec. & Feb.-June) /
+                          Annual System (Aug-May).
+                        </span>
                       </li>
                     </ul>
                   </div>
@@ -287,18 +344,28 @@ export function Courses() {
                       <span>Prescribed Dress Code</span>
                     </h4>
                     <p className="text-sm text-navy/70 leading-relaxed pl-2 mb-2">
-                      Students must follow the prescribed college dress code from Tuesday to Saturday and during Inter-Class Moot Court Competitions, Guest Lectures, Seminars, Presentations etc.
+                      Students must follow the prescribed college dress code from Tuesday to
+                      Saturday and during Inter-Class Moot Court Competitions, Guest Lectures,
+                      Seminars, Presentations etc.
                     </p>
                     <div className="grid md:grid-cols-2 gap-4 pl-2">
                       <div className="bg-navy-deep/5 border border-navy/10 p-4 rounded-lg">
-                        <span className="text-sm font-bold text-navy uppercase tracking-wider block mb-1">Boys</span>
-                        <p className="text-base text-navy/80">White Shirt, Black Trousers, Tie, Black Blazer, Black Shoes.</p>
+                        <span className="text-sm font-bold text-navy uppercase tracking-wider block mb-1">
+                          Boys
+                        </span>
+                        <p className="text-base text-navy/80">
+                          White Shirt, Black Trousers, Tie, Black Blazer, Black Shoes.
+                        </p>
                       </div>
                       <div className="bg-navy-deep/5 border border-navy/10 p-4 rounded-lg">
-                        <span className="text-sm font-bold text-navy uppercase tracking-wider block mb-1">Girls</span>
+                        <span className="text-sm font-bold text-navy uppercase tracking-wider block mb-1">
+                          Girls
+                        </span>
                         <p className="text-base text-navy/80">
                           White Shalwar Kameez, White Dupatta, Black Blazer, Black Shoes <br />
-                          <strong className="text-xs text-gold uppercase tracking-widest block my-1">OR</strong>
+                          <strong className="text-xs text-gold uppercase tracking-widest block my-1">
+                            OR
+                          </strong>
                           White Shirt, Black Trousers, Tie, Black Blazer, Black Shoes.
                         </p>
                       </div>
@@ -382,5 +449,3 @@ export function Courses() {
     </section>
   );
 }
-
-

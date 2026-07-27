@@ -13,7 +13,7 @@ import {
   MapPin
 } from 'lucide-react';
 import logo from './assets/logo-web.png';
-import './App.css';
+import './styles/App.css';
 
 interface Campus {
   name: string;

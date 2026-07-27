@@ -67,7 +67,9 @@ export const GalleryCreate: React.FC = () => {
 
       {/* Page Header */}
       <div className="mb-6 z-10">
-        <h1 className="font-display text-2xl md:text-3xl font-bold text-foreground">Upload Gallery Item</h1>
+        <h1 className="font-display text-2xl md:text-3xl font-bold text-foreground">
+          Upload Gallery Item
+        </h1>
         <p className="text-xs md:text-sm text-muted-foreground mt-1">
           Add a new photo or video clip to campus galleries.
         </p>

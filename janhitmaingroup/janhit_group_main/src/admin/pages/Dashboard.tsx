@@ -16,7 +16,8 @@ export const DashboardPage: React.FC = () => {
           Welcome, <span className="text-gradient-gold">{adminName}</span>
         </h1>
         <p className="mt-4 text-sm md:text-base text-muted-foreground leading-relaxed">
-          You are securely logged into the Janhit Group of Institutions administration panel. Use the sidebar menu to navigate through admin modules.
+          You are securely logged into the Janhit Group of Institutions administration panel. Use
+          the sidebar menu to navigate through admin modules.
         </p>
       </div>
     </div>

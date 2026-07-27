@@ -81,9 +81,7 @@ export const CampusForm: React.FC<CampusFormProps> = ({
   }, [name, initialData, isTouched.slug, isTouched.subdomain]);
 
   // Sync websiteUrl with subdomain
-  const websiteUrl = subdomain
-    ? `https://${subdomain}.janhitgroup.com`
-    : "https://janhitgroup.com";
+  const websiteUrl = subdomain ? `https://${subdomain}.janhitgroup.com` : "https://janhitgroup.com";
 
   // Validation function
   const validateField = (fieldName: string, value: string): string => {
@@ -178,7 +176,9 @@ export const CampusForm: React.FC<CampusFormProps> = ({
     const hasErrors = Object.values(newErrors).some((err) => err !== "");
     if (hasErrors) {
       // Find first error and scroll to it
-      const firstErrorField = Object.keys(newErrors).find((key) => newErrors[key as keyof typeof newErrors] !== "");
+      const firstErrorField = Object.keys(newErrors).find(
+        (key) => newErrors[key as keyof typeof newErrors] !== "",
+      );
       if (firstErrorField) {
         const element = document.getElementById(firstErrorField);
         if (element) {
@@ -212,20 +212,23 @@ export const CampusForm: React.FC<CampusFormProps> = ({
     <form onSubmit={handleSubmit} className="space-y-6 pb-24">
       {/* 2 Column Layout on Desktop, 1 Column on Tablet/Mobile */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        
         {/* Left Column */}
         <div className="space-y-6">
-          
           {/* Section: Basic Information */}
           <div className="glass rounded-2xl p-6 border border-border/80 shadow-sm space-y-4">
             <h2 className="font-display text-lg font-bold text-foreground pb-2 border-b border-border/40 flex items-center gap-2">
-              <span className="size-6 rounded bg-primary/10 text-primary flex items-center justify-center text-xs">1</span>
+              <span className="size-6 rounded bg-primary/10 text-primary flex items-center justify-center text-xs">
+                1
+              </span>
               Basic Information
             </h2>
 
             {/* Campus Name */}
             <div className="space-y-1.5">
-              <Label htmlFor="name" className="text-xs font-semibold text-foreground/80 uppercase tracking-wider pl-0.5">
+              <Label
+                htmlFor="name"
+                className="text-xs font-semibold text-foreground/80 uppercase tracking-wider pl-0.5"
+              >
                 Campus Name <span className="text-destructive">*</span>
               </Label>
               <Input
@@ -246,7 +249,10 @@ export const CampusForm: React.FC<CampusFormProps> = ({
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {/* Short Name */}
               <div className="space-y-1.5">
-                <Label htmlFor="shortName" className="text-xs font-semibold text-foreground/80 uppercase tracking-wider pl-0.5">
+                <Label
+                  htmlFor="shortName"
+                  className="text-xs font-semibold text-foreground/80 uppercase tracking-wider pl-0.5"
+                >
                   Short Name
                 </Label>
                 <Input
@@ -261,7 +267,10 @@ export const CampusForm: React.FC<CampusFormProps> = ({
 
               {/* Campus Code */}
               <div className="space-y-1.5">
-                <Label htmlFor="code" className="text-xs font-semibold text-foreground/80 uppercase tracking-wider pl-0.5">
+                <Label
+                  htmlFor="code"
+                  className="text-xs font-semibold text-foreground/80 uppercase tracking-wider pl-0.5"
+                >
                   Campus Code <span className="text-destructive">*</span>
                 </Label>
                 <Input
@@ -275,7 +284,9 @@ export const CampusForm: React.FC<CampusFormProps> = ({
                     errors.code ? "border-destructive focus-visible:ring-destructive" : ""
                   }`}
                 />
-                {errors.code && <p className="text-destructive text-xs mt-1 pl-0.5">{errors.code}</p>}
+                {errors.code && (
+                  <p className="text-destructive text-xs mt-1 pl-0.5">{errors.code}</p>
+                )}
               </div>
             </div>
 
@@ -283,9 +294,14 @@ export const CampusForm: React.FC<CampusFormProps> = ({
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {/* Slug */}
               <div className="space-y-1.5">
-                <Label htmlFor="slug" className="text-xs font-semibold text-foreground/80 uppercase tracking-wider pl-0.5 flex items-center gap-1.5">
+                <Label
+                  htmlFor="slug"
+                  className="text-xs font-semibold text-foreground/80 uppercase tracking-wider pl-0.5 flex items-center gap-1.5"
+                >
                   Slug
-                  <span className="text-[10px] text-muted-foreground capitalize font-normal">(auto-generated)</span>
+                  <span className="text-[10px] text-muted-foreground capitalize font-normal">
+                    (auto-generated)
+                  </span>
                 </Label>
                 <Input
                   id="slug"
@@ -301,12 +317,17 @@ export const CampusForm: React.FC<CampusFormProps> = ({
                     errors.slug ? "border-destructive focus-visible:ring-destructive" : ""
                   }`}
                 />
-                {errors.slug && <p className="text-destructive text-xs mt-1 pl-0.5">{errors.slug}</p>}
+                {errors.slug && (
+                  <p className="text-destructive text-xs mt-1 pl-0.5">{errors.slug}</p>
+                )}
               </div>
 
               {/* Subdomain */}
               <div className="space-y-1.5">
-                <Label htmlFor="subdomain" className="text-xs font-semibold text-foreground/80 uppercase tracking-wider pl-0.5">
+                <Label
+                  htmlFor="subdomain"
+                  className="text-xs font-semibold text-foreground/80 uppercase tracking-wider pl-0.5"
+                >
                   Subdomain <span className="text-destructive">*</span>
                 </Label>
                 <Input
@@ -323,7 +344,9 @@ export const CampusForm: React.FC<CampusFormProps> = ({
                     errors.subdomain ? "border-destructive focus-visible:ring-destructive" : ""
                   }`}
                 />
-                {errors.subdomain && <p className="text-destructive text-xs mt-1 pl-0.5">{errors.subdomain}</p>}
+                {errors.subdomain && (
+                  <p className="text-destructive text-xs mt-1 pl-0.5">{errors.subdomain}</p>
+                )}
               </div>
             </div>
 
@@ -331,7 +354,9 @@ export const CampusForm: React.FC<CampusFormProps> = ({
             <div className="mt-1.5 p-3 rounded-xl bg-muted/40 border border-border/60 flex items-start gap-2.5">
               <Info className="size-4 text-primary shrink-0 mt-0.5" />
               <div className="text-xs">
-                <span className="text-muted-foreground uppercase tracking-wider block font-bold text-[9px] mb-0.5">Auto-Generated Web Address</span>
+                <span className="text-muted-foreground uppercase tracking-wider block font-bold text-[9px] mb-0.5">
+                  Auto-Generated Web Address
+                </span>
                 <code className="text-primary font-semibold break-all font-mono">{websiteUrl}</code>
               </div>
             </div>
@@ -340,11 +365,16 @@ export const CampusForm: React.FC<CampusFormProps> = ({
           {/* Section: Description */}
           <div className="glass rounded-2xl p-6 border border-border/80 shadow-sm space-y-4">
             <h2 className="font-display text-lg font-bold text-foreground pb-2 border-b border-border/40 flex items-center gap-2">
-              <span className="size-6 rounded bg-primary/10 text-primary flex items-center justify-center text-xs">2</span>
+              <span className="size-6 rounded bg-primary/10 text-primary flex items-center justify-center text-xs">
+                2
+              </span>
               Campus Description
             </h2>
             <div className="space-y-1.5">
-              <Label htmlFor="description" className="text-xs font-semibold text-foreground/80 uppercase tracking-wider pl-0.5">
+              <Label
+                htmlFor="description"
+                className="text-xs font-semibold text-foreground/80 uppercase tracking-wider pl-0.5"
+              >
                 Description
               </Label>
               <Textarea
@@ -361,7 +391,9 @@ export const CampusForm: React.FC<CampusFormProps> = ({
           {/* Section: Status */}
           <div className="glass rounded-2xl p-6 border border-border/80 shadow-sm space-y-4">
             <h2 className="font-display text-lg font-bold text-foreground pb-2 border-b border-border/40 flex items-center gap-2">
-              <span className="size-6 rounded bg-primary/10 text-primary flex items-center justify-center text-xs">3</span>
+              <span className="size-6 rounded bg-primary/10 text-primary flex items-center justify-center text-xs">
+                3
+              </span>
               Campus Status
             </h2>
             <div className="flex items-center justify-between p-3 rounded-xl bg-background/50 border border-border/60">
@@ -372,7 +404,9 @@ export const CampusForm: React.FC<CampusFormProps> = ({
                 </span>
               </div>
               <div className="flex items-center gap-2">
-                <span className={`text-xs font-bold uppercase tracking-wider ${status === "active" ? "text-green-600" : "text-muted-foreground"}`}>
+                <span
+                  className={`text-xs font-bold uppercase tracking-wider ${status === "active" ? "text-green-600" : "text-muted-foreground"}`}
+                >
                   {status === "active" ? "Active" : "Inactive"}
                 </span>
                 <Switch
@@ -382,16 +416,16 @@ export const CampusForm: React.FC<CampusFormProps> = ({
               </div>
             </div>
           </div>
-
         </div>
 
         {/* Right Column */}
         <div className="space-y-6">
-
           {/* Section: Branding */}
           <div className="glass rounded-2xl p-6 border border-border/80 shadow-sm space-y-4">
             <h2 className="font-display text-lg font-bold text-foreground pb-2 border-b border-border/40 flex items-center gap-2">
-              <span className="size-6 rounded bg-primary/10 text-primary flex items-center justify-center text-xs">4</span>
+              <span className="size-6 rounded bg-primary/10 text-primary flex items-center justify-center text-xs">
+                4
+              </span>
               Branding
             </h2>
 
@@ -406,15 +440,26 @@ export const CampusForm: React.FC<CampusFormProps> = ({
                     <img src={logo} alt="Campus Logo Preview" className="size-full object-cover" />
                   ) : (
                     <div className="size-full bg-gradient-gold text-gold-foreground flex flex-col items-center justify-center font-bold text-lg select-none">
-                      {name ? name.split(" ").map((n) => n[0]).slice(0, 2).join("").toUpperCase() : "IMG"}
+                      {name
+                        ? name
+                            .split(" ")
+                            .map((n) => n[0])
+                            .slice(0, 2)
+                            .join("")
+                            .toUpperCase()
+                        : "IMG"}
                     </div>
                   )}
                 </div>
 
                 <div className="flex flex-col items-center sm:items-start gap-2 text-center sm:text-left">
-                  <span className="text-xs font-medium text-foreground">Upload your high-res logo</span>
-                  <span className="text-[10px] text-muted-foreground">Supports PNG, JPG, or SVG. Maximum file size 2MB.</span>
-                  
+                  <span className="text-xs font-medium text-foreground">
+                    Upload your high-res logo
+                  </span>
+                  <span className="text-[10px] text-muted-foreground">
+                    Supports PNG, JPG, or SVG. Maximum file size 2MB.
+                  </span>
+
                   <div className="flex items-center gap-2 mt-1">
                     <input
                       type="file"
@@ -446,18 +491,23 @@ export const CampusForm: React.FC<CampusFormProps> = ({
               </div>
             </div>
           </div>
-          
+
           {/* Section: Contact Information */}
           <div className="glass rounded-2xl p-6 border border-border/80 shadow-sm space-y-4">
             <h2 className="font-display text-lg font-bold text-foreground pb-2 border-b border-border/40 flex items-center gap-2">
-              <span className="size-6 rounded bg-primary/10 text-primary flex items-center justify-center text-xs">5</span>
+              <span className="size-6 rounded bg-primary/10 text-primary flex items-center justify-center text-xs">
+                5
+              </span>
               Contact Information
             </h2>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {/* Email */}
               <div className="space-y-1.5">
-                <Label htmlFor="email" className="text-xs font-semibold text-foreground/80 uppercase tracking-wider pl-0.5">
+                <Label
+                  htmlFor="email"
+                  className="text-xs font-semibold text-foreground/80 uppercase tracking-wider pl-0.5"
+                >
                   Email Address
                 </Label>
                 <Input
@@ -471,12 +521,17 @@ export const CampusForm: React.FC<CampusFormProps> = ({
                     errors.email ? "border-destructive focus-visible:ring-destructive" : ""
                   }`}
                 />
-                {errors.email && <p className="text-destructive text-xs mt-1 pl-0.5">{errors.email}</p>}
+                {errors.email && (
+                  <p className="text-destructive text-xs mt-1 pl-0.5">{errors.email}</p>
+                )}
               </div>
 
               {/* Phone */}
               <div className="space-y-1.5">
-                <Label htmlFor="phone" className="text-xs font-semibold text-foreground/80 uppercase tracking-wider pl-0.5">
+                <Label
+                  htmlFor="phone"
+                  className="text-xs font-semibold text-foreground/80 uppercase tracking-wider pl-0.5"
+                >
                   Phone Number
                 </Label>
                 <Input
@@ -494,13 +549,18 @@ export const CampusForm: React.FC<CampusFormProps> = ({
           {/* Section: Location */}
           <div className="glass rounded-2xl p-6 border border-border/80 shadow-sm space-y-4">
             <h2 className="font-display text-lg font-bold text-foreground pb-2 border-b border-border/40 flex items-center gap-2">
-              <span className="size-6 rounded bg-primary/10 text-primary flex items-center justify-center text-xs">6</span>
+              <span className="size-6 rounded bg-primary/10 text-primary flex items-center justify-center text-xs">
+                6
+              </span>
               Location Details
             </h2>
 
             {/* Address Line */}
             <div className="space-y-1.5">
-              <Label htmlFor="address" className="text-xs font-semibold text-foreground/80 uppercase tracking-wider pl-0.5">
+              <Label
+                htmlFor="address"
+                className="text-xs font-semibold text-foreground/80 uppercase tracking-wider pl-0.5"
+              >
                 Address
               </Label>
               <Input
@@ -517,7 +577,10 @@ export const CampusForm: React.FC<CampusFormProps> = ({
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               {/* City */}
               <div className="space-y-1.5">
-                <Label htmlFor="city" className="text-xs font-semibold text-foreground/80 uppercase tracking-wider pl-0.5">
+                <Label
+                  htmlFor="city"
+                  className="text-xs font-semibold text-foreground/80 uppercase tracking-wider pl-0.5"
+                >
                   City
                 </Label>
                 <Input
@@ -532,7 +595,10 @@ export const CampusForm: React.FC<CampusFormProps> = ({
 
               {/* State */}
               <div className="space-y-1.5">
-                <Label htmlFor="state" className="text-xs font-semibold text-foreground/80 uppercase tracking-wider pl-0.5">
+                <Label
+                  htmlFor="state"
+                  className="text-xs font-semibold text-foreground/80 uppercase tracking-wider pl-0.5"
+                >
                   State
                 </Label>
                 <Input
@@ -547,7 +613,10 @@ export const CampusForm: React.FC<CampusFormProps> = ({
 
               {/* Pincode */}
               <div className="space-y-1.5">
-                <Label htmlFor="pincode" className="text-xs font-semibold text-foreground/80 uppercase tracking-wider pl-0.5">
+                <Label
+                  htmlFor="pincode"
+                  className="text-xs font-semibold text-foreground/80 uppercase tracking-wider pl-0.5"
+                >
                   Pincode
                 </Label>
                 <Input
@@ -561,9 +630,7 @@ export const CampusForm: React.FC<CampusFormProps> = ({
               </div>
             </div>
           </div>
-
         </div>
-
       </div>
 
       {/* Sticky Bottom Action Bar */}

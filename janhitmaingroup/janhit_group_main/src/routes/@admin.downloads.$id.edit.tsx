@@ -5,9 +5,7 @@ import { ProtectedRoute } from "@/admin/components/ProtectedRoute";
 export const Route = createFileRoute("/@admin/downloads/$id/edit")({
   component: DownloadEditRouteComponent,
   head: () => ({
-    meta: [
-      { title: "Edit Download Document — Janhit Group of Institutions" },
-    ],
+    meta: [{ title: "Edit Download Document — Janhit Group of Institutions" }],
   }),
 });
 

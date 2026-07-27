@@ -15,7 +15,12 @@ import { toast } from "sonner";
 export const NewsNoticeCreate: React.FC = () => {
   const navigate = useNavigate();
 
-  const handleSubmit = (formData: Omit<NewsNotice, "id" | "viewCount" | "downloadCount" | "createdDate" | "updatedDate">) => {
+  const handleSubmit = (
+    formData: Omit<
+      NewsNotice,
+      "id" | "viewCount" | "downloadCount" | "createdDate" | "updatedDate"
+    >,
+  ) => {
     const existing = getStoredNewsNotices();
 
     const newRecord: NewsNotice = {
@@ -69,7 +74,9 @@ export const NewsNoticeCreate: React.FC = () => {
 
       {/* Title block */}
       <div className="mb-6 z-10">
-        <h1 className="font-display text-2xl md:text-3xl font-bold text-foreground">Create Announcement</h1>
+        <h1 className="font-display text-2xl md:text-3xl font-bold text-foreground">
+          Create Announcement
+        </h1>
         <p className="text-xs md:text-sm text-muted-foreground mt-1">
           Publish a new announcement, school notice, or news article.
         </p>

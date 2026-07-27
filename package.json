@@ -1,0 +1,22 @@
+{
+  "name": "janhit-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "janhitcampus/*",
+    "janhitmaingroup/*"
+  ],
+  "scripts": {
+    "dev:advertisement": "npm run dev -w janhit_advertisement",
+    "dev:jwsgn": "npm run dev -w janhit_world_school_gn",
+    "dev:law": "npm run dev -w janhitcollege_law",
+    "dev:main": "npm run dev -w janhit_group_main",
+    "build:advertisement": "npm run build -w janhit_advertisement",
+    "build:jwsgn": "npm run build -w janhit_world_school_gn",
+    "build:law": "npm run build -w janhitcollege_law",
+    "build:main": "npm run build -w janhit_group_main",
+    "build:all": "npm run build --workspaces --if-present",
+    "lint:all": "npm run lint --workspaces --if-present",
+    "format:all": "npm run format --workspaces --if-present"
+  }
+}

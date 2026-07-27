@@ -12,7 +12,7 @@ import {
   ToggleLeft,
   ToggleRight,
   Loader2,
-  AlertCircle
+  AlertCircle,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -57,11 +57,13 @@ export const CampusListing: React.FC = () => {
   const [campuses, setCampuses] = useState<Campus[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
-  const [sortBy, setSortBy] = useState<"createdDate" | "updatedDate" | "name" | "code" | "city" | "state">("name");
+  const [sortBy, setSortBy] = useState<
+    "createdDate" | "updatedDate" | "name" | "code" | "city" | "state"
+  >("name");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(5);
-  
+
   // Status Modal State
   const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
   const [campusToToggle, setCampusToToggle] = useState<Campus | null>(null);
@@ -87,7 +89,7 @@ export const CampusListing: React.FC = () => {
   const confirmStatusToggle = async () => {
     if (!campusToToggle) return;
     setIsTogglingStatus(true);
-    
+
     // Simulate short network delay
     await new Promise((resolve) => setTimeout(resolve, 500));
 
@@ -125,7 +127,7 @@ export const CampusListing: React.FC = () => {
   const sortedCampuses = [...filteredCampuses].sort((a, b) => {
     let valA = a[sortBy] || "";
     let valB = b[sortBy] || "";
-    
+
     // Case insensitive for strings
     if (typeof valA === "string") valA = valA.toLowerCase();
     if (typeof valB === "string") valB = valB.toLowerCase();
@@ -157,7 +159,9 @@ export const CampusListing: React.FC = () => {
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 z-10">
         <div>
-          <h1 className="font-display text-2xl md:text-3xl font-bold text-foreground">Campus Management</h1>
+          <h1 className="font-display text-2xl md:text-3xl font-bold text-foreground">
+            Campus Management
+          </h1>
           <p className="text-xs md:text-sm text-muted-foreground mt-1">
             Create, edit, toggle and manage various institutions, schools, and colleges.
           </p>
@@ -192,7 +196,9 @@ export const CampusListing: React.FC = () => {
         {/* Sort Controls */}
         <div className="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
           <div className="flex items-center gap-2">
-            <span className="text-xs font-medium text-muted-foreground whitespace-nowrap">Sort By</span>
+            <span className="text-xs font-medium text-muted-foreground whitespace-nowrap">
+              Sort By
+            </span>
             <Select
               value={sortBy}
               onValueChange={(val: any) => {
@@ -215,7 +221,9 @@ export const CampusListing: React.FC = () => {
           </div>
 
           <div className="flex items-center gap-2">
-            <span className="text-xs font-medium text-muted-foreground whitespace-nowrap">Order</span>
+            <span className="text-xs font-medium text-muted-foreground whitespace-nowrap">
+              Order
+            </span>
             <Select
               value={sortOrder}
               onValueChange={(val: "asc" | "desc") => {
@@ -244,7 +252,10 @@ export const CampusListing: React.FC = () => {
               <Skeleton className="h-6 w-1/12" />
             </div>
             {[...Array(5)].map((_, i) => (
-              <div key={i} className="flex gap-4 items-center py-2 border-b border-border/40 last:border-0">
+              <div
+                key={i}
+                className="flex gap-4 items-center py-2 border-b border-border/40 last:border-0"
+              >
                 <Skeleton className="size-10 rounded-lg shrink-0" />
                 <div className="flex-1 space-y-2">
                   <Skeleton className="h-4 w-1/3" />
@@ -257,19 +268,32 @@ export const CampusListing: React.FC = () => {
           </div>
         ) : paginatedCampuses.length > 0 ? (
           <div className="flex-grow flex flex-col justify-between">
-            
             {/* Table Container */}
             <div className="overflow-x-auto w-full">
               <Table className="w-full min-w-[700px] border-collapse">
                 <TableHeader className="bg-muted/40">
                   <TableRow>
-                    <TableHead className="w-[65px] pl-5 text-xs font-bold uppercase tracking-wider text-muted-foreground py-3.5">Logo</TableHead>
-                    <TableHead className="min-w-[200px] text-xs font-bold uppercase tracking-wider text-muted-foreground py-3.5">Campus Name</TableHead>
-                    <TableHead className="hidden sm:table-cell text-xs font-bold uppercase tracking-wider text-muted-foreground py-3.5">Slug</TableHead>
-                    <TableHead className="hidden md:table-cell text-xs font-bold uppercase tracking-wider text-muted-foreground py-3.5">Website URL</TableHead>
-                    <TableHead className="hidden lg:table-cell text-xs font-bold uppercase tracking-wider text-muted-foreground py-3.5">Email</TableHead>
-                    <TableHead className="hidden lg:table-cell text-xs font-bold uppercase tracking-wider text-muted-foreground py-3.5">Phone No</TableHead>
-                    <TableHead className="pr-5 text-right text-xs font-bold uppercase tracking-wider text-muted-foreground py-3.5">Actions</TableHead>
+                    <TableHead className="w-[65px] pl-5 text-xs font-bold uppercase tracking-wider text-muted-foreground py-3.5">
+                      Logo
+                    </TableHead>
+                    <TableHead className="min-w-[200px] text-xs font-bold uppercase tracking-wider text-muted-foreground py-3.5">
+                      Campus Name
+                    </TableHead>
+                    <TableHead className="hidden sm:table-cell text-xs font-bold uppercase tracking-wider text-muted-foreground py-3.5">
+                      Slug
+                    </TableHead>
+                    <TableHead className="hidden md:table-cell text-xs font-bold uppercase tracking-wider text-muted-foreground py-3.5">
+                      Website URL
+                    </TableHead>
+                    <TableHead className="hidden lg:table-cell text-xs font-bold uppercase tracking-wider text-muted-foreground py-3.5">
+                      Email
+                    </TableHead>
+                    <TableHead className="hidden lg:table-cell text-xs font-bold uppercase tracking-wider text-muted-foreground py-3.5">
+                      Phone No
+                    </TableHead>
+                    <TableHead className="pr-5 text-right text-xs font-bold uppercase tracking-wider text-muted-foreground py-3.5">
+                      Actions
+                    </TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -282,7 +306,10 @@ export const CampusListing: React.FC = () => {
                       .toUpperCase();
 
                     return (
-                      <TableRow key={campus.id} className="hover:bg-gold/5 dark:hover:bg-gold/5 transition-colors border-b border-border/60">
+                      <TableRow
+                        key={campus.id}
+                        className="hover:bg-gold/5 dark:hover:bg-gold/5 transition-colors border-b border-border/60"
+                      >
                         {/* Logo cell */}
                         <TableCell className="pl-5 py-3.5">
                           <div className="size-10 rounded-lg overflow-hidden border border-border bg-background grid place-items-center shrink-0">
@@ -356,7 +383,6 @@ export const CampusListing: React.FC = () => {
                         {/* Actions & Status Switch */}
                         <TableCell className="pr-5 py-3.5 text-right">
                           <div className="flex items-center justify-end gap-2">
-                            
                             {/* Status badge & Switch */}
                             <div className="flex items-center gap-1.5 mr-2">
                               <Badge
@@ -372,7 +398,9 @@ export const CampusListing: React.FC = () => {
                               <button
                                 onClick={() => openStatusModal(campus)}
                                 className={`size-7 rounded-lg hover:bg-accent flex items-center justify-center transition-colors ${
-                                  campus.status === "active" ? "text-green-600 hover:text-green-700" : "text-muted-foreground hover:text-foreground"
+                                  campus.status === "active"
+                                    ? "text-green-600 hover:text-green-700"
+                                    : "text-muted-foreground hover:text-foreground"
                                 }`}
                                 title="Toggle Status"
                               >
@@ -428,9 +456,11 @@ export const CampusListing: React.FC = () => {
                   </span>{" "}
                   of <span className="font-semibold text-foreground">{totalItems}</span> campuses
                 </div>
-                
+
                 <div className="flex items-center gap-1.5">
-                  <span className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider">Rows</span>
+                  <span className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider">
+                    Rows
+                  </span>
                   <Select
                     value={String(pageSize)}
                     onValueChange={(val) => {
@@ -461,10 +491,14 @@ export const CampusListing: React.FC = () => {
                               setCurrentPage((prev) => prev - 1);
                             }
                           }}
-                          className={currentPage === 1 ? "pointer-events-none opacity-50 select-none" : "cursor-pointer"}
+                          className={
+                            currentPage === 1
+                              ? "pointer-events-none opacity-50 select-none"
+                              : "cursor-pointer"
+                          }
                         />
                       </PaginationItem>
-                      
+
                       {[...Array(totalPages)].map((_, index) => {
                         const p = index + 1;
                         return (
@@ -487,7 +521,11 @@ export const CampusListing: React.FC = () => {
                               setCurrentPage((prev) => prev + 1);
                             }
                           }}
-                          className={currentPage === totalPages ? "pointer-events-none opacity-50 select-none" : "cursor-pointer"}
+                          className={
+                            currentPage === totalPages
+                              ? "pointer-events-none opacity-50 select-none"
+                              : "cursor-pointer"
+                          }
                         />
                       </PaginationItem>
                     </PaginationContent>
@@ -504,7 +542,8 @@ export const CampusListing: React.FC = () => {
             </div>
             <h2 className="font-display text-xl font-bold text-foreground">No Campuses Found</h2>
             <p className="text-sm text-muted-foreground mt-2 max-w-sm leading-relaxed">
-              Create your first campus to get started or adjust your search filters to find existing campuses.
+              Create your first campus to get started or adjust your search filters to find existing
+              campuses.
             </p>
             <div className="mt-6 flex flex-col sm:flex-row gap-3">
               {searchQuery && (
@@ -549,14 +588,18 @@ export const CampusListing: React.FC = () => {
 
           {campusToToggle && (
             <div className="my-2 p-3 bg-muted/40 rounded-xl border text-center">
-              <span className="text-xs text-muted-foreground uppercase tracking-wider block mb-1">Target Campus</span>
+              <span className="text-xs text-muted-foreground uppercase tracking-wider block mb-1">
+                Target Campus
+              </span>
               <span className="text-sm font-bold text-foreground">{campusToToggle.name}</span>
               <div className="mt-2 flex items-center justify-center gap-2 text-xs">
                 <span className="text-muted-foreground">Current:</span>
                 <Badge
                   variant="outline"
                   className={`rounded-full px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider ${
-                    campusToToggle.status === "active" ? "bg-green-50 text-green-700" : "bg-gray-50 text-gray-700"
+                    campusToToggle.status === "active"
+                      ? "bg-green-50 text-green-700"
+                      : "bg-gray-50 text-gray-700"
                   }`}
                 >
                   {campusToToggle.status === "active" ? "Active" : "Inactive"}
@@ -566,7 +609,9 @@ export const CampusListing: React.FC = () => {
                 <Badge
                   variant="outline"
                   className={`rounded-full px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider ${
-                    campusToToggle.status === "inactive" ? "bg-green-50 text-green-700" : "bg-gray-50 text-gray-700"
+                    campusToToggle.status === "inactive"
+                      ? "bg-green-50 text-green-700"
+                      : "bg-gray-50 text-gray-700"
                   }`}
                 >
                   {campusToToggle.status === "inactive" ? "Active" : "Inactive"}

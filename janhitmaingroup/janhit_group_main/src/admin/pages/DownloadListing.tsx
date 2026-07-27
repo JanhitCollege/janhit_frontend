@@ -16,7 +16,7 @@ import {
   CheckCircle2,
   FileDown,
   Info,
-  Calendar
+  Calendar,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -70,7 +70,7 @@ export const DownloadListing: React.FC = () => {
   const [filterCategory, setFilterCategory] = useState<string>("all");
   const [filterCampus, setFilterCampus] = useState<string>("all");
   const [filterStatus, setFilterStatus] = useState<string>("all");
-  
+
   const [sortBy, setSortBy] = useState<"title" | "newest" | "oldest" | "size">("newest");
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(5);
@@ -79,7 +79,7 @@ export const DownloadListing: React.FC = () => {
   const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
-  
+
   const [selectedDownload, setSelectedDownload] = useState<Download | null>(null);
   const [isActionLoading, setIsActionLoading] = useState(false);
 
@@ -139,7 +139,7 @@ export const DownloadListing: React.FC = () => {
     saveDownloads(updated);
     setIsActionLoading(false);
     setIsStatusModalOpen(false);
-    
+
     toast.success(`Document "${selectedDownload.title}" status toggled successfully.`);
     setSelectedDownload(null);
   };
@@ -176,7 +176,7 @@ export const DownloadListing: React.FC = () => {
   // Get color styled icons based on file type
   const getFileIcon = (fileName: string) => {
     const ext = "." + fileName.split(".").pop()?.toLowerCase();
-    
+
     if (ext === ".pdf") {
       return (
         <div className="size-10 rounded-lg bg-red-100 dark:bg-red-950/40 text-red-600 dark:text-red-400 grid place-items-center border border-red-200 dark:border-red-900/50">
@@ -216,16 +216,24 @@ export const DownloadListing: React.FC = () => {
   const filteredDownloads = downloads.filter((d) => {
     // Search filter
     const q = searchQuery.toLowerCase().trim();
-    const matchesSearch = !q || d.title.toLowerCase().includes(q) || (d.description && d.description.toLowerCase().includes(q)) || d.fileName.toLowerCase().includes(q);
+    const matchesSearch =
+      !q ||
+      d.title.toLowerCase().includes(q) ||
+      (d.description && d.description.toLowerCase().includes(q)) ||
+      d.fileName.toLowerCase().includes(q);
 
     // Category filter
     const matchesCategory = filterCategory === "all" || d.category === filterCategory;
 
     // Campus filter
-    const matchesCampus = filterCampus === "all" || (filterCampus === "global" ? d.campusId === null : d.campusId === filterCampus);
+    const matchesCampus =
+      filterCampus === "all" ||
+      (filterCampus === "global" ? d.campusId === null : d.campusId === filterCampus);
 
     // Status filter
-    const matchesStatus = filterStatus === "all" || (filterStatus === "active" ? d.isActive === true : d.isActive === false);
+    const matchesStatus =
+      filterStatus === "all" ||
+      (filterStatus === "active" ? d.isActive === true : d.isActive === false);
 
     return matchesSearch && matchesCategory && matchesCampus && matchesStatus;
   });
@@ -265,9 +273,12 @@ export const DownloadListing: React.FC = () => {
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 z-10">
         <div>
-          <h1 className="font-display text-2xl md:text-3xl font-bold text-foreground">Download Management</h1>
+          <h1 className="font-display text-2xl md:text-3xl font-bold text-foreground">
+            Download Management
+          </h1>
           <p className="text-xs md:text-sm text-muted-foreground mt-1">
-            Manage academic calendars, admission forms, prospectuses, notices and syllabus download documents.
+            Manage academic calendars, admission forms, prospectuses, notices and syllabus download
+            documents.
           </p>
         </div>
         <Button
@@ -282,7 +293,6 @@ export const DownloadListing: React.FC = () => {
 
       {/* Search and Filters Bar */}
       <div className="glass rounded-xl p-4 border border-border/80 flex flex-col xl:flex-row gap-4 z-10">
-        
         {/* Search Input */}
         <div className="relative flex-1">
           <Search className="absolute left-3 top-3 size-4 text-muted-foreground" />
@@ -302,14 +312,22 @@ export const DownloadListing: React.FC = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 w-full xl:w-auto">
           {/* Category Filter */}
           <div className="flex flex-col space-y-1">
-            <Select value={filterCategory} onValueChange={(val) => { setFilterCategory(val); setCurrentPage(1); }}>
+            <Select
+              value={filterCategory}
+              onValueChange={(val) => {
+                setFilterCategory(val);
+                setCurrentPage(1);
+              }}
+            >
               <SelectTrigger className="h-10 rounded-lg border-border bg-background/50 hover:border-gold/40 text-xs">
                 <SelectValue placeholder="All Categories" />
               </SelectTrigger>
               <SelectContent className="rounded-lg border-border">
                 <SelectItem value="all">All Categories</SelectItem>
                 {Object.entries(CATEGORY_LABELS).map(([key, label]) => (
-                  <SelectItem key={key} value={key}>{label}</SelectItem>
+                  <SelectItem key={key} value={key}>
+                    {label}
+                  </SelectItem>
                 ))}
               </SelectContent>
             </Select>
@@ -317,23 +335,39 @@ export const DownloadListing: React.FC = () => {
 
           {/* Campus Scope Filter */}
           <div className="flex flex-col space-y-1">
-            <Select value={filterCampus} onValueChange={(val) => { setFilterCampus(val); setCurrentPage(1); }}>
+            <Select
+              value={filterCampus}
+              onValueChange={(val) => {
+                setFilterCampus(val);
+                setCurrentPage(1);
+              }}
+            >
               <SelectTrigger className="h-10 rounded-lg border-border bg-background/50 hover:border-gold/40 text-xs">
                 <SelectValue placeholder="All Campuses" />
               </SelectTrigger>
               <SelectContent className="rounded-lg border-border">
                 <SelectItem value="all">All Campuses</SelectItem>
                 <SelectItem value="global">Global (No Campus)</SelectItem>
-                {campuses.filter(c => c.status === "active").map((c) => (
-                  <SelectItem key={c.id} value={c.id}>{c.shortName}</SelectItem>
-                ))}
+                {campuses
+                  .filter((c) => c.status === "active")
+                  .map((c) => (
+                    <SelectItem key={c.id} value={c.id}>
+                      {c.shortName}
+                    </SelectItem>
+                  ))}
               </SelectContent>
             </Select>
           </div>
 
           {/* Status Filter */}
           <div className="flex flex-col space-y-1">
-            <Select value={filterStatus} onValueChange={(val) => { setFilterStatus(val); setCurrentPage(1); }}>
+            <Select
+              value={filterStatus}
+              onValueChange={(val) => {
+                setFilterStatus(val);
+                setCurrentPage(1);
+              }}
+            >
               <SelectTrigger className="h-10 rounded-lg border-border bg-background/50 hover:border-gold/40 text-xs">
                 <SelectValue placeholder="All Statuses" />
               </SelectTrigger>
@@ -347,7 +381,13 @@ export const DownloadListing: React.FC = () => {
 
           {/* Sort selection */}
           <div className="flex flex-col space-y-1">
-            <Select value={sortBy} onValueChange={(val: any) => { setSortBy(val); setCurrentPage(1); }}>
+            <Select
+              value={sortBy}
+              onValueChange={(val: any) => {
+                setSortBy(val);
+                setCurrentPage(1);
+              }}
+            >
               <SelectTrigger className="h-10 rounded-lg border-border bg-background/50 hover:border-gold/40 text-xs">
                 <SelectValue placeholder="Sort By" />
               </SelectTrigger>
@@ -371,7 +411,10 @@ export const DownloadListing: React.FC = () => {
               <Skeleton className="h-6 w-1/12" />
             </div>
             {[...Array(5)].map((_, i) => (
-              <div key={i} className="flex gap-4 items-center py-3 border-b border-border/40 last:border-0">
+              <div
+                key={i}
+                className="flex gap-4 items-center py-3 border-b border-border/40 last:border-0"
+              >
                 <Skeleton className="size-10 rounded-lg shrink-0" />
                 <div className="flex-grow space-y-2">
                   <Skeleton className="h-4 w-1/3" />
@@ -387,9 +430,14 @@ export const DownloadListing: React.FC = () => {
             <FileDown className="size-12 text-muted-foreground/60 mb-3" />
             <h3 className="font-display text-base font-bold text-foreground">No downloads found</h3>
             <p className="text-xs text-muted-foreground mt-1 max-w-sm">
-              We couldn't find any documents matching your criteria. Try adjusting your query or upload a new file.
+              We couldn't find any documents matching your criteria. Try adjusting your query or
+              upload a new file.
             </p>
-            <Button asChild variant="outline" className="mt-4 h-8 rounded-lg text-xs font-semibold border-border">
+            <Button
+              asChild
+              variant="outline"
+              className="mt-4 h-8 rounded-lg text-xs font-semibold border-border"
+            >
               <Link to="/@admin/downloads/create">
                 <Plus className="size-3.5 mr-1" /> Add Document
               </Link>
@@ -400,19 +448,33 @@ export const DownloadListing: React.FC = () => {
             <Table>
               <TableHeader className="bg-muted/40 hover:bg-muted/40 border-b border-border">
                 <TableRow>
-                  <TableHead className="w-12 text-center pl-4 text-xs font-bold uppercase tracking-wider text-muted-foreground py-3.5">Type</TableHead>
-                  <TableHead className="min-w-[200px] text-xs font-bold uppercase tracking-wider text-muted-foreground py-3.5">Document Title & Filename</TableHead>
-                  <TableHead className="text-xs font-bold uppercase tracking-wider text-muted-foreground py-3.5">Category</TableHead>
-                  <TableHead className="min-w-[150px] text-xs font-bold uppercase tracking-wider text-muted-foreground py-3.5">Campus Scope</TableHead>
-                  <TableHead className="text-center w-24 text-xs font-bold uppercase tracking-wider text-muted-foreground py-3.5">Size</TableHead>
-                  <TableHead className="text-center w-24 text-xs font-bold uppercase tracking-wider text-muted-foreground py-3.5">Active</TableHead>
-                  <TableHead className="text-right pr-6 w-32 text-xs font-bold uppercase tracking-wider text-muted-foreground py-3.5">Actions</TableHead>
+                  <TableHead className="w-12 text-center pl-4 text-xs font-bold uppercase tracking-wider text-muted-foreground py-3.5">
+                    Type
+                  </TableHead>
+                  <TableHead className="min-w-[200px] text-xs font-bold uppercase tracking-wider text-muted-foreground py-3.5">
+                    Document Title & Filename
+                  </TableHead>
+                  <TableHead className="text-xs font-bold uppercase tracking-wider text-muted-foreground py-3.5">
+                    Category
+                  </TableHead>
+                  <TableHead className="min-w-[150px] text-xs font-bold uppercase tracking-wider text-muted-foreground py-3.5">
+                    Campus Scope
+                  </TableHead>
+                  <TableHead className="text-center w-24 text-xs font-bold uppercase tracking-wider text-muted-foreground py-3.5">
+                    Size
+                  </TableHead>
+                  <TableHead className="text-center w-24 text-xs font-bold uppercase tracking-wider text-muted-foreground py-3.5">
+                    Active
+                  </TableHead>
+                  <TableHead className="text-right pr-6 w-32 text-xs font-bold uppercase tracking-wider text-muted-foreground py-3.5">
+                    Actions
+                  </TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {paginatedDownloads.map((download) => (
-                  <TableRow 
-                    key={download.id} 
+                  <TableRow
+                    key={download.id}
                     className="hover:bg-muted/20 border-b border-border/40 transition-colors"
                   >
                     <TableCell className="text-center pl-4 py-3">
@@ -429,8 +491,8 @@ export const DownloadListing: React.FC = () => {
                       </div>
                     </TableCell>
                     <TableCell className="py-3">
-                      <Badge 
-                        variant="secondary" 
+                      <Badge
+                        variant="secondary"
                         className="rounded-full font-medium px-2.5 py-0.5 text-[10px] bg-primary/10 text-primary border border-primary/10"
                       >
                         {CATEGORY_LABELS[download.category] || download.category}
@@ -440,7 +502,9 @@ export const DownloadListing: React.FC = () => {
                       <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
                         <Building className="size-3.5 shrink-0 text-gold" />
                         <span className="truncate max-w-[180px]">
-                          {download.campusId ? getCampusName(download.campusId) : "Global (All Campuses)"}
+                          {download.campusId
+                            ? getCampusName(download.campusId)
+                            : "Global (All Campuses)"}
                         </span>
                       </div>
                     </TableCell>
@@ -498,15 +562,15 @@ export const DownloadListing: React.FC = () => {
           <div className="flex flex-col sm:flex-row justify-between items-center gap-4 p-4 border-t border-border bg-muted/20">
             <div className="text-xs text-muted-foreground font-medium">
               Showing <span className="text-foreground">{startIndex + 1}</span> to{" "}
-              <span className="text-foreground">
-                {Math.min(startIndex + pageSize, totalItems)}
-              </span>{" "}
+              <span className="text-foreground">{Math.min(startIndex + pageSize, totalItems)}</span>{" "}
               of <span className="text-foreground">{totalItems}</span> documents
             </div>
-            
+
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-2">
-                <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Rows per page:</span>
+                <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
+                  Rows per page:
+                </span>
                 <Select
                   value={String(pageSize)}
                   onValueChange={(val) => {
@@ -534,13 +598,13 @@ export const DownloadListing: React.FC = () => {
                         variant="ghost"
                         size="icon"
                         disabled={currentPage === 1}
-                        onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                        onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
                         className="size-8 rounded-lg border border-border bg-background disabled:opacity-50"
                       >
                         <PaginationPrevious className="size-4 p-0 shrink-0" />
                       </Button>
                     </PaginationItem>
-                    
+
                     {[...Array(totalPages)].map((_, i) => (
                       <PaginationItem key={i}>
                         <PaginationLink
@@ -562,7 +626,7 @@ export const DownloadListing: React.FC = () => {
                         variant="ghost"
                         size="icon"
                         disabled={currentPage === totalPages}
-                        onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                        onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
                         className="size-8 rounded-lg border border-border bg-background disabled:opacity-50"
                       >
                         <PaginationNext className="size-4 p-0 shrink-0" />
@@ -586,10 +650,8 @@ export const DownloadListing: React.FC = () => {
             </DialogTitle>
             <DialogDescription className="text-xs text-muted-foreground leading-relaxed">
               Are you sure you want to change the status of{" "}
-              <span className="font-semibold text-foreground">
-                "{selectedDownload?.title}"
-              </span>
-              ? Inactive documents will not be visible on the public download portal.
+              <span className="font-semibold text-foreground">"{selectedDownload?.title}"</span>?
+              Inactive documents will not be visible on the public download portal.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="mt-4 flex gap-2">
@@ -619,10 +681,8 @@ export const DownloadListing: React.FC = () => {
             </DialogTitle>
             <DialogDescription className="text-xs text-muted-foreground leading-relaxed">
               This action is permanent. Are you sure you want to delete{" "}
-              <span className="font-semibold text-foreground">
-                "{selectedDownload?.title}"
-              </span>
-              ? The file and all its associated configuration will be removed.
+              <span className="font-semibold text-foreground">"{selectedDownload?.title}"</span>?
+              The file and all its associated configuration will be removed.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="mt-4 flex gap-2">
@@ -654,13 +714,18 @@ export const DownloadListing: React.FC = () => {
                 </DialogTitle>
                 <div className="flex gap-2">
                   <Badge className="rounded-full text-[10px] bg-primary/10 text-primary border-transparent">
-                    {selectedDownload ? (CATEGORY_LABELS[selectedDownload.category] || selectedDownload.category) : ""}
+                    {selectedDownload
+                      ? CATEGORY_LABELS[selectedDownload.category] || selectedDownload.category
+                      : ""}
                   </Badge>
-                  <Badge variant="outline" className={`rounded-full text-[10px] font-semibold ${
-                    selectedDownload?.isActive 
-                      ? "border-green-500/30 bg-green-50/50 text-green-600 dark:text-green-400" 
-                      : "border-slate-500/30 bg-slate-50 text-slate-500"
-                  }`}>
+                  <Badge
+                    variant="outline"
+                    className={`rounded-full text-[10px] font-semibold ${
+                      selectedDownload?.isActive
+                        ? "border-green-500/30 bg-green-50/50 text-green-600 dark:text-green-400"
+                        : "border-slate-500/30 bg-slate-50 text-slate-500"
+                    }`}
+                  >
                     {selectedDownload?.isActive ? "Active" : "Inactive"}
                   </Badge>
                 </div>
@@ -672,21 +737,29 @@ export const DownloadListing: React.FC = () => {
           <div className="mt-4 space-y-4 text-xs">
             {selectedDownload?.description && (
               <div className="space-y-1 p-3.5 bg-muted/30 rounded-xl border border-border/40">
-                <span className="font-bold text-muted-foreground uppercase tracking-wider block text-[10px]">Description</span>
-                <p className="text-foreground leading-relaxed whitespace-pre-wrap">{selectedDownload.description}</p>
+                <span className="font-bold text-muted-foreground uppercase tracking-wider block text-[10px]">
+                  Description
+                </span>
+                <p className="text-foreground leading-relaxed whitespace-pre-wrap">
+                  {selectedDownload.description}
+                </p>
               </div>
             )}
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-0.5">
-                <span className="font-bold text-muted-foreground uppercase tracking-wider block text-[10px]">Campus Scope</span>
+                <span className="font-bold text-muted-foreground uppercase tracking-wider block text-[10px]">
+                  Campus Scope
+                </span>
                 <span className="text-foreground font-semibold flex items-center gap-1.5 mt-0.5">
                   <Building className="size-3.5 text-gold" />
                   {selectedDownload ? getCampusName(selectedDownload.campusId) : ""}
                 </span>
               </div>
               <div className="space-y-0.5">
-                <span className="font-bold text-muted-foreground uppercase tracking-wider block text-[10px]">File Size</span>
+                <span className="font-bold text-muted-foreground uppercase tracking-wider block text-[10px]">
+                  File Size
+                </span>
                 <span className="text-foreground font-semibold flex items-center gap-1.5 mt-0.5">
                   <Layers className="size-3.5 text-primary" />
                   {selectedDownload ? formatBytes(selectedDownload.fileSize) : ""}
@@ -696,13 +769,17 @@ export const DownloadListing: React.FC = () => {
 
             <div className="grid grid-cols-2 gap-4 pt-1">
               <div className="space-y-0.5">
-                <span className="font-bold text-muted-foreground uppercase tracking-wider block text-[10px]">File Path</span>
+                <span className="font-bold text-muted-foreground uppercase tracking-wider block text-[10px]">
+                  File Path
+                </span>
                 <span className="text-foreground font-mono break-all mt-0.5 block leading-relaxed">
                   {selectedDownload?.fileUrl}
                 </span>
               </div>
               <div className="space-y-0.5">
-                <span className="font-bold text-muted-foreground uppercase tracking-wider block text-[10px]">URL Slug</span>
+                <span className="font-bold text-muted-foreground uppercase tracking-wider block text-[10px]">
+                  URL Slug
+                </span>
                 <span className="text-foreground font-mono break-all mt-0.5 block leading-relaxed">
                   {selectedDownload?.slug}
                 </span>
@@ -711,14 +788,18 @@ export const DownloadListing: React.FC = () => {
 
             <div className="grid grid-cols-2 gap-4 pt-1 border-t border-border/40 mt-4">
               <div className="space-y-0.5">
-                <span className="font-bold text-muted-foreground uppercase tracking-wider block text-[10px]">Created Date</span>
+                <span className="font-bold text-muted-foreground uppercase tracking-wider block text-[10px]">
+                  Created Date
+                </span>
                 <span className="text-muted-foreground flex items-center gap-1.5 mt-0.5">
                   <Calendar className="size-3.5" />
                   {selectedDownload ? new Date(selectedDownload.createdAt).toLocaleString() : ""}
                 </span>
               </div>
               <div className="space-y-0.5">
-                <span className="font-bold text-muted-foreground uppercase tracking-wider block text-[10px]">Last Updated</span>
+                <span className="font-bold text-muted-foreground uppercase tracking-wider block text-[10px]">
+                  Last Updated
+                </span>
                 <span className="text-muted-foreground flex items-center gap-1.5 mt-0.5">
                   <Calendar className="size-3.5" />
                   {selectedDownload ? new Date(selectedDownload.updatedAt).toLocaleString() : ""}

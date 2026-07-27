@@ -39,18 +39,21 @@ export const defaultFaculties: FacultyProfile[] = [
     email: "rajesh.kumar@janhit.edu.in",
     phone: "+91 98765 00123",
     linkedin: "https://linkedin.com/in/dr-rajesh-kumar-law",
-    researchInterest: "Constitutional governance, legislative processes, judicial activism in developing nations.",
+    researchInterest:
+      "Constitutional governance, legislative processes, judicial activism in developing nations.",
     subjects: "Constitutional Law, Jurisprudence, Administrative Law",
-    publications: "1. 'Constitutional Reforms in India' (2024), 2. 'Judicial Activism vs. Restraint' (2022) published in Indian Law Journal.",
+    publications:
+      "1. 'Constitutional Reforms in India' (2024), 2. 'Judicial Activism vs. Restraint' (2022) published in Indian Law Journal.",
     awards: "Outstanding Legal Educator Award (2023), Best Researcher Award (2021).",
     bio: "Dr. Rajesh Kumar is a visionary academic leader with over 18 years of teaching and administrative experience in law. He is currently heading the legal education program at Janhit College of Law and acts as an advisor to several state legal agencies.",
-    message: "Education is the most powerful tool to bring social justice and equity to society. I welcome all students to a transformative legal learning journey.",
+    message:
+      "Education is the most powerful tool to bring social justice and equity to society. I welcome all students to a transformative legal learning journey.",
     displayOrder: 1,
     isHod: true,
     isFeatured: true,
     isActive: true,
     createdAt: "2026-01-15T09:00:00Z",
-    updatedAt: "2026-06-20T11:30:00Z"
+    updatedAt: "2026-06-20T11:30:00Z",
   },
   {
     id: "fac-2",
@@ -65,18 +68,21 @@ export const defaultFaculties: FacultyProfile[] = [
     email: "shalini.singh@janhit.edu.in",
     phone: "+91 98765 00124",
     linkedin: "https://linkedin.com/in/dr-shalini-singh",
-    researchInterest: "Mergers and acquisitions, regulatory frameworks for startups, and insolvency laws.",
+    researchInterest:
+      "Mergers and acquisitions, regulatory frameworks for startups, and insolvency laws.",
     subjects: "Corporate Law, Contract Law, Insolvency Laws",
-    publications: "1. 'Startup Legal Handbook' (2023), 2. 'Analyzing the Insolvency and Bankruptcy Code' (2021).",
+    publications:
+      "1. 'Startup Legal Handbook' (2023), 2. 'Analyzing the Insolvency and Bankruptcy Code' (2021).",
     awards: "Best Teacher in Corporate Law (2022).",
     bio: "Dr. Shalini Singh specializes in corporate finance, corporate governance, and insolvency regimes. She teaches undergraduate and graduate programs and conducts corporate law workshops.",
-    message: "Understanding law is key to running clean, ethical, and highly successful businesses.",
+    message:
+      "Understanding law is key to running clean, ethical, and highly successful businesses.",
     displayOrder: 2,
     isHod: false,
     isFeatured: false,
     isActive: true,
     createdAt: "2026-02-10T10:15:00Z",
-    updatedAt: "2026-02-10T10:15:00Z"
+    updatedAt: "2026-02-10T10:15:00Z",
   },
   {
     id: "fac-3",
@@ -91,18 +97,21 @@ export const defaultFaculties: FacultyProfile[] = [
     email: "vinod.sharma@janhit.edu.in",
     phone: "+91 98765 00222",
     linkedin: "https://linkedin.com/in/prof-vinod-sharma-edu",
-    researchInterest: "Modern digital pedagogies, student-centered learning methodologies, and cognitive development in learners.",
+    researchInterest:
+      "Modern digital pedagogies, student-centered learning methodologies, and cognitive development in learners.",
     subjects: "Educational Psychology, Methodology of Teaching, Teacher Education",
-    publications: "1. 'Teaching in the Digital Age' (2023), 2. 'Psychological Foundations of Education' (2020) textbook.",
+    publications:
+      "1. 'Teaching in the Digital Age' (2023), 2. 'Psychological Foundations of Education' (2020) textbook.",
     awards: "Shikshak Samman award from UP Government (2021).",
     bio: "Prof. Vinod K. Sharma is a renowned academician in the field of teacher training and educational psychology. He has supervised over 15 Ph.D. candidates and coordinates modern teacher education curricula.",
-    message: "A teacher's role is to ignite the spark of curiosity in students. We train future educators to build tomorrow's leaders.",
+    message:
+      "A teacher's role is to ignite the spark of curiosity in students. We train future educators to build tomorrow's leaders.",
     displayOrder: 1,
     isHod: true,
     isFeatured: true,
     isActive: true,
     createdAt: "2026-01-20T08:30:00Z",
-    updatedAt: "2026-07-05T09:45:00Z"
+    updatedAt: "2026-07-05T09:45:00Z",
   },
   {
     id: "fac-4",
@@ -117,18 +126,20 @@ export const defaultFaculties: FacultyProfile[] = [
     email: "meenakshi.joshi@jws.edu.in",
     phone: "+91 98765 00333",
     linkedin: "",
-    researchInterest: "Interactive physics laboratories, science exhibition designs, STEM curriculum optimization.",
+    researchInterest:
+      "Interactive physics laboratories, science exhibition designs, STEM curriculum optimization.",
     subjects: "Physics, Science, Applied Mathematics",
     publications: "1. Physics Activity Book for K-12 (2022).",
     awards: "Best Science Educator award (JWS school level, 2024).",
     bio: "Mrs. Meenakshi Joshi has been leading the Physics and Science department at Janhit World School, guiding students through practical experiments, boards preparation, and physics Olympiads.",
-    message: "Physics is not just about memorizing formulas; it is about seeing how the universe dances.",
+    message:
+      "Physics is not just about memorizing formulas; it is about seeing how the universe dances.",
     displayOrder: 1,
     isHod: true,
     isFeatured: false,
     isActive: true,
     createdAt: "2026-03-05T11:00:00Z",
-    updatedAt: "2026-03-05T11:00:00Z"
+    updatedAt: "2026-03-05T11:00:00Z",
   },
   {
     id: "fac-5",
@@ -154,8 +165,8 @@ export const defaultFaculties: FacultyProfile[] = [
     isFeatured: false,
     isActive: false,
     createdAt: "2026-04-12T14:00:00Z",
-    updatedAt: "2026-04-15T10:00:00Z"
-  }
+    updatedAt: "2026-04-15T10:00:00Z",
+  },
 ];
 
 const LOCAL_STORAGE_KEY = "janhit_faculties";

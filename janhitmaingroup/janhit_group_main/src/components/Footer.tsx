@@ -1,5 +1,14 @@
 import { Link } from "@tanstack/react-router";
-import { Facebook, Instagram, Linkedin, Youtube, Mail, Phone, MapPin, GraduationCap } from "lucide-react";
+import {
+  Facebook,
+  Instagram,
+  Linkedin,
+  Youtube,
+  Mail,
+  Phone,
+  MapPin,
+  GraduationCap,
+} from "lucide-react";
 import { institutions } from "@/data/institutions";
 
 export function Footer() {
@@ -13,12 +22,14 @@ export function Footer() {
             </div>
             <div>
               <div className="font-display text-lg font-bold">Janhit Group</div>
-              <div className="text-[10px] uppercase tracking-[0.2em] opacity-70">of Institutions</div>
+              <div className="text-[10px] uppercase tracking-[0.2em] opacity-70">
+                of Institutions
+              </div>
             </div>
           </div>
           <p className="mt-5 text-sm leading-relaxed opacity-80">
-            Empowering education across Uttar Pradesh since 2002. A trusted family of colleges and schools
-            shaping the leaders of tomorrow.
+            Empowering education across Uttar Pradesh since 2002. A trusted family of colleges and
+            schools shaping the leaders of tomorrow.
           </p>
           <div className="mt-5 flex gap-3">
             {[Facebook, Instagram, Linkedin, Youtube].map((Icon, i) => (
@@ -35,7 +46,9 @@ export function Footer() {
         </div>
 
         <div>
-          <h4 className="text-sm font-semibold uppercase tracking-wider text-gradient-gold">Quick Links</h4>
+          <h4 className="text-sm font-semibold uppercase tracking-wider text-gradient-gold">
+            Quick Links
+          </h4>
           <ul className="mt-5 space-y-2.5 text-sm opacity-80">
             {[
               ["Home", "/"],
@@ -56,7 +69,9 @@ export function Footer() {
         </div>
 
         <div>
-          <h4 className="text-sm font-semibold uppercase tracking-wider text-gradient-gold">Our Institutions</h4>
+          <h4 className="text-sm font-semibold uppercase tracking-wider text-gradient-gold">
+            Our Institutions
+          </h4>
           <ul className="mt-5 space-y-2.5 text-sm opacity-80">
             {institutions.slice(0, 6).map((i) => (
               <li key={i.slug}>
@@ -73,11 +88,19 @@ export function Footer() {
         </div>
 
         <div>
-          <h4 className="text-sm font-semibold uppercase tracking-wider text-gradient-gold">Contact</h4>
+          <h4 className="text-sm font-semibold uppercase tracking-wider text-gradient-gold">
+            Contact
+          </h4>
           <ul className="mt-5 space-y-3 text-sm opacity-90">
-            <li className="flex gap-3"><MapPin className="size-4 mt-0.5 text-gold" /> Greater Noida · Ghaziabad · Saharanpur</li>
-            <li className="flex gap-3"><Phone className="size-4 mt-0.5 text-gold" /> +91 98765 43210</li>
-            <li className="flex gap-3"><Mail className="size-4 mt-0.5 text-gold" /> info@janhitgroup.org</li>
+            <li className="flex gap-3">
+              <MapPin className="size-4 mt-0.5 text-gold" /> Greater Noida · Ghaziabad · Saharanpur
+            </li>
+            <li className="flex gap-3">
+              <Phone className="size-4 mt-0.5 text-gold" /> +91 98765 43210
+            </li>
+            <li className="flex gap-3">
+              <Mail className="size-4 mt-0.5 text-gold" /> info@janhitgroup.org
+            </li>
           </ul>
         </div>
       </div>

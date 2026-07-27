@@ -82,7 +82,10 @@ export const ForgotPasswordPage: React.FC = () => {
             )}
 
             <div className="space-y-2">
-              <Label htmlFor="email" className="text-foreground/80 font-semibold text-xs uppercase tracking-wider pl-1">
+              <Label
+                htmlFor="email"
+                className="text-foreground/80 font-semibold text-xs uppercase tracking-wider pl-1"
+              >
                 Email Address
               </Label>
               <div className="relative">
@@ -141,7 +144,9 @@ export const ForgotPasswordPage: React.FC = () => {
                 <div className="size-14 rounded-2xl bg-gradient-gold grid place-items-center shadow-gold mb-4 text-gold-foreground">
                   <CheckCircle2 className="size-7" />
                 </div>
-                <h3 className="font-display text-xl font-bold text-foreground mb-2">Link Shared!</h3>
+                <h3 className="font-display text-xl font-bold text-foreground mb-2">
+                  Link Shared!
+                </h3>
                 <p className="text-sm text-muted-foreground leading-relaxed mb-6">
                   Forgot password link shared to your registered email.
                 </p>

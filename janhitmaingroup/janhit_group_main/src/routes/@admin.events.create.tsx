@@ -5,9 +5,7 @@ import { ProtectedRoute } from "@/admin/components/ProtectedRoute";
 export const Route = createFileRoute("/@admin/events/create")({
   component: EventCreateRouteComponent,
   head: () => ({
-    meta: [
-      { title: "Create Event — Janhit Group of Institutions" },
-    ],
+    meta: [{ title: "Create Event — Janhit Group of Institutions" }],
   }),
 });
 

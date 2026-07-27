@@ -41,7 +41,8 @@ export const defaultCampuses: Campus[] = [
     pincode: "201310",
     address: "55B, Knowledge Park 5, Greater Noida, Uttar Pradesh",
     logo: schoolImg,
-    description: "A premier K-12 school offering world-class CBSE education with smart classrooms, advanced sciences, and sports training modules.",
+    description:
+      "A premier K-12 school offering world-class CBSE education with smart classrooms, advanced sciences, and sports training modules.",
     status: "active",
     createdDate: "2026-01-10T10:30:00Z",
     updatedDate: "2026-06-15T12:00:00Z",
@@ -61,7 +62,8 @@ export const defaultCampuses: Campus[] = [
     pincode: "201001",
     address: "Sanjay Nagar, Ghaziabad, Uttar Pradesh",
     logo: schoolImg,
-    description: "A CBSE school committed to empowering students through innovative learning, modern laboratories, and extensive extracurricular programs.",
+    description:
+      "A CBSE school committed to empowering students through innovative learning, modern laboratories, and extensive extracurricular programs.",
     status: "active",
     createdDate: "2026-02-12T09:15:00Z",
     updatedDate: "2026-05-18T14:22:00Z",
@@ -81,7 +83,8 @@ export const defaultCampuses: Campus[] = [
     pincode: "247001",
     address: "Delhi Road, Saharanpur, Uttar Pradesh",
     logo: schoolImg,
-    description: "Nurturing excellence and global competence in students, this campus features expansive sports grounds, creative studios, and science labs.",
+    description:
+      "Nurturing excellence and global competence in students, this campus features expansive sports grounds, creative studios, and science labs.",
     status: "active",
     createdDate: "2026-03-01T11:45:00Z",
     updatedDate: "2026-04-10T08:30:00Z",
@@ -101,7 +104,8 @@ export const defaultCampuses: Campus[] = [
     pincode: "201310",
     address: "38, Knowledge Park 1, Greater Noida, Uttar Pradesh",
     logo: lawImg,
-    description: "Approved by the Bar Council of India, offering specialized legal education in B.A. LL.B, LL.B, and LL.M programs with moot-court activities.",
+    description:
+      "Approved by the Bar Council of India, offering specialized legal education in B.A. LL.B, LL.B, and LL.M programs with moot-court activities.",
     status: "active",
     createdDate: "2026-01-05T08:00:00Z",
     updatedDate: "2026-07-01T16:00:00Z",
@@ -121,7 +125,8 @@ export const defaultCampuses: Campus[] = [
     pincode: "201002",
     address: "Mariam Nagar, Ghaziabad, Uttar Pradesh",
     logo: gzbImg,
-    description: "Offering B.Ed and D.El.Ed programs, this campus focuses on producing highly skilled educators using modern pedagogical methods.",
+    description:
+      "Offering B.Ed and D.El.Ed programs, this campus focuses on producing highly skilled educators using modern pedagogical methods.",
     status: "active",
     createdDate: "2026-02-20T10:00:00Z",
     updatedDate: "2026-02-20T10:00:00Z",
@@ -141,7 +146,8 @@ export const defaultCampuses: Campus[] = [
     pincode: "247001",
     address: "Tapri Road, Saharanpur, Uttar Pradesh",
     logo: sahImg,
-    description: "A comprehensive university-affiliated degree college with a wide array of programs in Humanities, Science, Commerce, and Teacher Education.",
+    description:
+      "A comprehensive university-affiliated degree college with a wide array of programs in Humanities, Science, Commerce, and Teacher Education.",
     status: "active",
     createdDate: "2026-03-10T14:30:00Z",
     updatedDate: "2026-06-20T11:15:00Z",
@@ -161,7 +167,8 @@ export const defaultCampuses: Campus[] = [
     pincode: "201310",
     address: "Knowledge Park 3, Greater Noida, Uttar Pradesh",
     logo: gnImg,
-    description: "Co-educational institute specializing in BBA, BCA, B.Sc, B.Com, and B.Ed, focused on job placements and industry-readiness.",
+    description:
+      "Co-educational institute specializing in BBA, BCA, B.Sc, B.Com, and B.Ed, focused on job placements and industry-readiness.",
     status: "active",
     createdDate: "2026-01-20T09:00:00Z",
     updatedDate: "2026-07-02T09:00:00Z",
@@ -181,7 +188,8 @@ export const defaultCampuses: Campus[] = [
     pincode: "201310",
     address: "Knowledge Park 2, Greater Noida, Uttar Pradesh",
     logo: "",
-    description: "An elite business school offering postgraduate and undergraduate courses in business management, entrepreneurship, and international trade.",
+    description:
+      "An elite business school offering postgraduate and undergraduate courses in business management, entrepreneurship, and international trade.",
     status: "inactive",
     createdDate: "2026-04-05T09:00:00Z",
     updatedDate: "2026-04-05T09:00:00Z",
@@ -201,11 +209,12 @@ export const defaultCampuses: Campus[] = [
     pincode: "201310",
     address: "Knowledge Park 1, Greater Noida, Uttar Pradesh",
     logo: "",
-    description: "An education training campus focusing on advanced teaching practices, teacher-education research, and special educational workshops.",
+    description:
+      "An education training campus focusing on advanced teaching practices, teacher-education research, and special educational workshops.",
     status: "active",
     createdDate: "2026-05-01T10:00:00Z",
     updatedDate: "2026-05-01T10:00:00Z",
-  }
+  },
 ];
 
 const LOCAL_STORAGE_KEY = "janhit_campuses";

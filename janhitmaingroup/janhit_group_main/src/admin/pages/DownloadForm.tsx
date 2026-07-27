@@ -40,7 +40,7 @@ export const DownloadForm: React.FC<DownloadFormProps> = ({
   submitButtonText,
 }) => {
   // Load campuses list from mock database
-  const campusesList = getStoredCampuses().filter(c => c.status === "active");
+  const campusesList = getStoredCampuses().filter((c) => c.status === "active");
 
   // Form states
   const [title, setTitle] = useState(initialData?.title || "");
@@ -48,14 +48,16 @@ export const DownloadForm: React.FC<DownloadFormProps> = ({
   const [description, setDescription] = useState(initialData?.description || "");
   const [category, setCategory] = useState<string>(initialData?.category || "ADMISSION_FORM");
   const [campusId, setCampusId] = useState<string>(initialData?.campusId || "global");
-  const [isActive, setIsActive] = useState<boolean>(initialData?.isActive !== undefined ? initialData.isActive : true);
+  const [isActive, setIsActive] = useState<boolean>(
+    initialData?.isActive !== undefined ? initialData.isActive : true,
+  );
 
   // File upload states
   const [fileName, setFileName] = useState(initialData?.fileName || "");
   const [fileSize, setFileSize] = useState<number>(initialData?.fileSize || 0);
   const [fileType, setFileType] = useState(initialData?.fileType || "");
   const [fileUrl, setFileUrl] = useState(initialData?.fileUrl || "");
-  
+
   const [uploadProgress, setUploadProgress] = useState<number | null>(null);
   const [isDragging, setIsDragging] = useState(false);
 
@@ -133,11 +135,11 @@ export const DownloadForm: React.FC<DownloadFormProps> = ({
     // Ext check
     const allowedExtensions = [".pdf", ".doc", ".docx", ".ppt", ".pptx", ".xls", ".xlsx"];
     const ext = "." + file.name.split(".").pop()?.toLowerCase();
-    
+
     if (!allowedExtensions.includes(ext)) {
-      setErrors(prev => ({
+      setErrors((prev) => ({
         ...prev,
-        file: "Invalid file type. Allowed: PDF, DOC, DOCX, PPT, PPTX, XLS, XLSX"
+        file: "Invalid file type. Allowed: PDF, DOC, DOCX, PPT, PPTX, XLS, XLSX",
       }));
       return;
     }
@@ -145,20 +147,20 @@ export const DownloadForm: React.FC<DownloadFormProps> = ({
     // Size check (50MB)
     const maxSize = 50 * 1024 * 1024;
     if (file.size > maxSize) {
-      setErrors(prev => ({
+      setErrors((prev) => ({
         ...prev,
-        file: "File size exceeds allowed limit of 50 MB."
+        file: "File size exceeds allowed limit of 50 MB.",
       }));
       return;
     }
 
     // Clear file error
-    setErrors(prev => ({ ...prev, file: "" }));
+    setErrors((prev) => ({ ...prev, file: "" }));
 
     // Mock upload progress
     setUploadProgress(0);
     const interval = setInterval(() => {
-      setUploadProgress(prev => {
+      setUploadProgress((prev) => {
         if (prev === null) return null;
         if (prev >= 100) {
           clearInterval(interval);
@@ -250,20 +252,23 @@ export const DownloadForm: React.FC<DownloadFormProps> = ({
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        
         {/* Left Column (2 spans wide) - Form Fields */}
         <div className="lg:col-span-2 space-y-6">
-          
           {/* Section: Basic Info */}
           <div className="glass rounded-2xl p-6 border border-border/80 shadow-sm space-y-4">
             <h2 className="font-display text-lg font-bold text-foreground pb-2 border-b border-border/40 flex items-center gap-2">
-              <span className="size-6 rounded bg-primary/10 text-primary flex items-center justify-center text-xs">1</span>
+              <span className="size-6 rounded bg-primary/10 text-primary flex items-center justify-center text-xs">
+                1
+              </span>
               General Information
             </h2>
 
             {/* Title field */}
             <div className="space-y-1.5">
-              <Label htmlFor="title" className="text-xs font-semibold text-foreground/80 uppercase tracking-wider pl-0.5">
+              <Label
+                htmlFor="title"
+                className="text-xs font-semibold text-foreground/80 uppercase tracking-wider pl-0.5"
+              >
                 Download Document Title <span className="text-destructive">*</span>
               </Label>
               <Input
@@ -274,15 +279,22 @@ export const DownloadForm: React.FC<DownloadFormProps> = ({
                 onChange={(e) => handleFieldChange("title", e.target.value, setTitle)}
                 onBlur={(e) => handleBlur("title", e.target.value)}
                 className={`h-11 rounded-xl bg-background/50 border-border hover:border-gold/40 focus-visible:border-gold/60 focus-visible:ring-1 focus-visible:ring-gold transition-all text-sm ${
-                  errors.title ? "border-destructive focus-visible:ring-destructive focus-visible:border-destructive" : ""
+                  errors.title
+                    ? "border-destructive focus-visible:ring-destructive focus-visible:border-destructive"
+                    : ""
                 }`}
               />
-              {errors.title && <p className="text-destructive text-xs mt-1 pl-0.5">{errors.title}</p>}
+              {errors.title && (
+                <p className="text-destructive text-xs mt-1 pl-0.5">{errors.title}</p>
+              )}
             </div>
 
             {/* Description field */}
             <div className="space-y-1.5">
-              <Label htmlFor="description" className="text-xs font-semibold text-foreground/80 uppercase tracking-wider pl-0.5">
+              <Label
+                htmlFor="description"
+                className="text-xs font-semibold text-foreground/80 uppercase tracking-wider pl-0.5"
+              >
                 Description / Details (Optional)
               </Label>
               <Textarea
@@ -299,7 +311,9 @@ export const DownloadForm: React.FC<DownloadFormProps> = ({
           {/* Section: File Attachment */}
           <div className="glass rounded-2xl p-6 border border-border/80 shadow-sm space-y-4">
             <h2 className="font-display text-lg font-bold text-foreground pb-2 border-b border-border/40 flex items-center gap-2">
-              <span className="size-6 rounded bg-primary/10 text-primary flex items-center justify-center text-xs">2</span>
+              <span className="size-6 rounded bg-primary/10 text-primary flex items-center justify-center text-xs">
+                2
+              </span>
               Document File Upload
             </h2>
 
@@ -308,7 +322,7 @@ export const DownloadForm: React.FC<DownloadFormProps> = ({
               <Label className="text-xs font-semibold text-foreground/80 uppercase tracking-wider pl-0.5">
                 Upload File <span className="text-destructive">*</span>
               </Label>
-              
+
               {!fileName && uploadProgress === null ? (
                 <div
                   onDragOver={handleDragOver}
@@ -344,7 +358,7 @@ export const DownloadForm: React.FC<DownloadFormProps> = ({
                     Uploading Document... {uploadProgress}%
                   </span>
                   <div className="w-full max-w-xs bg-muted h-2 rounded-full overflow-hidden border border-border">
-                    <div 
+                    <div
                       className="bg-gradient-gold h-full rounded-full transition-all duration-100"
                       style={{ width: `${uploadProgress}%` }}
                     />
@@ -397,18 +411,24 @@ export const DownloadForm: React.FC<DownloadFormProps> = ({
                 </div>
               )}
 
-              {errors.file && <p className="text-destructive text-xs mt-1.5 pl-0.5 flex items-center gap-1"><AlertCircle className="size-3.5" />{errors.file}</p>}
+              {errors.file && (
+                <p className="text-destructive text-xs mt-1.5 pl-0.5 flex items-center gap-1">
+                  <AlertCircle className="size-3.5" />
+                  {errors.file}
+                </p>
+              )}
             </div>
           </div>
         </div>
 
         {/* Right Column (1 span wide) - Settings & Routing */}
         <div className="space-y-6">
-          
           {/* Section: Publishing Parameters */}
           <div className="glass rounded-2xl p-6 border border-border/80 shadow-sm space-y-4">
             <h2 className="font-display text-lg font-bold text-foreground pb-2 border-b border-border/40 flex items-center gap-2">
-              <span className="size-6 rounded bg-primary/10 text-primary flex items-center justify-center text-xs">3</span>
+              <span className="size-6 rounded bg-primary/10 text-primary flex items-center justify-center text-xs">
+                3
+              </span>
               Configurations
             </h2>
 
@@ -459,28 +479,34 @@ export const DownloadForm: React.FC<DownloadFormProps> = ({
             <div className="flex items-center justify-between p-3 rounded-xl bg-background/40 border border-border/60">
               <div className="space-y-0.5">
                 <span className="text-xs font-semibold text-foreground">Active Status</span>
-                <span className="text-[10px] text-muted-foreground block">Is document downloadable</span>
+                <span className="text-[10px] text-muted-foreground block">
+                  Is document downloadable
+                </span>
               </div>
-              <Switch
-                checked={isActive}
-                onCheckedChange={setIsActive}
-              />
+              <Switch checked={isActive} onCheckedChange={setIsActive} />
             </div>
 
             {/* Slug manual override */}
             <div className="space-y-1.5 pt-2">
-              <Label htmlFor="slug" className="text-xs font-semibold text-foreground/80 uppercase tracking-wider pl-0.5">URL Slug</Label>
+              <Label
+                htmlFor="slug"
+                className="text-xs font-semibold text-foreground/80 uppercase tracking-wider pl-0.5"
+              >
+                URL Slug
+              </Label>
               <Input
                 id="slug"
                 type="text"
                 value={slug}
                 onChange={(e) => {
-                  setIsTouched(prev => ({ ...prev, slug: true }));
+                  setIsTouched((prev) => ({ ...prev, slug: true }));
                   setSlug(e.target.value.toLowerCase().replace(/\s+/g, "-"));
                 }}
                 onBlur={(e) => handleBlur("slug", e.target.value)}
                 className={`h-11 rounded-xl bg-background/50 border-border hover:border-gold/40 transition-all font-mono text-xs ${
-                  errors.slug ? "border-destructive focus-visible:ring-destructive focus-visible:border-destructive" : ""
+                  errors.slug
+                    ? "border-destructive focus-visible:ring-destructive focus-visible:border-destructive"
+                    : ""
                 }`}
               />
               {errors.slug && <p className="text-destructive text-xs mt-1 pl-0.5">{errors.slug}</p>}
@@ -504,9 +530,7 @@ export const DownloadForm: React.FC<DownloadFormProps> = ({
               Cancel
             </Button>
           </div>
-
         </div>
-
       </div>
     </form>
   );

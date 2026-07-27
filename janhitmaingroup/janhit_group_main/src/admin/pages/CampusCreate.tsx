@@ -16,7 +16,7 @@ export const CampusCreate: React.FC = () => {
 
   const handleSubmit = (formData: Omit<Campus, "id" | "createdDate" | "updatedDate">) => {
     const existing = getStoredCampuses();
-    
+
     // Create new campus object
     const newCampus: Campus = {
       ...formData,
@@ -27,7 +27,7 @@ export const CampusCreate: React.FC = () => {
 
     const updated = [...existing, newCampus];
     saveCampuses(updated);
-    
+
     // Navigate back to listing page
     navigate({ to: "/@admin/campuses" });
   };
@@ -67,18 +67,16 @@ export const CampusCreate: React.FC = () => {
 
       {/* Title Block */}
       <div className="mb-6">
-        <h1 className="font-display text-2xl md:text-3xl font-bold text-foreground">Create Campus</h1>
+        <h1 className="font-display text-2xl md:text-3xl font-bold text-foreground">
+          Create Campus
+        </h1>
         <p className="text-xs md:text-sm text-muted-foreground mt-1">
           Fill in the information below to register a new campus location.
         </p>
       </div>
 
       {/* Form Container */}
-      <CampusForm
-        onSubmit={handleSubmit}
-        onCancel={handleCancel}
-        submitButtonText="Save Campus"
-      />
+      <CampusForm onSubmit={handleSubmit} onCancel={handleCancel} submitButtonText="Save Campus" />
     </div>
   );
 };

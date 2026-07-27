@@ -67,7 +67,9 @@ export const EventCreate: React.FC = () => {
 
       {/* Page Header */}
       <div className="mb-6 z-10">
-        <h1 className="font-display text-2xl md:text-3xl font-bold text-foreground">Create Event</h1>
+        <h1 className="font-display text-2xl md:text-3xl font-bold text-foreground">
+          Create Event
+        </h1>
         <p className="text-xs md:text-sm text-muted-foreground mt-1">
           Publish a new academic, cultural, or departmental event and map it to campuses.
         </p>

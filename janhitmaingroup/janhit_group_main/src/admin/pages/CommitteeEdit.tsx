@@ -33,11 +33,13 @@ export const CommitteeEdit: React.FC<CommitteeEditProps> = ({ id }) => {
     }
   }, [id]);
 
-  const handleSubmit = (formData: Omit<Committee, "id" | "members" | "documents" | "createdAt" | "updatedAt" | "slug">) => {
+  const handleSubmit = (
+    formData: Omit<Committee, "id" | "members" | "documents" | "createdAt" | "updatedAt" | "slug">,
+  ) => {
     if (!committee) return;
 
     const existing = getStoredCommittees();
-    
+
     // Generate unique slug if title changed
     let slug = committee.slug;
     if (formData.title !== committee.title) {
@@ -46,11 +48,11 @@ export const CommitteeEdit: React.FC<CommitteeEditProps> = ({ id }) => {
           .toString()
           .toLowerCase()
           .trim()
-          .replace(/\s+/g, '-')
-          .replace(/[^\w\-]+/g, '')
-          .replace(/\-\-+/g, '-')
-          .replace(/^-+/, '')
-          .replace(/-+$/, '');
+          .replace(/\s+/g, "-")
+          .replace(/[^\w\-]+/g, "")
+          .replace(/\-\-+/g, "-")
+          .replace(/^-+/, "")
+          .replace(/-+$/, "");
       };
       const baseSlug = slugify(formData.title);
       slug = baseSlug;
@@ -112,7 +114,9 @@ export const CommitteeEdit: React.FC<CommitteeEditProps> = ({ id }) => {
 
       {/* Title Block */}
       <div className="mb-6">
-        <h1 className="font-display text-2xl md:text-3xl font-bold text-foreground">Edit Committee</h1>
+        <h1 className="font-display text-2xl md:text-3xl font-bold text-foreground">
+          Edit Committee
+        </h1>
         <p className="text-xs md:text-sm text-muted-foreground mt-1">
           Modify the committee specifications and click update to save changes.
         </p>
@@ -121,7 +125,9 @@ export const CommitteeEdit: React.FC<CommitteeEditProps> = ({ id }) => {
       {errorMsg ? (
         <div className="glass rounded-2xl p-8 border border-destructive/20 bg-destructive/5 text-center flex flex-col items-center justify-center max-w-lg mx-auto my-12 z-10">
           <AlertCircle className="size-12 text-destructive mb-3" />
-          <h2 className="font-display text-lg font-bold text-foreground">Failed to Load Committee</h2>
+          <h2 className="font-display text-lg font-bold text-foreground">
+            Failed to Load Committee
+          </h2>
           <p className="text-sm text-muted-foreground mt-2">{errorMsg}</p>
           <Link
             to="/@admin/committees"

@@ -31,8 +31,10 @@ export const defaultEvents: EventItem[] = [
     id: "evt-1",
     title: "Annual Sports Meet 'UDAAN 2026'",
     slug: "annual-sports-meet-udaan-2026",
-    shortDescription: "Join the grand sports meet featuring track & field, team sports, and indoor contests across all campuses.",
-    description: "Our annual sports meet UDAAN is back. It showcases sportsmanship, physical coordination, and teamwork. Students from all campuses can register to participate in track events (100m, 200m, relay), team games (football, basketball, volleyball), and indoor matches (table tennis, chess, carrom). Registration closes soon.",
+    shortDescription:
+      "Join the grand sports meet featuring track & field, team sports, and indoor contests across all campuses.",
+    description:
+      "Our annual sports meet UDAAN is back. It showcases sportsmanship, physical coordination, and teamwork. Students from all campuses can register to participate in track events (100m, 200m, relay), team games (football, basketball, volleyball), and indoor matches (table tennis, chess, carrom). Registration closes soon.",
     bannerImage: sportsImg,
     startDate: "2026-09-12",
     endDate: "2026-09-15",
@@ -45,14 +47,16 @@ export const defaultEvents: EventItem[] = [
     status: "PUBLISHED",
     campusIds: ["1", "2", "3"], // GN, Ghaziabad, Saharanpur
     createdAt: "2026-07-01T10:00:00Z",
-    updatedAt: "2026-07-10T12:00:00Z"
+    updatedAt: "2026-07-10T12:00:00Z",
   },
   {
     id: "evt-2",
     title: "National Moot Court Competition 2026",
     slug: "national-moot-court-competition-2026",
-    shortDescription: "A highly prestigious moot court competition hosted by the Law Department for law schools nationwide.",
-    description: "Janhit College of Law presents its annual National Moot Court Competition. Teams from leading law institutions across the country will compete in front of distinguished judges. The event features intense debates on modern constitutional challenges and cyber law themes. Winners stand to gain cash prizes and internships.",
+    shortDescription:
+      "A highly prestigious moot court competition hosted by the Law Department for law schools nationwide.",
+    description:
+      "Janhit College of Law presents its annual National Moot Court Competition. Teams from leading law institutions across the country will compete in front of distinguished judges. The event features intense debates on modern constitutional challenges and cyber law themes. Winners stand to gain cash prizes and internships.",
     bannerImage: graduationImg,
     startDate: "2026-10-05",
     endDate: "2026-10-07",
@@ -65,14 +69,16 @@ export const defaultEvents: EventItem[] = [
     status: "PUBLISHED",
     campusIds: ["4"], // Law College
     createdAt: "2026-07-05T09:30:00Z",
-    updatedAt: "2026-07-05T09:30:00Z"
+    updatedAt: "2026-07-05T09:30:00Z",
   },
   {
     id: "evt-3",
     title: "National Seminar on Generative AI in Higher Education",
     slug: "national-seminar-on-generative-ai-in-higher-education",
-    shortDescription: "Explore the opportunities and challenges of Generative AI tools in curriculum development and assessments.",
-    description: "Generative AI is transforming classrooms. This national seminar invites academicians, tech theorists, and researchers to discuss strategies for integrating AI tools into teaching methods, assessments, and research paradigms safely and constructively. Keynote address by industry experts.",
+    shortDescription:
+      "Explore the opportunities and challenges of Generative AI tools in curriculum development and assessments.",
+    description:
+      "Generative AI is transforming classrooms. This national seminar invites academicians, tech theorists, and researchers to discuss strategies for integrating AI tools into teaching methods, assessments, and research paradigms safely and constructively. Keynote address by industry experts.",
     bannerImage: labImg,
     startDate: "2026-08-20",
     endDate: null,
@@ -85,14 +91,16 @@ export const defaultEvents: EventItem[] = [
     status: "DRAFT",
     campusIds: ["1", "2"], // GN, Ghaziabad
     createdAt: "2026-07-15T08:00:00Z",
-    updatedAt: "2026-07-15T08:00:00Z"
+    updatedAt: "2026-07-15T08:00:00Z",
   },
   {
     id: "evt-4",
     title: "Alumni Meet & Networking Dinner 2026",
     slug: "alumni-meet-networking-dinner-2026",
-    shortDescription: "Welcome back home! Connect with your classmates, share career paths, and build new professional alliances.",
-    description: "Reconnect and network. We are hosting the annual alumni meet. This is an excellent opportunity to share experiences, inspire current batches, and explore collaborations. Dinner and musical evening included.",
+    shortDescription:
+      "Welcome back home! Connect with your classmates, share career paths, and build new professional alliances.",
+    description:
+      "Reconnect and network. We are hosting the annual alumni meet. This is an excellent opportunity to share experiences, inspire current batches, and explore collaborations. Dinner and musical evening included.",
     bannerImage: culturalImg,
     startDate: "2026-06-15",
     endDate: null,
@@ -105,8 +113,8 @@ export const defaultEvents: EventItem[] = [
     status: "ARCHIVED",
     campusIds: ["1", "2", "3", "4"], // All campuses
     createdAt: "2026-05-10T14:00:00Z",
-    updatedAt: "2026-06-16T10:00:00Z"
-  }
+    updatedAt: "2026-06-16T10:00:00Z",
+  },
 ];
 
 const LOCAL_STORAGE_KEY = "janhit_events";
@@ -136,11 +144,11 @@ const slugify = (text: string): string => {
     .toString()
     .toLowerCase()
     .trim()
-    .replace(/\s+/g, "-")           // Replace spaces with -
-    .replace(/[^\w\-]+/g, "")       // Remove all non-word chars (except -)
-    .replace(/\-\-+/g, "-")         // Replace multiple - with single -
-    .replace(/^-+/, "")             // Trim - from start
-    .replace(/-+$/, "");            // Trim - from end
+    .replace(/\s+/g, "-") // Replace spaces with -
+    .replace(/[^\w\-]+/g, "") // Remove all non-word chars (except -)
+    .replace(/\-\-+/g, "-") // Replace multiple - with single -
+    .replace(/^-+/, "") // Trim - from start
+    .replace(/-+$/, ""); // Trim - from end
 };
 
 export const generateUniqueSlug = (title: string, excludeId: string | null = null): string => {
@@ -151,7 +159,7 @@ export const generateUniqueSlug = (title: string, excludeId: string | null = nul
 
   while (true) {
     const collision = events.find(
-      (e) => e.slug === uniqueSlug && (excludeId ? e.id !== excludeId : true)
+      (e) => e.slug === uniqueSlug && (excludeId ? e.id !== excludeId : true),
     );
     if (!collision) {
       return uniqueSlug;

@@ -8,7 +8,8 @@ export const Route = createFileRoute("/achievements")({
       { title: "Achievements & Placements — Janhit Group of Institutions" },
       {
         name: "description",
-        content: "Explore placement records, university gold medalists, moot court champions, and recruitment statistics at Janhit Group of Institutions.",
+        content:
+          "Explore placement records, university gold medalists, moot court champions, and recruitment statistics at Janhit Group of Institutions.",
       },
     ],
   }),
@@ -81,7 +82,8 @@ function Achievements() {
               Achievements <span className="text-gradient-gold">& Placements</span>
             </h1>
             <p className="mt-6 text-lg opacity-90 max-w-2xl">
-              Celebrating our students' university academic ranks, moot court trophies, and record placement drives in law chambers and corporate panels.
+              Celebrating our students' university academic ranks, moot court trophies, and record
+              placement drives in law chambers and corporate panels.
             </p>
           </FadeIn>
         </div>
@@ -92,7 +94,10 @@ function Achievements() {
         <div className="container-tight">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto">
             {stats.map((stat, idx) => (
-              <div key={idx} className="p-6 md:p-8 bg-card border border-border rounded-2xl text-center shadow-sm hover:border-gold/20 transition">
+              <div
+                key={idx}
+                className="p-6 md:p-8 bg-card border border-border rounded-2xl text-center shadow-sm hover:border-gold/20 transition"
+              >
                 <div className="text-3xl md:text-4xl font-display font-extrabold text-gold">
                   {stat.value}
                 </div>

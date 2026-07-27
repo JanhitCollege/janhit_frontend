@@ -12,7 +12,6 @@ const pillars = [
 export function About() {
   return (
     <section id="about" className="relative pt-24 pb-28 md:pt-32 md:pb-36 bg-white">
-
       <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-16 items-center">
         <motion.div
           initial={{ opacity: 0, x: -40 }}
@@ -43,12 +42,14 @@ export function About() {
             <span className="h-px w-8 bg-gold/60" /> About the School
           </div>
           <h2 className="mt-5 font-serif text-4xl md:text-5xl lg:text-6xl text-navy leading-[1.05]">
-            A school built for the <span className="italic text-gradient-gold">next century</span> of learning.
+            A school built for the <span className="italic text-gradient-gold">next century</span>{" "}
+            of learning.
           </h2>
           <p className="mt-6 text-muted-foreground text-lg leading-relaxed">
             Janhit World School is being established as a premium CBSE-affiliated institution in
-            Knowledge Park-5, Greater Noida. From the Foundational Stage to Class 8, every classroom,
-            lab and corridor is crafted to nurture confident, curious, and grounded global citizens.
+            Knowledge Park-5, Greater Noida. From the Foundational Stage to Class 8, every
+            classroom, lab and corridor is crafted to nurture confident, curious, and grounded
+            global citizens.
           </p>
 
           <div className="mt-10 grid sm:grid-cols-2 gap-6">

@@ -9,7 +9,8 @@ export const Route = createFileRoute("/career")({
       { title: "Careers — Janhit Group of Institutions" },
       {
         name: "description",
-        content: "Join the faculty or administration team at Janhit Group. Explore current openings and apply online today.",
+        content:
+          "Join the faculty or administration team at Janhit Group. Explore current openings and apply online today.",
       },
     ],
   }),
@@ -75,7 +76,8 @@ function Career() {
               Build your career. <span className="text-gradient-gold">Inspire minds</span>.
             </h1>
             <p className="mt-6 text-lg opacity-90 max-w-2xl">
-              Become part of a highly qualified team committed to excellence in legal, teacher, computer science, and schooling education.
+              Become part of a highly qualified team committed to excellence in legal, teacher,
+              computer science, and schooling education.
             </p>
           </FadeIn>
         </div>
@@ -109,12 +111,14 @@ function Career() {
                     <h3 className="mt-2 font-display font-bold text-xl md:text-2xl text-foreground leading-snug">
                       {job.title}
                     </h3>
-                    
+
                     <div className="mt-6 space-y-4 pt-4 border-t border-border/80">
                       <div className="flex gap-3">
                         <Clock className="size-5 text-gold flex-shrink-0 mt-0.5" />
                         <div>
-                          <div className="text-xs font-bold text-foreground">Experience Required</div>
+                          <div className="text-xs font-bold text-foreground">
+                            Experience Required
+                          </div>
                           <div className="text-xs md:text-sm text-muted-foreground mt-1 leading-relaxed">
                             {job.experience}
                           </div>
@@ -123,7 +127,9 @@ function Career() {
                       <div className="flex gap-3">
                         <GraduationCap className="size-5 text-gold flex-shrink-0 mt-0.5" />
                         <div>
-                          <div className="text-xs font-bold text-foreground">Desired Qualification</div>
+                          <div className="text-xs font-bold text-foreground">
+                            Desired Qualification
+                          </div>
                           <div className="text-xs md:text-sm text-muted-foreground mt-1 leading-relaxed">
                             {job.qual}
                           </div>
@@ -162,8 +168,12 @@ function Career() {
               className="grid md:grid-cols-2 gap-5 p-8 md:p-12 rounded-3xl bg-card border border-border shadow-sm"
             >
               <div className="md:col-span-2 pb-2 border-b border-border/80 mb-2">
-                <h3 className="font-display font-bold text-2xl text-foreground">Job Application Form</h3>
-                <p className="text-xs text-muted-foreground mt-1">Please fill all fields accurately.</p>
+                <h3 className="font-display font-bold text-2xl text-foreground">
+                  Job Application Form
+                </h3>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Please fill all fields accurately.
+                </p>
               </div>
 
               <div>
@@ -261,7 +271,8 @@ function Career() {
               <div className="md:col-span-2 flex flex-col sm:flex-row items-center justify-between gap-4 mt-4 pt-4 border-t border-border/80">
                 {submitted ? (
                   <p className="text-sm text-green-600 font-semibold flex items-center gap-1.5 animate-pulse">
-                    <CheckCircle className="size-4" /> Application submitted successfully! We'll email you shortly.
+                    <CheckCircle className="size-4" /> Application submitted successfully! We'll
+                    email you shortly.
                   </p>
                 ) : (
                   <span />

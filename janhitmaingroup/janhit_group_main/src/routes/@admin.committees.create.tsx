@@ -5,9 +5,7 @@ import { ProtectedRoute } from "@/admin/components/ProtectedRoute";
 export const Route = createFileRoute("/@admin/committees/create")({
   component: CommitteeCreateRouteComponent,
   head: () => ({
-    meta: [
-      { title: "Create Committee — Janhit Group of Institutions" },
-    ],
+    meta: [{ title: "Create Committee — Janhit Group of Institutions" }],
   }),
 });
 

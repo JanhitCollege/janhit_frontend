@@ -14,9 +14,7 @@ export const Route = createFileRoute("/@admin/committees/$id")({
   },
   component: CommitteeDetailsRouteComponent,
   head: () => ({
-    meta: [
-      { title: "Committee Details — Janhit Group of Institutions" },
-    ],
+    meta: [{ title: "Committee Details — Janhit Group of Institutions" }],
   }),
 });
 

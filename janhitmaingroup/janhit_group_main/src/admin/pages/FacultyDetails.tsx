@@ -15,7 +15,7 @@ import {
   AlertCircle,
   Loader2,
   ListOrdered,
-  FileText
+  FileText,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -49,7 +49,7 @@ export const FacultyDetails: React.FC<FacultyDetailsProps> = ({ id }) => {
       const found = list.find((f) => f.id === id);
       if (found) {
         setFaculty(found);
-        
+
         // Find campus name
         const campuses = getStoredCampuses();
         const camp = campuses.find((c) => c.id === found.campusId);
@@ -157,7 +157,9 @@ export const FacultyDetails: React.FC<FacultyDetailsProps> = ({ id }) => {
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>
-          <h1 className="font-display text-2xl md:text-3xl font-bold text-foreground">Faculty details</h1>
+          <h1 className="font-display text-2xl md:text-3xl font-bold text-foreground">
+            Faculty details
+          </h1>
         </div>
 
         <div className="flex items-center gap-3">
@@ -175,27 +177,36 @@ export const FacultyDetails: React.FC<FacultyDetailsProps> = ({ id }) => {
 
       {/* Main Grid: Info Cards */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        
         {/* Left Side: Avatar Card */}
         <div className="lg:col-span-1 space-y-6">
           <div className="bg-card glass border rounded-2xl p-6 shadow-sm flex flex-col items-center text-center relative overflow-hidden">
             <div className="absolute top-0 right-0 w-24 h-24 bg-primary/5 blur-2xl rounded-full pointer-events-none" />
-            
+
             {/* Avatar image */}
             <div className="size-36 rounded-2xl overflow-hidden border bg-muted flex items-center justify-center shadow-inner mb-4">
               {faculty.image ? (
-                <img src={faculty.image} alt={faculty.name} className="w-full h-full object-cover" />
+                <img
+                  src={faculty.image}
+                  alt={faculty.name}
+                  className="w-full h-full object-cover"
+                />
               ) : (
                 <div className="size-full bg-gradient-gold flex items-center justify-center text-gold-foreground font-display font-bold text-4xl">
-                  {faculty.name.split(" ").map(n => n[0]).join("").toUpperCase()}
+                  {faculty.name
+                    .split(" ")
+                    .map((n) => n[0])
+                    .join("")
+                    .toUpperCase()}
                 </div>
               )}
             </div>
 
             <h2 className="font-display text-xl font-bold text-foreground">{faculty.name}</h2>
-            <p className="text-sm font-semibold text-primary/80 mt-1">{faculty.designation || "Faculty Member"}</p>
+            <p className="text-sm font-semibold text-primary/80 mt-1">
+              {faculty.designation || "Faculty Member"}
+            </p>
             <p className="text-xs text-muted-foreground mt-0.5">{faculty.department} Department</p>
-            
+
             {/* Active / Featured Badges */}
             <div className="flex flex-wrap justify-center gap-2 mt-4">
               {faculty.isActive ? (
@@ -203,7 +214,10 @@ export const FacultyDetails: React.FC<FacultyDetailsProps> = ({ id }) => {
                   Active
                 </Badge>
               ) : (
-                <Badge variant="secondary" className="bg-slate-200 text-slate-600 border border-slate-300 font-semibold rounded-lg text-[10px]">
+                <Badge
+                  variant="secondary"
+                  className="bg-slate-200 text-slate-600 border border-slate-300 font-semibold rounded-lg text-[10px]"
+                >
                   Inactive
                 </Badge>
               )}
@@ -223,34 +237,54 @@ export const FacultyDetails: React.FC<FacultyDetailsProps> = ({ id }) => {
             <div className="w-full border-t border-border/40 mt-6 pt-4 text-left space-y-3">
               <div className="flex items-center gap-2.5 text-xs text-muted-foreground">
                 <Building className="size-4 text-muted-foreground/80 shrink-0" />
-                <span className="text-foreground/90 font-medium truncate" title={campusName}>{campusName}</span>
+                <span className="text-foreground/90 font-medium truncate" title={campusName}>
+                  {campusName}
+                </span>
               </div>
               <div className="flex items-center gap-2.5 text-xs text-muted-foreground">
                 <ListOrdered className="size-4 text-muted-foreground/80 shrink-0" />
-                <span>Display Order: <span className="font-semibold text-foreground">{faculty.displayOrder}</span></span>
+                <span>
+                  Display Order:{" "}
+                  <span className="font-semibold text-foreground">{faculty.displayOrder}</span>
+                </span>
               </div>
               <div className="flex items-center gap-2.5 text-xs text-muted-foreground">
                 <Calendar className="size-4 text-muted-foreground/80 shrink-0" />
-                <span>Created: <span className="text-foreground/90">{formatDate(faculty.createdAt)}</span></span>
+                <span>
+                  Created:{" "}
+                  <span className="text-foreground/90">{formatDate(faculty.createdAt)}</span>
+                </span>
               </div>
               <div className="flex items-center gap-2.5 text-xs text-muted-foreground">
                 <Calendar className="size-4 text-muted-foreground/80 shrink-0" />
-                <span>Updated: <span className="text-foreground/90">{formatDate(faculty.updatedAt)}</span></span>
+                <span>
+                  Updated:{" "}
+                  <span className="text-foreground/90">{formatDate(faculty.updatedAt)}</span>
+                </span>
               </div>
             </div>
           </div>
 
           {/* Contact Details Card */}
           <div className="bg-card glass border rounded-2xl p-6 shadow-sm space-y-4">
-            <h3 className="font-display font-bold text-base text-foreground border-b pb-2">Contact Info</h3>
-            
+            <h3 className="font-display font-bold text-base text-foreground border-b pb-2">
+              Contact Info
+            </h3>
+
             <div className="space-y-3.5">
               {faculty.email && (
                 <div className="flex items-start gap-3">
                   <Mail className="size-4 text-primary mt-0.5 shrink-0" />
                   <div className="min-w-0">
-                    <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider">Email</p>
-                    <a href={`mailto:${faculty.email}`} className="text-xs text-primary hover:underline font-medium break-all">{faculty.email}</a>
+                    <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider">
+                      Email
+                    </p>
+                    <a
+                      href={`mailto:${faculty.email}`}
+                      className="text-xs text-primary hover:underline font-medium break-all"
+                    >
+                      {faculty.email}
+                    </a>
                   </div>
                 </div>
               )}
@@ -259,7 +293,9 @@ export const FacultyDetails: React.FC<FacultyDetailsProps> = ({ id }) => {
                 <div className="flex items-start gap-3">
                   <Phone className="size-4 text-primary mt-0.5 shrink-0" />
                   <div>
-                    <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider">Phone</p>
+                    <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider">
+                      Phone
+                    </p>
                     <p className="text-xs text-foreground font-medium">{faculty.phone}</p>
                   </div>
                 </div>
@@ -269,14 +305,25 @@ export const FacultyDetails: React.FC<FacultyDetailsProps> = ({ id }) => {
                 <div className="flex items-start gap-3">
                   <Linkedin className="size-4 text-primary mt-0.5 shrink-0" />
                   <div className="min-w-0">
-                    <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider">LinkedIn</p>
-                    <a href={faculty.linkedin} target="_blank" rel="noopener noreferrer" className="text-xs text-primary hover:underline font-medium truncate block">{faculty.linkedin}</a>
+                    <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider">
+                      LinkedIn
+                    </p>
+                    <a
+                      href={faculty.linkedin}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-xs text-primary hover:underline font-medium truncate block"
+                    >
+                      {faculty.linkedin}
+                    </a>
                   </div>
                 </div>
               )}
 
               {!faculty.email && !faculty.phone && !faculty.linkedin && (
-                <p className="text-xs text-muted-foreground italic text-center py-2">No contact information provided.</p>
+                <p className="text-xs text-muted-foreground italic text-center py-2">
+                  No contact information provided.
+                </p>
               )}
             </div>
           </div>
@@ -284,7 +331,6 @@ export const FacultyDetails: React.FC<FacultyDetailsProps> = ({ id }) => {
 
         {/* Right Side: Professional / Bio Cards */}
         <div className="lg:col-span-2 space-y-6">
-          
           {/* Biography & Message Section */}
           <div className="bg-card glass border rounded-2xl p-6 shadow-sm space-y-4">
             <h3 className="font-display font-bold text-lg text-foreground border-b pb-2 flex items-center gap-2">
@@ -295,8 +341,12 @@ export const FacultyDetails: React.FC<FacultyDetailsProps> = ({ id }) => {
             {faculty.bio ? (
               <div className="space-y-4">
                 <div>
-                  <h4 className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1.5">Biography</h4>
-                  <p className="text-sm text-foreground/80 leading-relaxed whitespace-pre-line">{faculty.bio}</p>
+                  <h4 className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1.5">
+                    Biography
+                  </h4>
+                  <p className="text-sm text-foreground/80 leading-relaxed whitespace-pre-line">
+                    {faculty.bio}
+                  </p>
                 </div>
               </div>
             ) : (
@@ -307,7 +357,9 @@ export const FacultyDetails: React.FC<FacultyDetailsProps> = ({ id }) => {
               <div className="mt-4 p-4 rounded-xl bg-primary/5 border border-primary/10 relative">
                 <span className="text-3xl text-primary/20 font-serif absolute top-1 left-2">“</span>
                 <div className="pl-6">
-                  <h4 className="text-[10px] font-bold text-primary/70 uppercase tracking-wider mb-1">Message to Students</h4>
+                  <h4 className="text-[10px] font-bold text-primary/70 uppercase tracking-wider mb-1">
+                    Message to Students
+                  </h4>
                   <p className="text-sm text-foreground/80 italic leading-relaxed">
                     {faculty.message}
                   </p>
@@ -325,27 +377,45 @@ export const FacultyDetails: React.FC<FacultyDetailsProps> = ({ id }) => {
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="p-3 bg-background/50 border rounded-xl">
-                <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider">Qualifications</p>
-                <p className="text-sm text-foreground font-semibold mt-1">{faculty.qualification || "—"}</p>
+                <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider">
+                  Qualifications
+                </p>
+                <p className="text-sm text-foreground font-semibold mt-1">
+                  {faculty.qualification || "—"}
+                </p>
               </div>
 
               <div className="p-3 bg-background/50 border rounded-xl">
-                <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider">Specialization</p>
-                <p className="text-sm text-foreground font-semibold mt-1">{faculty.specialization || "—"}</p>
+                <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider">
+                  Specialization
+                </p>
+                <p className="text-sm text-foreground font-semibold mt-1">
+                  {faculty.specialization || "—"}
+                </p>
               </div>
 
               <div className="p-3 bg-background/50 border rounded-xl">
-                <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider">Experience</p>
-                <p className="text-sm text-foreground font-semibold mt-1">{faculty.experience || "—"}</p>
+                <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider">
+                  Experience
+                </p>
+                <p className="text-sm text-foreground font-semibold mt-1">
+                  {faculty.experience || "—"}
+                </p>
               </div>
             </div>
 
             {faculty.subjects && (
               <div className="space-y-1.5 pt-2">
-                <h4 className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Subjects Taught</h4>
+                <h4 className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
+                  Subjects Taught
+                </h4>
                 <div className="flex flex-wrap gap-1.5 mt-1.5">
                   {faculty.subjects.split(",").map((s, idx) => (
-                    <Badge key={idx} variant="outline" className="bg-background rounded-lg text-xs py-1 px-2.5 font-medium border border-border/80 text-foreground/80">
+                    <Badge
+                      key={idx}
+                      variant="outline"
+                      className="bg-background rounded-lg text-xs py-1 px-2.5 font-medium border border-border/80 text-foreground/80"
+                    >
                       {s.trim()}
                     </Badge>
                   ))}
@@ -359,7 +429,9 @@ export const FacultyDetails: React.FC<FacultyDetailsProps> = ({ id }) => {
                   <BookOpen className="size-3.5 text-primary" />
                   Research Interests
                 </h4>
-                <p className="text-sm text-foreground/80 leading-relaxed">{faculty.researchInterest}</p>
+                <p className="text-sm text-foreground/80 leading-relaxed">
+                  {faculty.researchInterest}
+                </p>
               </div>
             )}
           </div>
@@ -397,7 +469,6 @@ export const FacultyDetails: React.FC<FacultyDetailsProps> = ({ id }) => {
               )}
             </div>
           )}
-
         </div>
       </div>
     </div>

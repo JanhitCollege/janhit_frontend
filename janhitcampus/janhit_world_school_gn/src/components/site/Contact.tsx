@@ -24,7 +24,11 @@ export function Contact() {
       <div className="max-w-7xl mx-auto px-6">
         <SectionHeader
           eyebrow="Get in Touch"
-          title={<>Begin the <span className="italic text-gradient-gold">conversation.</span></>}
+          title={
+            <>
+              Begin the <span className="italic text-gradient-gold">conversation.</span>
+            </>
+          }
           description="Talk to our admissions team, book a campus tour, or simply ask us anything."
         />
 
@@ -104,8 +108,12 @@ export function Contact() {
               >
                 <Phone className="size-4.5 text-navy" />
                 <div>
-                  <div className="text-[10px] uppercase tracking-[0.15em] text-muted-foreground">Call</div>
-                  <div className="font-serif text-sm text-navy font-semibold mt-0.5">Admissions</div>
+                  <div className="text-[10px] uppercase tracking-[0.15em] text-muted-foreground">
+                    Call
+                  </div>
+                  <div className="font-serif text-sm text-navy font-semibold mt-0.5">
+                    Admissions
+                  </div>
                 </div>
               </a>
               <a
@@ -116,7 +124,9 @@ export function Contact() {
               >
                 <MessageCircle className="size-4.5 text-navy" />
                 <div>
-                  <div className="text-[10px] uppercase tracking-[0.15em] text-muted-foreground">WhatsApp</div>
+                  <div className="text-[10px] uppercase tracking-[0.15em] text-muted-foreground">
+                    WhatsApp
+                  </div>
                   <div className="font-serif text-sm text-navy font-semibold mt-0.5">Chat Now</div>
                 </div>
               </a>
@@ -126,14 +136,18 @@ export function Contact() {
               >
                 <Mail className="size-4.5 text-navy" />
                 <div>
-                  <div className="text-[10px] uppercase tracking-[0.15em] text-muted-foreground">Email</div>
+                  <div className="text-[10px] uppercase tracking-[0.15em] text-muted-foreground">
+                    Email
+                  </div>
                   <div className="font-serif text-sm text-navy font-semibold mt-0.5">Enquire</div>
                 </div>
               </a>
               <div className="p-4 rounded-2xl bg-white border border-border flex flex-col gap-2.5">
                 <QrCode className="size-4.5 text-navy" />
                 <div>
-                  <div className="text-[10px] uppercase tracking-[0.15em] text-muted-foreground">Scan</div>
+                  <div className="text-[10px] uppercase tracking-[0.15em] text-muted-foreground">
+                    Scan
+                  </div>
                   <div className="font-serif text-sm text-navy font-semibold mt-0.5">QR Code</div>
                 </div>
               </div>

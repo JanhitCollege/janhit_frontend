@@ -17,7 +17,7 @@ import {
   Layers,
   AlertCircle,
   Loader2,
-  BookOpen
+  BookOpen,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -85,7 +85,7 @@ export const CommitteeListing: React.FC = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       setCommittees(getStoredCommittees());
-      setCampuses(getStoredCampuses().filter(c => c.status === "active"));
+      setCampuses(getStoredCampuses().filter((c) => c.status === "active"));
       setIsLoading(false);
     }, 400);
     return () => clearTimeout(timer);
@@ -94,10 +94,8 @@ export const CommitteeListing: React.FC = () => {
   // Unique categories list
   const categoriesList = Array.from(
     new Set(
-      committees
-        .map((c) => c.category)
-        .filter((cat): cat is string => !!cat && cat.trim() !== "")
-    )
+      committees.map((c) => c.category).filter((cat): cat is string => !!cat && cat.trim() !== ""),
+    ),
   ).sort();
 
   // Reset filters
@@ -111,7 +109,10 @@ export const CommitteeListing: React.FC = () => {
   };
 
   // Open Status Dialog
-  const handleOpenStatusModal = (committee: Committee, status: "DRAFT" | "PUBLISHED" | "ARCHIVED") => {
+  const handleOpenStatusModal = (
+    committee: Committee,
+    status: "DRAFT" | "PUBLISHED" | "ARCHIVED",
+  ) => {
     setCommitteeToToggle(committee);
     setNextStatus(status);
     setIsStatusModalOpen(true);
@@ -129,7 +130,8 @@ export const CommitteeListing: React.FC = () => {
         return {
           ...c,
           status: nextStatus as any,
-          publishDate: nextStatus === "PUBLISHED" && !c.publishDate ? new Date().toISOString() : c.publishDate,
+          publishDate:
+            nextStatus === "PUBLISHED" && !c.publishDate ? new Date().toISOString() : c.publishDate,
           updatedAt: new Date().toISOString(),
         };
       }
@@ -190,7 +192,9 @@ export const CommitteeListing: React.FC = () => {
         (c.category && c.category.toLowerCase().includes(q)) ||
         (c.shortDescription && c.shortDescription.toLowerCase().includes(q)) ||
         (c.description && c.description.toLowerCase().includes(q)) ||
-        c.members.some(m => m.name.toLowerCase().includes(q) || m.committeeRole.toLowerCase().includes(q));
+        c.members.some(
+          (m) => m.name.toLowerCase().includes(q) || m.committeeRole.toLowerCase().includes(q),
+        );
       if (!matchSearch) return false;
     }
 
@@ -239,10 +243,12 @@ export const CommitteeListing: React.FC = () => {
 
   // Helper to resolve campus tags
   const getCampusBadges = (campIds: string[]) => {
-    return campIds.map((cid) => {
-      const found = campuses.find((c) => c.id === cid);
-      return found ? found.shortName || found.name : null;
-    }).filter(Boolean);
+    return campIds
+      .map((cid) => {
+        const found = campuses.find((c) => c.id === cid);
+        return found ? found.shortName || found.name : null;
+      })
+      .filter(Boolean);
   };
 
   const getStatusBadgeColor = (status: string) => {
@@ -267,9 +273,12 @@ export const CommitteeListing: React.FC = () => {
       {/* Header Block */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="font-display text-2xl md:text-3xl font-bold text-foreground">Committees</h1>
+          <h1 className="font-display text-2xl md:text-3xl font-bold text-foreground">
+            Committees
+          </h1>
           <p className="text-xs md:text-sm text-muted-foreground mt-1">
-            Manage academic boards, Internal Complaint cells, anti-ragging committees, members and regulatory documents.
+            Manage academic boards, Internal Complaint cells, anti-ragging committees, members and
+            regulatory documents.
           </p>
         </div>
 
@@ -291,7 +300,10 @@ export const CommitteeListing: React.FC = () => {
             <Filter className="size-4 text-primary" />
             Filters & Search
           </div>
-          {(searchQuery || filterCampus !== "all" || filterStatus !== "all" || filterCategory !== "all") && (
+          {(searchQuery ||
+            filterCampus !== "all" ||
+            filterStatus !== "all" ||
+            filterCategory !== "all") && (
             <button
               onClick={handleResetFilters}
               className="text-xs text-primary font-semibold flex items-center gap-1 hover:underline transition-all"
@@ -386,9 +398,15 @@ export const CommitteeListing: React.FC = () => {
                       <ArrowUpDown className="size-3 text-muted-foreground" />
                     </button>
                   </TableHead>
-                  <TableHead className="text-xs font-bold uppercase tracking-wider text-muted-foreground py-3.5 w-1/4">Associated Campuses</TableHead>
-                  <TableHead className="text-xs font-bold uppercase tracking-wider text-muted-foreground py-3.5 text-center">Members</TableHead>
-                  <TableHead className="text-xs font-bold uppercase tracking-wider text-muted-foreground py-3.5 text-center">Documents</TableHead>
+                  <TableHead className="text-xs font-bold uppercase tracking-wider text-muted-foreground py-3.5 w-1/4">
+                    Associated Campuses
+                  </TableHead>
+                  <TableHead className="text-xs font-bold uppercase tracking-wider text-muted-foreground py-3.5 text-center">
+                    Members
+                  </TableHead>
+                  <TableHead className="text-xs font-bold uppercase tracking-wider text-muted-foreground py-3.5 text-center">
+                    Documents
+                  </TableHead>
                   <TableHead className="text-xs font-bold uppercase tracking-wider text-muted-foreground py-3.5 text-center">
                     <button
                       onClick={() => handleSort("displayOrder")}
@@ -398,33 +416,56 @@ export const CommitteeListing: React.FC = () => {
                       <ArrowUpDown className="size-3 text-muted-foreground" />
                     </button>
                   </TableHead>
-                  <TableHead className="text-xs font-bold uppercase tracking-wider text-muted-foreground py-3.5 text-center">Status</TableHead>
-                  <TableHead className="text-xs font-bold uppercase tracking-wider text-muted-foreground py-3.5 text-right pr-6">Actions</TableHead>
+                  <TableHead className="text-xs font-bold uppercase tracking-wider text-muted-foreground py-3.5 text-center">
+                    Status
+                  </TableHead>
+                  <TableHead className="text-xs font-bold uppercase tracking-wider text-muted-foreground py-3.5 text-right pr-6">
+                    Actions
+                  </TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {paginatedCommittees.map((c) => (
-                  <TableRow key={c.id} className="hover:bg-accent/40 border-b last:border-0 transition-colors">
+                  <TableRow
+                    key={c.id}
+                    className="hover:bg-accent/40 border-b last:border-0 transition-colors"
+                  >
                     {/* Committee Info */}
                     <TableCell className="py-4">
                       <div className="flex items-center gap-3.5">
                         <div className="size-11 rounded-xl overflow-hidden border bg-muted flex items-center justify-center shrink-0 shadow-sm">
                           {c.bannerImage ? (
-                            <img src={c.bannerImage} alt={c.title} className="w-full h-full object-cover" />
+                            <img
+                              src={c.bannerImage}
+                              alt={c.title}
+                              className="w-full h-full object-cover"
+                            />
                           ) : (
                             <div className="size-full bg-gradient-gold text-gold-foreground flex items-center justify-center font-sans font-bold text-sm">
-                              {c.title.split(" ").map(n => n[0]).join("").toUpperCase()}
+                              {c.title
+                                .split(" ")
+                                .map((n) => n[0])
+                                .join("")
+                                .toUpperCase()}
                             </div>
                           )}
                         </div>
                         <div className="min-w-0">
-                          <h3 className="font-sans text-sm font-semibold text-foreground truncate">{c.title}</h3>
+                          <h3 className="font-sans text-sm font-semibold text-foreground truncate">
+                            {c.title}
+                          </h3>
                           <div className="flex flex-wrap gap-1.5 mt-1">
-                            <Badge variant="secondary" className="text-[9px] rounded-md px-1.5 py-0 font-bold bg-background/60 border text-foreground/80">
+                            <Badge
+                              variant="secondary"
+                              className="text-[9px] rounded-md px-1.5 py-0 font-bold bg-background/60 border text-foreground/80"
+                            >
                               {c.committeeType || "General"}
                             </Badge>
                             {c.category && (
-                              <Badge variant="outline" className="text-[9px] rounded-md px-1.5 py-0 font-medium text-muted-foreground border-border bg-background/30">
+                              <Badge
+                                variant="outline"
+                                className="text-[9px] rounded-md px-1.5 py-0 font-medium text-muted-foreground border-border bg-background/30"
+                              >
                                 {c.category}
                               </Badge>
                             )}
@@ -437,7 +478,10 @@ export const CommitteeListing: React.FC = () => {
                     <TableCell className="py-4">
                       <div className="flex flex-wrap gap-1 max-w-[200px]">
                         {getCampusBadges(c.campuses).map((name, idx) => (
-                          <Badge key={idx} className="bg-primary/5 text-primary/80 border border-primary/10 rounded-md text-[9px] font-semibold py-0 px-1.5">
+                          <Badge
+                            key={idx}
+                            className="bg-primary/5 text-primary/80 border border-primary/10 rounded-md text-[9px] font-semibold py-0 px-1.5"
+                          >
                             {name}
                           </Badge>
                         ))}
@@ -485,7 +529,9 @@ export const CommitteeListing: React.FC = () => {
                           value={c.status}
                           onValueChange={(val: any) => handleOpenStatusModal(c, val)}
                         >
-                          <SelectTrigger className={`w-28 h-8 rounded-lg text-[10px] font-bold ${getStatusBadgeColor(c.status)}`}>
+                          <SelectTrigger
+                            className={`w-28 h-8 rounded-lg text-[10px] font-bold ${getStatusBadgeColor(c.status)}`}
+                          >
                             <SelectValue />
                           </SelectTrigger>
                           <SelectContent className="rounded-xl text-[10px] border border-border/80">
@@ -547,13 +593,23 @@ export const CommitteeListing: React.FC = () => {
             </div>
             <h3 className="font-display text-lg font-bold text-foreground">No Committees Found</h3>
             <p className="text-xs text-muted-foreground mt-2 leading-relaxed">
-              No committees match your search filters. Try resetting filters or create a new committee.
+              No committees match your search filters. Try resetting filters or create a new
+              committee.
             </p>
             <div className="flex justify-center gap-3 mt-6">
-              <Button variant="outline" size="sm" onClick={handleResetFilters} className="rounded-xl text-xs font-semibold">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleResetFilters}
+                className="rounded-xl text-xs font-semibold"
+              >
                 Clear Filters
               </Button>
-              <Button asChild size="sm" className="bg-primary text-primary-foreground hover:bg-primary/95 rounded-xl text-xs font-semibold">
+              <Button
+                asChild
+                size="sm"
+                className="bg-primary text-primary-foreground hover:bg-primary/95 rounded-xl text-xs font-semibold"
+              >
                 <Link to="/@admin/committees/create">Add Committee</Link>
               </Button>
             </div>
@@ -573,7 +629,9 @@ export const CommitteeListing: React.FC = () => {
 
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-2">
-                <span className="text-[11px] text-muted-foreground font-semibold">Rows per page</span>
+                <span className="text-[11px] text-muted-foreground font-semibold">
+                  Rows per page
+                </span>
                 <Select
                   value={String(pageSize)}
                   onValueChange={(val) => {
@@ -602,7 +660,20 @@ export const CommitteeListing: React.FC = () => {
                     className="size-8 rounded-lg"
                   >
                     <span className="sr-only">Previous Page</span>
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="size-4"><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" /></svg>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth={2}
+                      stroke="currentColor"
+                      className="size-4"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M15.75 19.5L8.25 12l7.5-7.5"
+                      />
+                    </svg>
                   </Button>
 
                   {Array.from({ length: totalPages }).map((_, index) => {
@@ -614,7 +685,9 @@ export const CommitteeListing: React.FC = () => {
                         size="icon"
                         onClick={() => setCurrentPage(pageNum)}
                         className={`size-8 rounded-lg text-xs ${
-                          currentPage === pageNum ? "bg-primary text-primary-foreground font-bold" : "text-muted-foreground"
+                          currentPage === pageNum
+                            ? "bg-primary text-primary-foreground font-bold"
+                            : "text-muted-foreground"
                         }`}
                       >
                         {pageNum}
@@ -630,7 +703,20 @@ export const CommitteeListing: React.FC = () => {
                     className="size-8 rounded-lg"
                   >
                     <span className="sr-only">Next Page</span>
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="size-4"><path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth={2}
+                      stroke="currentColor"
+                      className="size-4"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M8.25 4.5l7.5 7.5-7.5 7.5"
+                      />
+                    </svg>
                   </Button>
                 </div>
               )}
@@ -650,12 +736,18 @@ export const CommitteeListing: React.FC = () => {
               Update Committee Status
             </DialogTitle>
             <DialogDescription className="text-xs text-muted-foreground mt-2 leading-relaxed">
-              Are you sure you want to change the status of <strong>{committeeToToggle?.title}</strong> to <strong>{nextStatus}</strong>?
+              Are you sure you want to change the status of{" "}
+              <strong>{committeeToToggle?.title}</strong> to <strong>{nextStatus}</strong>?
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="flex items-center justify-end gap-2 mt-4">
             <DialogClose asChild>
-              <Button variant="outline" size="sm" className="rounded-xl text-xs font-semibold" disabled={isTogglingStatus}>
+              <Button
+                variant="outline"
+                size="sm"
+                className="rounded-xl text-xs font-semibold"
+                disabled={isTogglingStatus}
+              >
                 Cancel
               </Button>
             </DialogClose>
@@ -687,13 +779,19 @@ export const CommitteeListing: React.FC = () => {
               Delete Committee
             </DialogTitle>
             <DialogDescription className="text-xs text-muted-foreground mt-2 leading-relaxed">
-              Are you sure you want to delete the committee <strong>{committeeToDelete?.title}</strong>? 
-              This will permanently delete the committee, its member rosters, and linked documents. This action cannot be undone.
+              Are you sure you want to delete the committee{" "}
+              <strong>{committeeToDelete?.title}</strong>? This will permanently delete the
+              committee, its member rosters, and linked documents. This action cannot be undone.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="flex items-center justify-end gap-2 mt-4">
             <DialogClose asChild>
-              <Button variant="outline" size="sm" className="rounded-xl text-xs font-semibold" disabled={isDeleting}>
+              <Button
+                variant="outline"
+                size="sm"
+                className="rounded-xl text-xs font-semibold"
+                disabled={isDeleting}
+              >
                 Cancel
               </Button>
             </DialogClose>

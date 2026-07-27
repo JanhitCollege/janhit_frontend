@@ -5,9 +5,7 @@ import { ProtectedRoute } from "@/admin/components/ProtectedRoute";
 export const Route = createFileRoute("/@admin/dashboard")({
   component: DashboardRouteComponent,
   head: () => ({
-    meta: [
-      { title: "Admin Dashboard — Janhit Group of Institutions" },
-    ],
+    meta: [{ title: "Admin Dashboard — Janhit Group of Institutions" }],
   }),
 });
 

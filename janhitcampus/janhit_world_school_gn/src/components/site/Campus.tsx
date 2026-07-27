@@ -23,7 +23,11 @@ export function Campus() {
       <div className="max-w-7xl mx-auto px-6">
         <SectionHeader
           eyebrow="Campus Experience"
-          title={<>Step inside the <span className="italic text-gradient-gold">Janhit world.</span></>}
+          title={
+            <>
+              Step inside the <span className="italic text-gradient-gold">Janhit world.</span>
+            </>
+          }
           description="A few frames from a campus designed for wonder, performance and lifelong friendships."
         />
 

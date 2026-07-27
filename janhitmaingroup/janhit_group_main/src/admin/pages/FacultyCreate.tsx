@@ -16,7 +16,7 @@ export const FacultyCreate: React.FC = () => {
 
   const handleSubmit = (formData: Omit<FacultyProfile, "id" | "createdAt" | "updatedAt">) => {
     const existing = getStoredFaculties();
-    
+
     // Create new faculty profile
     const newFaculty: FacultyProfile = {
       ...formData,
@@ -27,7 +27,7 @@ export const FacultyCreate: React.FC = () => {
 
     const updated = [...existing, newFaculty];
     saveFaculties(updated);
-    
+
     // Navigate back to listing page
     navigate({ to: "/@admin/faculties" });
   };
@@ -67,7 +67,9 @@ export const FacultyCreate: React.FC = () => {
 
       {/* Title Block */}
       <div className="mb-6">
-        <h1 className="font-display text-2xl md:text-3xl font-bold text-foreground">Create Faculty Profile</h1>
+        <h1 className="font-display text-2xl md:text-3xl font-bold text-foreground">
+          Create Faculty Profile
+        </h1>
         <p className="text-xs md:text-sm text-muted-foreground mt-1">
           Add new faculty profiles to be displayed in selected campus directories.
         </p>

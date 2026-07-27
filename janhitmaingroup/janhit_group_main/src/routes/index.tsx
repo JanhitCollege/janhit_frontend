@@ -11,9 +11,16 @@ export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "Janhit Group of Institutions — Empowering Education Since 2002" },
-      { name: "description", content: "A trusted family of colleges and schools across Greater Noida, Ghaziabad and Saharanpur. Explore programs in Law, Management, Education, Commerce, Science and K-12." },
+      {
+        name: "description",
+        content:
+          "A trusted family of colleges and schools across Greater Noida, Ghaziabad and Saharanpur. Explore programs in Law, Management, Education, Commerce, Science and K-12.",
+      },
       { property: "og:title", content: "Janhit Group of Institutions" },
-      { property: "og:description", content: "Empowering Education Across Uttar Pradesh Since 2002" },
+      {
+        property: "og:description",
+        content: "Empowering Education Across Uttar Pradesh Since 2002",
+      },
       { property: "og:image", content: heroImg },
     ],
   }),
@@ -21,26 +28,70 @@ export const Route = createFileRoute("/")({
 });
 
 const reasons = [
-  { icon: Users, title: "Experienced Faculty", desc: "Mentors with decades of academic and industry expertise." },
-  { icon: Building2, title: "Modern Infrastructure", desc: "Smart campuses with labs, libraries and sports complexes." },
+  {
+    icon: Users,
+    title: "Experienced Faculty",
+    desc: "Mentors with decades of academic and industry expertise.",
+  },
+  {
+    icon: Building2,
+    title: "Modern Infrastructure",
+    desc: "Smart campuses with labs, libraries and sports complexes.",
+  },
   { icon: Award, title: "Approved & Affiliated", desc: "Recognized by AICTE, NCTE, BCI and CBSE." },
-  { icon: Sparkles, title: "Industry Exposure", desc: "Internships, expert sessions and live projects." },
-  { icon: Star, title: "Placement Assistance", desc: "Dedicated cell connecting students with top recruiters." },
-  { icon: BookOpen, title: "Affordable Education", desc: "Quality higher education accessible to every learner." },
+  {
+    icon: Sparkles,
+    title: "Industry Exposure",
+    desc: "Internships, expert sessions and live projects.",
+  },
+  {
+    icon: Star,
+    title: "Placement Assistance",
+    desc: "Dedicated cell connecting students with top recruiters.",
+  },
+  {
+    icon: BookOpen,
+    title: "Affordable Education",
+    desc: "Quality higher education accessible to every learner.",
+  },
 ];
 
 const testimonials = [
-  { name: "Ananya Sharma", role: "B.A. LL.B Alumna", quote: "Janhit gave me more than a degree — it shaped my voice as a future advocate." },
-  { name: "Rohit Verma", role: "BBA Student", quote: "From day one, the faculty pushed us to think like entrepreneurs." },
-  { name: "Mr. & Mrs. Kapoor", role: "Parents", quote: "We trust Janhit World School completely with our daughter's growth." },
+  {
+    name: "Ananya Sharma",
+    role: "B.A. LL.B Alumna",
+    quote: "Janhit gave me more than a degree — it shaped my voice as a future advocate.",
+  },
+  {
+    name: "Rohit Verma",
+    role: "BBA Student",
+    quote: "From day one, the faculty pushed us to think like entrepreneurs.",
+  },
+  {
+    name: "Mr. & Mrs. Kapoor",
+    role: "Parents",
+    quote: "We trust Janhit World School completely with our daughter's growth.",
+  },
 ];
 
 const timeline = [
-  { y: "2002", t: "Foundation laid", d: "Janhit Group was established with a vision to democratize quality education." },
-  { y: "2008", t: "Ghaziabad Campus", d: "Expansion to Ghaziabad with the Institute of Education." },
+  {
+    y: "2002",
+    t: "Foundation laid",
+    d: "Janhit Group was established with a vision to democratize quality education.",
+  },
+  {
+    y: "2008",
+    t: "Ghaziabad Campus",
+    d: "Expansion to Ghaziabad with the Institute of Education.",
+  },
   { y: "2010", t: "Saharanpur Campus", d: "A sprawling degree college opened in Saharanpur." },
   { y: "2012", t: "K-12 Schools", d: "Launch of Janhit World Schools across NCR and Saharanpur." },
-  { y: "Today", t: "10,000+ Students", d: "A thriving ecosystem of colleges and schools shaping the next generation." },
+  {
+    y: "Today",
+    t: "10,000+ Students",
+    d: "A thriving ecosystem of colleges and schools shaping the next generation.",
+  },
 ];
 
 function Home() {
@@ -66,7 +117,8 @@ function Home() {
               Janhit Group of <span className="text-gradient-gold">Institutions</span>
             </h1>
             <p className="mt-6 text-lg md:text-xl opacity-90 max-w-2xl">
-              Empowering education across Uttar Pradesh since 2002 — a trusted family of colleges and schools shaping the leaders of tomorrow.
+              Empowering education across Uttar Pradesh since 2002 — a trusted family of colleges
+              and schools shaping the leaders of tomorrow.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Link
@@ -117,21 +169,30 @@ function Home() {
               About the Group
             </span>
             <h2 className="mt-4 text-3xl md:text-5xl font-display font-bold">
-              Two decades of nurturing minds across <span className="text-gradient-gold">Uttar Pradesh</span>.
+              Two decades of nurturing minds across{" "}
+              <span className="text-gradient-gold">Uttar Pradesh</span>.
             </h2>
             <p className="mt-5 text-muted-foreground leading-relaxed">
-              Established in 2002, Janhit Group has grown into a multi-campus education family with a presence in
-              Greater Noida, Ghaziabad and Saharanpur — offering programs in Law, Education, Management,
-              Commerce, Science and K-12 schooling.
+              Established in 2002, Janhit Group has grown into a multi-campus education family with
+              a presence in Greater Noida, Ghaziabad and Saharanpur — offering programs in Law,
+              Education, Management, Commerce, Science and K-12 schooling.
             </p>
             <div className="mt-6 flex flex-wrap gap-2">
-              {["AICTE", "NCTE", "BCI", "CBSE", "CCS University", "Maa Shakumbhari University"].map((t) => (
-                <span key={t} className="px-3 py-1.5 rounded-lg bg-accent text-accent-foreground text-xs font-semibold">
-                  {t}
-                </span>
-              ))}
+              {["AICTE", "NCTE", "BCI", "CBSE", "CCS University", "Maa Shakumbhari University"].map(
+                (t) => (
+                  <span
+                    key={t}
+                    className="px-3 py-1.5 rounded-lg bg-accent text-accent-foreground text-xs font-semibold"
+                  >
+                    {t}
+                  </span>
+                ),
+              )}
             </div>
-            <Link to="/about" className="mt-8 inline-flex items-center gap-2 text-primary font-semibold hover:gap-3 transition-all">
+            <Link
+              to="/about"
+              className="mt-8 inline-flex items-center gap-2 text-primary font-semibold hover:gap-3 transition-all"
+            >
               Read our story <ArrowRight className="size-4" />
             </Link>
           </FadeIn>
@@ -146,7 +207,9 @@ function Home() {
                     <span className="absolute left-0 top-1 size-6 rounded-full bg-gradient-gold grid place-items-center text-[10px] font-bold text-gold-foreground shadow-gold">
                       ●
                     </span>
-                    <div className="text-xs uppercase tracking-wider text-gold font-semibold">{m.y}</div>
+                    <div className="text-xs uppercase tracking-wider text-gold font-semibold">
+                      {m.y}
+                    </div>
                     <div className="font-semibold">{m.t}</div>
                     <div className="text-sm text-muted-foreground">{m.d}</div>
                   </li>
@@ -210,7 +273,9 @@ function Home() {
             <span className="inline-block px-3 py-1 rounded-full text-[11px] font-semibold uppercase tracking-[0.2em] text-gold border border-gold/40">
               Testimonials
             </span>
-            <h2 className="mt-4 text-3xl md:text-5xl font-display font-bold">Voices of the Janhit family</h2>
+            <h2 className="mt-4 text-3xl md:text-5xl font-display font-bold">
+              Voices of the Janhit family
+            </h2>
           </div>
           <div className="grid md:grid-cols-3 gap-5">
             {testimonials.map((t, i) => (
@@ -240,15 +305,24 @@ function Home() {
           <div className="relative overflow-hidden rounded-3xl bg-gradient-primary p-10 md:p-16 text-primary-foreground">
             <div className="absolute -top-24 -right-24 size-64 bg-gradient-gold rounded-full blur-3xl opacity-40" />
             <div className="relative max-w-2xl">
-              <h2 className="text-3xl md:text-5xl font-display font-bold">Begin your Janhit journey today.</h2>
+              <h2 className="text-3xl md:text-5xl font-display font-bold">
+                Begin your Janhit journey today.
+              </h2>
               <p className="mt-4 opacity-90">
-                Admissions are open across all our colleges and schools. Talk to our team and find the program that fits your dreams.
+                Admissions are open across all our colleges and schools. Talk to our team and find
+                the program that fits your dreams.
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
-                <Link to="/admissions" className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl bg-gradient-gold text-gold-foreground font-semibold shadow-gold">
+                <Link
+                  to="/admissions"
+                  className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl bg-gradient-gold text-gold-foreground font-semibold shadow-gold"
+                >
                   Apply Now <ArrowRight className="size-4" />
                 </Link>
-                <Link to="/contact" className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl glass-dark font-semibold">
+                <Link
+                  to="/contact"
+                  className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl glass-dark font-semibold"
+                >
                   Contact Us
                 </Link>
               </div>

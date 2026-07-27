@@ -8,13 +8,17 @@ export function Admissions() {
           {/* Admissions Column */}
           <div className="lg:col-span-6 space-y-6">
             <div className="space-y-2">
-              <span className="text-xs font-bold uppercase tracking-wider text-gold">Admissions 2026-27</span>
+              <span className="text-xs font-bold uppercase tracking-wider text-gold">
+                Admissions 2026-27
+              </span>
               <h2 className="text-3xl font-serif font-bold text-navy">Admission Guidelines</h2>
               <div className="h-1 w-20 bg-gold rounded" />
             </div>
 
             <p className="text-sm text-navy/80 leading-relaxed">
-              Admissions to the B.A.LL.B (5 Years) and LL.B (3 Years) programs are carried out in strict accordance with the norms of the Bar Council of India (BCI) and Chaudhary Charan Singh (CCS) University, Meerut.
+              Admissions to the B.A.LL.B (5 Years) and LL.B (3 Years) programs are carried out in
+              strict accordance with the norms of the Bar Council of India (BCI) and Chaudhary
+              Charan Singh (CCS) University, Meerut.
             </p>
 
             {/* Admission Steps */}
@@ -26,7 +30,8 @@ export function Admissions() {
                 <div>
                   <h4 className="font-bold text-navy text-lg">Online/Offline Registration</h4>
                   <p className="text-base text-navy/70 mt-1">
-                    Fill out the online application form below or visit the campus admission desk to purchase the registration prospectus.
+                    Fill out the online application form below or visit the campus admission desk to
+                    purchase the registration prospectus.
                   </p>
                 </div>
               </div>
@@ -36,9 +41,12 @@ export function Admissions() {
                   2
                 </div>
                 <div>
-                  <h4 className="font-bold text-navy text-lg">Document Verification & Counselling</h4>
+                  <h4 className="font-bold text-navy text-lg">
+                    Document Verification & Counselling
+                  </h4>
                   <p className="text-base text-navy/70 mt-1">
-                    Bring original and Xerox copies of required academic transcripts, identity proofs, category certificates, and photographs for verification.
+                    Bring original and Xerox copies of required academic transcripts, identity
+                    proofs, category certificates, and photographs for verification.
                   </p>
                 </div>
               </div>
@@ -50,7 +58,8 @@ export function Admissions() {
                 <div>
                   <h4 className="font-bold text-navy text-lg">Personal Interview</h4>
                   <p className="text-base text-navy/70 mt-1">
-                    Candidates undergo a brief interactive interview to assess writing logic, general knowledge, and interest in legal science.
+                    Candidates undergo a brief interactive interview to assess writing logic,
+                    general knowledge, and interest in legal science.
                   </p>
                 </div>
               </div>
@@ -62,7 +71,8 @@ export function Admissions() {
                 <div>
                   <h4 className="font-bold text-navy text-lg">Seat Allotment & Enrollment</h4>
                   <p className="text-base text-navy/70 mt-1">
-                    Selected candidates complete admission formalities by paying the prescribed fee under University registration timelines.
+                    Selected candidates complete admission formalities by paying the prescribed fee
+                    under University registration timelines.
                   </p>
                 </div>
               </div>
@@ -72,13 +82,16 @@ export function Admissions() {
           {/* Academic Calendar Column */}
           <div id="calendar" className="lg:col-span-6 space-y-6">
             <div className="space-y-2">
-              <span className="text-xs font-bold uppercase tracking-wider text-gold">University Schedule</span>
+              <span className="text-xs font-bold uppercase tracking-wider text-gold">
+                University Schedule
+              </span>
               <h2 className="text-3xl font-serif font-bold text-navy">Academic Calendar</h2>
               <div className="h-1 w-20 bg-gold rounded" />
             </div>
 
             <p className="text-sm text-navy/80 leading-relaxed">
-              Janhit College of Law aligns its academic terms to ensure sufficient time for theoretical teaching, moot practice, and examinations.
+              Janhit College of Law aligns its academic terms to ensure sufficient time for
+              theoretical teaching, moot practice, and examinations.
             </p>
 
             {/* Calendar Table */}
@@ -100,7 +113,9 @@ export function Admissions() {
 
                 <div className="p-4 flex justify-between items-start gap-4">
                   <div>
-                    <span className="text-sm font-bold text-navy block">Even Semester (Term II)</span>
+                    <span className="text-sm font-bold text-navy block">
+                      Even Semester (Term II)
+                    </span>
                     <span className="text-sm text-navy/60 block mt-0.5">February — June</span>
                   </div>
                   <span className="text-xs bg-gold/10 text-gold border border-gold/20 font-bold px-2 py-1 rounded uppercase tracking-wider">
@@ -110,7 +125,9 @@ export function Admissions() {
 
                 <div className="p-4 flex justify-between items-start gap-4">
                   <div>
-                    <span className="text-sm font-bold text-navy block">Annual System Vacation & Exams</span>
+                    <span className="text-sm font-bold text-navy block">
+                      Annual System Vacation & Exams
+                    </span>
                     <span className="text-sm text-navy/60 block mt-0.5">August — May Cycle</span>
                   </div>
                   <span className="text-xs bg-gold/10 text-gold border border-gold/20 font-bold px-2 py-1 rounded uppercase tracking-wider">
@@ -120,7 +137,9 @@ export function Admissions() {
 
                 <div className="p-4 flex justify-between items-start gap-4">
                   <div>
-                    <span className="text-sm font-bold text-navy block">Practical Moot Competitions</span>
+                    <span className="text-sm font-bold text-navy block">
+                      Practical Moot Competitions
+                    </span>
                     <span className="text-sm text-navy/60 block mt-0.5">October & March Slots</span>
                   </div>
                   <span className="text-xs bg-navy/5 text-navy border border-navy/10 font-bold px-2 py-1 rounded uppercase tracking-wider">

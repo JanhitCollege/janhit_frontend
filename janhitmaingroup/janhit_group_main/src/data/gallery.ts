@@ -26,19 +26,14 @@ export interface GalleryItem {
   updatedAt: string;
 }
 
-export const ALLOWED_IMAGE_TYPES = [
-  "image/jpeg",
-  "image/jpg",
-  "image/png",
-  "image/webp"
-];
+export const ALLOWED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
 
 export const ALLOWED_VIDEO_TYPES = [
   "video/mp4",
   "video/quicktime", // .mov
   "video/x-msvideo", // .avi
   "video/x-matroska", // .mkv
-  "video/webm"       // .webm
+  "video/webm", // .webm
 ];
 
 export const IMAGE_SIZE_LIMIT = 20 * 1024 * 1024; // 20 MB
@@ -50,7 +45,8 @@ export const defaultGalleryItems: GalleryItem[] = [
     campusId: "1", // Greater Noida
     mediaType: "IMAGE",
     title: "Advanced Science Laboratory",
-    description: "Students performing physics and chemistry experiments inside our fully equipped laboratory.",
+    description:
+      "Students performing physics and chemistry experiments inside our fully equipped laboratory.",
     category: "Academics",
     fileUrl: labImg,
     thumbnail: null,
@@ -63,7 +59,7 @@ export const defaultGalleryItems: GalleryItem[] = [
     sortOrder: 1,
     isActive: true,
     createdAt: "2026-06-10T10:00:00Z",
-    updatedAt: "2026-06-10T10:00:00Z"
+    updatedAt: "2026-06-10T10:00:00Z",
   },
   {
     id: "gal-2",
@@ -83,16 +79,18 @@ export const defaultGalleryItems: GalleryItem[] = [
     sortOrder: 2,
     isActive: true,
     createdAt: "2026-07-01T11:30:00Z",
-    updatedAt: "2026-07-01T11:30:00Z"
+    updatedAt: "2026-07-01T11:30:00Z",
   },
   {
     id: "gal-3",
     campusId: "1", // Greater Noida
     mediaType: "VIDEO",
     title: "UDAAN 2026 Sports Highlights",
-    description: "Recap video of the high-energy athletic matches, volleyball, and football finals.",
+    description:
+      "Recap video of the high-energy athletic matches, volleyball, and football finals.",
     category: "Sports",
-    fileUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4", // Free public video link
+    fileUrl:
+      "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4", // Free public video link
     thumbnail: sportsImg,
     fileName: "udaan_sports_highlights.mp4",
     mimeType: "video/mp4",
@@ -103,14 +101,15 @@ export const defaultGalleryItems: GalleryItem[] = [
     sortOrder: 3,
     isActive: true,
     createdAt: "2026-07-11T09:00:00Z",
-    updatedAt: "2026-07-11T09:00:00Z"
+    updatedAt: "2026-07-11T09:00:00Z",
   },
   {
     id: "gal-4",
     campusId: "2", // Ghaziabad
     mediaType: "IMAGE",
     title: "Smart Classroom Interactive Session",
-    description: "High school students engaging with digital whiteboards and cooperative learning modules.",
+    description:
+      "High school students engaging with digital whiteboards and cooperative learning modules.",
     category: "Academics",
     fileUrl: classroomImg,
     thumbnail: null,
@@ -123,14 +122,15 @@ export const defaultGalleryItems: GalleryItem[] = [
     sortOrder: 4,
     isActive: true,
     createdAt: "2026-05-18T14:00:00Z",
-    updatedAt: "2026-05-18T14:00:00Z"
+    updatedAt: "2026-05-18T14:00:00Z",
   },
   {
     id: "gal-5",
     campusId: "1", // Greater Noida
     mediaType: "VIDEO",
     title: "Annual Cultural Festival - Folk Dance",
-    description: "Brilliant stage performance by our college dance troupe celebrating regional heritage.",
+    description:
+      "Brilliant stage performance by our college dance troupe celebrating regional heritage.",
     category: "Events",
     fileUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4",
     thumbnail: culturalImg,
@@ -143,14 +143,15 @@ export const defaultGalleryItems: GalleryItem[] = [
     sortOrder: 5,
     isActive: false,
     createdAt: "2026-06-25T15:30:00Z",
-    updatedAt: "2026-06-25T15:30:00Z"
+    updatedAt: "2026-06-25T15:30:00Z",
   },
   {
     id: "gal-6",
     campusId: "3", // Saharanpur
     mediaType: "IMAGE",
     title: "Main Library Reading Hall",
-    description: "Quiet study spaces and extensive bookshelves housing over 20,000 journals and volumes.",
+    description:
+      "Quiet study spaces and extensive bookshelves housing over 20,000 journals and volumes.",
     category: "Infrastructure",
     fileUrl: libraryImg,
     thumbnail: null,
@@ -163,8 +164,8 @@ export const defaultGalleryItems: GalleryItem[] = [
     sortOrder: 6,
     isActive: true,
     createdAt: "2026-04-12T08:30:00Z",
-    updatedAt: "2026-04-12T08:30:00Z"
-  }
+    updatedAt: "2026-04-12T08:30:00Z",
+  },
 ];
 
 const LOCAL_STORAGE_KEY = "janhit_gallery";

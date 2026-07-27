@@ -1,7 +1,16 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SectionHeader, FadeIn } from "@/components/Section";
 import { useState } from "react";
-import { FileText, Download, ShieldCheck, Clipboard, FileCheck, CheckCircle2, ChevronRight, Award } from "lucide-react";
+import {
+  FileText,
+  Download,
+  ShieldCheck,
+  Clipboard,
+  FileCheck,
+  CheckCircle2,
+  ChevronRight,
+  Award,
+} from "lucide-react";
 
 export const Route = createFileRoute("/naac")({
   head: () => ({
@@ -9,7 +18,8 @@ export const Route = createFileRoute("/naac")({
       { title: "NAAC & IQAC — Janhit Group of Institutions" },
       {
         name: "description",
-        content: "Explore Janhit Group's Quality Assurance reports, IQAC committee composition, AQAR submissions, SSR Criteria 1-7, and DVV clarifications.",
+        content:
+          "Explore Janhit Group's Quality Assurance reports, IQAC committee composition, AQAR submissions, SSR Criteria 1-7, and DVV clarifications.",
       },
     ],
   }),
@@ -17,13 +27,41 @@ export const Route = createFileRoute("/naac")({
 });
 
 const ssrCriteria = [
-  { id: 1, title: "Criterion 1: Curricular Aspects", sub: "Curriculum planning, feedback systems, and academic flexibility." },
-  { id: 2, title: "Criterion 2: Teaching-Learning & Evaluation", sub: "Student enrolment, catering to diversity, evaluation processes." },
-  { id: 3, title: "Criterion 3: Research, Innovations & Extension", sub: "Research facilities, publications, and social extension works." },
-  { id: 4, title: "Criterion 4: Infrastructure & Learning Resources", sub: "Smart classrooms, libraries, moot court, labs, and IT services." },
-  { id: 5, title: "Criterion 5: Student Support & Progression", sub: "Scholarships, placement services, counseling, and alumni progression." },
-  { id: 6, title: "Criterion 6: Governance, Leadership & Management", sub: "Visionary governance, financial audits, professional training." },
-  { id: 7, title: "Criterion 7: Institutional Values & Best Practices", sub: "Green practices, gender equity, inclusivity, and distinctiveness." },
+  {
+    id: 1,
+    title: "Criterion 1: Curricular Aspects",
+    sub: "Curriculum planning, feedback systems, and academic flexibility.",
+  },
+  {
+    id: 2,
+    title: "Criterion 2: Teaching-Learning & Evaluation",
+    sub: "Student enrolment, catering to diversity, evaluation processes.",
+  },
+  {
+    id: 3,
+    title: "Criterion 3: Research, Innovations & Extension",
+    sub: "Research facilities, publications, and social extension works.",
+  },
+  {
+    id: 4,
+    title: "Criterion 4: Infrastructure & Learning Resources",
+    sub: "Smart classrooms, libraries, moot court, labs, and IT services.",
+  },
+  {
+    id: 5,
+    title: "Criterion 5: Student Support & Progression",
+    sub: "Scholarships, placement services, counseling, and alumni progression.",
+  },
+  {
+    id: 6,
+    title: "Criterion 6: Governance, Leadership & Management",
+    sub: "Visionary governance, financial audits, professional training.",
+  },
+  {
+    id: 7,
+    title: "Criterion 7: Institutional Values & Best Practices",
+    sub: "Green practices, gender equity, inclusivity, and distinctiveness.",
+  },
 ];
 
 function NaacPage() {
@@ -47,7 +85,8 @@ function NaacPage() {
               NAAC <span className="text-gradient-gold">& IQAC Portal</span>
             </h1>
             <p className="mt-6 text-lg opacity-90 max-w-2xl">
-              Internal Quality Assurance Cell (IQAC) documentation, Self Study Reports (SSR), IIQA submissions, DVV clarifications, and stakeholder feedback portals.
+              Internal Quality Assurance Cell (IQAC) documentation, Self Study Reports (SSR), IIQA
+              submissions, DVV clarifications, and stakeholder feedback portals.
             </p>
           </FadeIn>
         </div>
@@ -105,11 +144,27 @@ function NaacPage() {
                     <tbody className="divide-y divide-border/60">
                       {[
                         { name: "Dr. N. K. Gupta", role: "Director", cell: "Chairperson" },
-                        { name: "Prof. S. C. Sharma", role: "Dean (Academics)", cell: "IQAC Coordinator" },
+                        {
+                          name: "Prof. S. C. Sharma",
+                          role: "Dean (Academics)",
+                          cell: "IQAC Coordinator",
+                        },
                         { name: "Mr. Rajeev Kumar", role: "Management Nominee", cell: "Member" },
-                        { name: "Dr. Anjali Verma", role: "Head (Law Dept)", cell: "Faculty Member" },
-                        { name: "Dr. P. K. Singh", role: "Head (Education Dept)", cell: "Faculty Member" },
-                        { name: "Mr. Satish Chandra", role: "Local Industry Expert", cell: "External Nominee" },
+                        {
+                          name: "Dr. Anjali Verma",
+                          role: "Head (Law Dept)",
+                          cell: "Faculty Member",
+                        },
+                        {
+                          name: "Dr. P. K. Singh",
+                          role: "Head (Education Dept)",
+                          cell: "Faculty Member",
+                        },
+                        {
+                          name: "Mr. Satish Chandra",
+                          role: "Local Industry Expert",
+                          cell: "External Nominee",
+                        },
                       ].map((row, idx) => (
                         <tr key={idx} className="hover:bg-accent/40">
                           <td className="p-3 font-semibold text-foreground">{row.name}</td>
@@ -130,17 +185,22 @@ function NaacPage() {
                   Annual Quality Assurance Reports submitted electronically to the NAAC portal.
                 </p>
                 <div className="mt-6 space-y-3">
-                  {["AQAR Report 2024-25", "AQAR Report 2023-24", "AQAR Report 2022-23"].map((aqar) => (
-                    <div key={aqar} className="p-4 rounded-xl border border-border bg-background flex items-center justify-between hover:border-gold/30 transition">
-                      <div className="flex items-center gap-2.5">
-                        <FileText className="size-4 text-gold" />
-                        <span className="text-xs font-semibold">{aqar}</span>
+                  {["AQAR Report 2024-25", "AQAR Report 2023-24", "AQAR Report 2022-23"].map(
+                    (aqar) => (
+                      <div
+                        key={aqar}
+                        className="p-4 rounded-xl border border-border bg-background flex items-center justify-between hover:border-gold/30 transition"
+                      >
+                        <div className="flex items-center gap-2.5">
+                          <FileText className="size-4 text-gold" />
+                          <span className="text-xs font-semibold">{aqar}</span>
+                        </div>
+                        <button className="text-xs text-gold font-bold hover:underline inline-flex items-center gap-1">
+                          PDF <Download className="size-3" />
+                        </button>
                       </div>
-                      <button className="text-xs text-gold font-bold hover:underline inline-flex items-center gap-1">
-                        PDF <Download className="size-3" />
-                      </button>
-                    </div>
-                  ))}
+                    ),
+                  )}
                 </div>
               </div>
             </div>
@@ -163,15 +223,21 @@ function NaacPage() {
                 <Clipboard className="size-7" />
               </div>
               <div>
-                <h3 className="font-display font-bold text-xl md:text-2xl text-foreground">IIQA Status Dashboard</h3>
-                <p className="text-xs text-muted-foreground mt-0.5">Updated: Academic Year 2026-27</p>
+                <h3 className="font-display font-bold text-xl md:text-2xl text-foreground">
+                  IIQA Status Dashboard
+                </h3>
+                <p className="text-xs text-muted-foreground mt-0.5">
+                  Updated: Academic Year 2026-27
+                </p>
               </div>
             </div>
-            
+
             <div className="space-y-4">
               <div className="flex justify-between items-center py-2.5 border-b border-border/40 text-xs md:text-sm">
                 <span className="font-bold text-muted-foreground">Registration Status</span>
-                <span className="font-semibold text-green-600 bg-green-500/10 px-2.5 py-0.5 rounded-full border border-green-500/20">Approved & Accepted</span>
+                <span className="font-semibold text-green-600 bg-green-500/10 px-2.5 py-0.5 rounded-full border border-green-500/20">
+                  Approved & Accepted
+                </span>
               </div>
               <div className="flex justify-between items-center py-2.5 border-b border-border/40 text-xs md:text-sm">
                 <span className="font-bold text-muted-foreground">Submission Date</span>
@@ -212,12 +278,12 @@ function NaacPage() {
                     <h3 className="font-display font-bold text-base md:text-lg text-foreground group-hover:text-gold transition-colors leading-snug">
                       {cri.title}
                     </h3>
-                    <p className="mt-2 text-xs text-muted-foreground leading-relaxed">
-                      {cri.sub}
-                    </p>
+                    <p className="mt-2 text-xs text-muted-foreground leading-relaxed">{cri.sub}</p>
                   </div>
                   <div className="mt-6 pt-4 border-t border-border/60 flex items-center justify-between">
-                    <span className="text-[10px] uppercase font-bold text-muted-foreground">NAAC SSR Doc</span>
+                    <span className="text-[10px] uppercase font-bold text-muted-foreground">
+                      NAAC SSR Doc
+                    </span>
                     <button className="text-xs text-gold font-bold hover:underline inline-flex items-center gap-1">
                       Download PDF <Download className="size-3.5" />
                     </button>
@@ -239,22 +305,31 @@ function NaacPage() {
           />
 
           <div className="max-w-4xl mx-auto mt-12 p-8 md:p-10 bg-card border border-border rounded-3xl shadow-sm text-center">
-            <h3 className="font-display font-bold text-xl md:text-2xl mb-4">National Student Satisfaction Survey Analysis</h3>
+            <h3 className="font-display font-bold text-xl md:text-2xl mb-4">
+              National Student Satisfaction Survey Analysis
+            </h3>
             <p className="text-xs md:text-sm text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-              We compile anonymous student reviews concerning teaching patterns, internal evaluations, curriculum flexibilities, and college infrastructure availability.
+              We compile anonymous student reviews concerning teaching patterns, internal
+              evaluations, curriculum flexibilities, and college infrastructure availability.
             </p>
             <div className="mt-8 grid sm:grid-cols-3 gap-6 max-w-2xl mx-auto">
               <div className="p-4 rounded-xl border border-border bg-background">
                 <div className="text-2xl font-extrabold text-gold">4.62 / 5</div>
-                <div className="text-[10px] text-muted-foreground mt-1 uppercase font-bold">Overall Rating</div>
+                <div className="text-[10px] text-muted-foreground mt-1 uppercase font-bold">
+                  Overall Rating
+                </div>
               </div>
               <div className="p-4 rounded-xl border border-border bg-background">
                 <div className="text-2xl font-extrabold text-gold">94.8%</div>
-                <div className="text-[10px] text-muted-foreground mt-1 uppercase font-bold">Syllabus Covered</div>
+                <div className="text-[10px] text-muted-foreground mt-1 uppercase font-bold">
+                  Syllabus Covered
+                </div>
               </div>
               <div className="p-4 rounded-xl border border-border bg-background">
                 <div className="text-2xl font-extrabold text-gold">91.2%</div>
-                <div className="text-[10px] text-muted-foreground mt-1 uppercase font-bold">IT Infrastructure</div>
+                <div className="text-[10px] text-muted-foreground mt-1 uppercase font-bold">
+                  IT Infrastructure
+                </div>
               </div>
             </div>
             <div className="mt-8 pt-6 border-t border-border flex items-center justify-center gap-4 flex-wrap">
@@ -284,13 +359,27 @@ function NaacPage() {
             </h3>
             <div className="space-y-4">
               {[
-                { label: "Extended Profile Devise Clarification", file: "Extended_Profile_DVV.pdf" },
-                { label: "Metric Level Deviations & Resubmission Data", file: "Metric_Deviations_Clarified.pdf" },
-                { label: "Academic Audit & Support Documents", file: "Academic_Audit_Clarification.pdf" },
+                {
+                  label: "Extended Profile Devise Clarification",
+                  file: "Extended_Profile_DVV.pdf",
+                },
+                {
+                  label: "Metric Level Deviations & Resubmission Data",
+                  file: "Metric_Deviations_Clarified.pdf",
+                },
+                {
+                  label: "Academic Audit & Support Documents",
+                  file: "Academic_Audit_Clarification.pdf",
+                },
               ].map((dvv, idx) => (
-                <div key={idx} className="p-4 rounded-2xl bg-secondary/35 border border-border/80 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div
+                  key={idx}
+                  className="p-4 rounded-2xl bg-secondary/35 border border-border/80 flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+                >
                   <div>
-                    <h4 className="text-xs md:text-sm font-semibold text-foreground">{dvv.label}</h4>
+                    <h4 className="text-xs md:text-sm font-semibold text-foreground">
+                      {dvv.label}
+                    </h4>
                     <span className="text-[10px] font-mono text-muted-foreground">{dvv.file}</span>
                   </div>
                   <button className="self-start sm:self-center text-xs text-gold font-bold hover:underline inline-flex items-center gap-1">
@@ -314,14 +403,18 @@ function NaacPage() {
 
           <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto mt-12">
             <div className="p-8 md:p-10 rounded-3xl border border-border bg-card hover:border-gold/30 transition">
-              <h3 className="font-display font-bold text-xl text-gold mb-4 border-b border-border/80 pb-2">Institutional Best Practices</h3>
+              <h3 className="font-display font-bold text-xl text-gold mb-4 border-b border-border/80 pb-2">
+                Institutional Best Practices
+              </h3>
               <div className="space-y-4">
                 <div className="flex gap-3">
                   <CheckCircle2 className="size-5 text-gold flex-shrink-0 mt-0.5" />
                   <div>
                     <h4 className="text-sm font-bold">1. Free Legal Aid & Counseling Clinics</h4>
                     <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
-                      Our students provide primary guidance under panel advocates to rural residents, delivering hands-on court room practice while supporting the community.
+                      Our students provide primary guidance under panel advocates to rural
+                      residents, delivering hands-on court room practice while supporting the
+                      community.
                     </p>
                   </div>
                 </div>
@@ -330,7 +423,8 @@ function NaacPage() {
                   <div>
                     <h4 className="text-sm font-bold">2. Digital Classroom Integration</h4>
                     <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
-                      Transitioning all colleges to modern smart-boards and high-speed Wi-Fi centers to enable virtual guest classes from leading law chambers.
+                      Transitioning all colleges to modern smart-boards and high-speed Wi-Fi centers
+                      to enable virtual guest classes from leading law chambers.
                     </p>
                   </div>
                 </div>
@@ -338,12 +432,18 @@ function NaacPage() {
             </div>
 
             <div className="p-8 md:p-10 rounded-3xl border border-border bg-card hover:border-gold/30 transition">
-              <h3 className="font-display font-bold text-xl text-primary mb-4 border-b border-border/80 pb-2">Institutional Distinctiveness</h3>
+              <h3 className="font-display font-bold text-xl text-primary mb-4 border-b border-border/80 pb-2">
+                Institutional Distinctiveness
+              </h3>
               <p className="text-xs md:text-sm text-muted-foreground leading-relaxed">
-                Janhit Group's absolute distinctiveness lies in its deep commitment to rural empowerment. Situated at Greater Noida, Ghaziabad, and Saharanpur outskirts, we provide highly affordable world-class professional training to local youth.
+                Janhit Group's absolute distinctiveness lies in its deep commitment to rural
+                empowerment. Situated at Greater Noida, Ghaziabad, and Saharanpur outskirts, we
+                provide highly affordable world-class professional training to local youth.
               </p>
               <p className="text-xs md:text-sm text-muted-foreground leading-relaxed mt-4">
-                Through customized scholar programs, bus networks, and local legal counseling hubs, we break academic access barriers and enable professional integration for local student populations.
+                Through customized scholar programs, bus networks, and local legal counseling hubs,
+                we break academic access barriers and enable professional integration for local
+                student populations.
               </p>
             </div>
           </div>
@@ -361,14 +461,31 @@ function NaacPage() {
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto mt-12">
             {[
-              { role: "Students Feedback", desc: "Syllabus, teaching quality, and infra comfort ratings." },
-              { role: "Teachers Feedback", desc: "Curricular design modifications and library updates." },
-              { role: "Alumni Feedback", desc: "Placements feedback, courtroom practice suggestions." },
-              { role: "Employers Feedback", desc: "Core coding skills, professional ethics requirements." },
+              {
+                role: "Students Feedback",
+                desc: "Syllabus, teaching quality, and infra comfort ratings.",
+              },
+              {
+                role: "Teachers Feedback",
+                desc: "Curricular design modifications and library updates.",
+              },
+              {
+                role: "Alumni Feedback",
+                desc: "Placements feedback, courtroom practice suggestions.",
+              },
+              {
+                role: "Employers Feedback",
+                desc: "Core coding skills, professional ethics requirements.",
+              },
             ].map((fb, idx) => (
-              <div key={idx} className="p-6 md:p-8 border border-border bg-card rounded-2xl flex flex-col justify-between hover:border-gold/30 transition">
+              <div
+                key={idx}
+                className="p-6 md:p-8 border border-border bg-card rounded-2xl flex flex-col justify-between hover:border-gold/30 transition"
+              >
                 <div>
-                  <h4 className="font-display font-bold text-base text-foreground leading-snug">{fb.role}</h4>
+                  <h4 className="font-display font-bold text-base text-foreground leading-snug">
+                    {fb.role}
+                  </h4>
                   <p className="mt-3 text-xs text-muted-foreground leading-relaxed">{fb.desc}</p>
                 </div>
                 <div className="mt-6 pt-4 border-t border-border/60 flex items-center justify-between">

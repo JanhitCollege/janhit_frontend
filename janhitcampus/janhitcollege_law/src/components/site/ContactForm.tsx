@@ -39,17 +39,19 @@ export function ContactForm() {
     <section id="contact" className="py-20 bg-beige/30 border-t border-gold/10">
       <div className="max-w-7xl mx-auto px-6">
         <div className="grid lg:grid-cols-12 gap-12">
-          
           {/* Contact Details & Map */}
           <div className="lg:col-span-6 space-y-8">
             <div className="space-y-2">
-              <span className="text-xs font-bold uppercase tracking-wider text-gold">Reach Out</span>
+              <span className="text-xs font-bold uppercase tracking-wider text-gold">
+                Reach Out
+              </span>
               <h2 className="text-3xl font-serif font-bold text-navy">Campus Location & Contact</h2>
               <div className="h-1 w-20 bg-gold rounded" />
             </div>
 
             <p className="text-sm text-navy/80 leading-relaxed">
-              Have questions regarding seat intake, fee structures, or transport facilities? Visit our campus or get in touch with our counselors.
+              Have questions regarding seat intake, fee structures, or transport facilities? Visit
+              our campus or get in touch with our counselors.
             </p>
 
             <div className="grid sm:grid-cols-2 gap-6">
@@ -58,7 +60,8 @@ export function ContactForm() {
                 <div>
                   <h4 className="font-bold text-navy text-sm">Campus Address</h4>
                   <p className="text-xs text-navy/70 mt-1 leading-relaxed">
-                    Plot No. 35, Knowledge Park - 1,<br />
+                    Plot No. 35, Knowledge Park - 1,
+                    <br />
                     Greater Noida (U.P.) - 201307
                   </p>
                 </div>
@@ -69,8 +72,12 @@ export function ContactForm() {
                 <div>
                   <h4 className="font-bold text-navy text-sm">Counseling Helplines</h4>
                   <p className="text-xs text-navy/70 mt-1 space-y-1">
-                    <a href="tel:9313402015" className="block hover:text-gold">9313402015</a>
-                    <a href="tel:9560614440" className="block hover:text-gold">9560614440</a>
+                    <a href="tel:9313402015" className="block hover:text-gold">
+                      9313402015
+                    </a>
+                    <a href="tel:9560614440" className="block hover:text-gold">
+                      9560614440
+                    </a>
                   </p>
                 </div>
               </div>
@@ -80,7 +87,9 @@ export function ContactForm() {
                 <div>
                   <h4 className="font-bold text-navy text-sm">Official Email</h4>
                   <p className="text-xs text-navy/70 mt-1">
-                    <a href="mailto:info@janhitlawcollege.org" className="hover:text-gold">info@janhitlawcollege.org</a>
+                    <a href="mailto:info@janhitlawcollege.org" className="hover:text-gold">
+                      info@janhitlawcollege.org
+                    </a>
                   </p>
                 </div>
               </div>
@@ -124,7 +133,10 @@ export function ContactForm() {
 
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="space-y-1.5">
-                  <label htmlFor="name" className="text-xs font-bold text-navy/85 uppercase tracking-wide">
+                  <label
+                    htmlFor="name"
+                    className="text-xs font-bold text-navy/85 uppercase tracking-wide"
+                  >
                     Full Name
                   </label>
                   <input
@@ -140,7 +152,10 @@ export function ContactForm() {
                 </div>
 
                 <div className="space-y-1.5">
-                  <label htmlFor="email" className="text-xs font-bold text-navy/85 uppercase tracking-wide">
+                  <label
+                    htmlFor="email"
+                    className="text-xs font-bold text-navy/85 uppercase tracking-wide"
+                  >
                     Email Address
                   </label>
                   <input
@@ -156,7 +171,10 @@ export function ContactForm() {
                 </div>
 
                 <div className="space-y-1.5">
-                  <label htmlFor="mobile" className="text-xs font-bold text-navy/85 uppercase tracking-wide">
+                  <label
+                    htmlFor="mobile"
+                    className="text-xs font-bold text-navy/85 uppercase tracking-wide"
+                  >
                     Mobile Number
                   </label>
                   <input
@@ -173,7 +191,10 @@ export function ContactForm() {
                 </div>
 
                 <div className="space-y-1.5">
-                  <label htmlFor="course" className="text-xs font-bold text-navy/85 uppercase tracking-wide">
+                  <label
+                    htmlFor="course"
+                    className="text-xs font-bold text-navy/85 uppercase tracking-wide"
+                  >
                     Select Law Course
                   </label>
                   <select
@@ -205,7 +226,6 @@ export function ContactForm() {
               </form>
             </div>
           </div>
-
         </div>
       </div>
     </section>

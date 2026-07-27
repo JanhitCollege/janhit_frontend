@@ -27,7 +27,8 @@ const events = [
   {
     title: "National Moot Court Competition 2026",
     date: "October 18-20, 2026",
-    details: "Host court mock cases covering criminal trial proceedings. Registration opens next month.",
+    details:
+      "Host court mock cases covering criminal trial proceedings. Registration opens next month.",
   },
   {
     title: "Guest Lecture: Constitutional Law & Rights",
@@ -52,14 +53,14 @@ export function NewsEvents() {
   return (
     <section className="py-20 bg-background">
       <div className="max-w-7xl mx-auto px-6 space-y-20">
-        
         {/* News & Events Dual Grid */}
         <div className="grid lg:grid-cols-12 gap-12">
-          
           {/* News & Notices Board */}
           <div id="notices" className="lg:col-span-6 space-y-6">
             <div className="space-y-2">
-              <span className="text-xs font-bold uppercase tracking-wider text-gold">Updates Bulletin</span>
+              <span className="text-xs font-bold uppercase tracking-wider text-gold">
+                Updates Bulletin
+              </span>
               <h2 className="text-3xl font-serif font-bold text-navy flex items-center gap-2">
                 <Bell className="h-7 w-7 text-gold animate-bounce" />
                 <span>News & Notices</span>
@@ -89,7 +90,9 @@ export function NewsEvents() {
           {/* Events & Activities */}
           <div id="events" className="lg:col-span-6 space-y-6">
             <div className="space-y-2">
-              <span className="text-xs font-bold uppercase tracking-wider text-gold">Student Activities</span>
+              <span className="text-xs font-bold uppercase tracking-wider text-gold">
+                Student Activities
+              </span>
               <h2 className="text-3xl font-serif font-bold text-navy flex items-center gap-2">
                 <Calendar className="h-7 w-7 text-gold" />
                 <span>Events & Activities</span>
@@ -117,21 +120,23 @@ export function NewsEvents() {
               ))}
             </div>
           </div>
-
         </div>
 
         {/* Gallery Showcase */}
         <div id="gallery" className="space-y-12">
           {/* Section Header */}
           <div className="text-center space-y-3 max-w-2xl mx-auto">
-            <span className="text-xs font-bold uppercase tracking-wider text-gold">Campus in Focus</span>
+            <span className="text-xs font-bold uppercase tracking-wider text-gold">
+              Campus in Focus
+            </span>
             <h2 className="text-3xl md:text-4xl font-serif font-bold text-navy flex items-center justify-center gap-2">
               <ImageIcon className="h-7 w-7 text-gold" />
               <span>Campus Gallery</span>
             </h2>
             <div className="h-1 w-20 bg-gold mx-auto rounded" />
             <p className="text-sm text-navy/70">
-              Take a visual tour around our campus facilities, training libraries, and student moot activities.
+              Take a visual tour around our campus facilities, training libraries, and student moot
+              activities.
             </p>
           </div>
 
@@ -149,13 +154,14 @@ export function NewsEvents() {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-navy-deep/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4">
                   <h4 className="text-white font-serif text-sm font-semibold">{img.title}</h4>
-                  <span className="text-[10px] text-gold uppercase tracking-wider mt-0.5">Janhit College of Law</span>
+                  <span className="text-[10px] text-gold uppercase tracking-wider mt-0.5">
+                    Janhit College of Law
+                  </span>
                 </div>
               </div>
             ))}
           </div>
         </div>
-
       </div>
     </section>
   );

@@ -15,7 +15,7 @@ import {
   Layers,
   FileDown,
   Image,
-  Calendar
+  Calendar,
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -43,7 +43,7 @@ function AdminLayoutContent() {
   const { user, logout, isAuthenticated } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
-  
+
   // Mobile drawer state
   const [isMobileOpen, setIsMobileOpen] = useState(false);
 
@@ -141,7 +141,6 @@ function AdminLayoutContent() {
       {/* Top Fixed Header */}
       <header className="fixed top-0 inset-x-0 z-40 bg-background/95 backdrop-blur-md border-b shadow-sm py-3">
         <div className="flex items-center justify-between gap-4 px-4 md:px-6">
-          
           <div className="flex items-center gap-2">
             {/* Mobile Hamburger toggle */}
             <button
@@ -178,11 +177,16 @@ function AdminLayoutContent() {
                 </Avatar>
                 <div className="hidden sm:flex flex-col text-left leading-none">
                   <span className="text-xs font-semibold text-foreground">{adminName}</span>
-                  <span className="text-[10px] text-muted-foreground mt-0.5">{user?.role || "Administrator"}</span>
+                  <span className="text-[10px] text-muted-foreground mt-0.5">
+                    {user?.role || "Administrator"}
+                  </span>
                 </div>
                 <ChevronDown className="size-3.5 text-muted-foreground" />
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-48 rounded-xl p-1.5 shadow-elegant border border-border/80 mt-1">
+              <DropdownMenuContent
+                align="end"
+                className="w-48 rounded-xl p-1.5 shadow-elegant border border-border/80 mt-1"
+              >
                 <DropdownMenuLabel className="px-2 py-1 text-xs text-muted-foreground uppercase tracking-wider">
                   My Account
                 </DropdownMenuLabel>
@@ -212,7 +216,6 @@ function AdminLayoutContent() {
 
       {/* Main Body */}
       <div className="flex flex-1 pt-[65px]">
-        
         {/* Desktop Sidebar (Left panel, fixed, hidden on mobile) */}
         <aside className="fixed top-[65px] left-0 bottom-0 w-64 bg-card border-r hidden md:flex flex-col justify-between p-4 z-30">
           <nav className="space-y-1.5">
@@ -262,7 +265,9 @@ function AdminLayoutContent() {
                     <div className="size-8 rounded-lg bg-gradient-gold grid place-items-center">
                       <GraduationCap className="size-4 text-gold-foreground" />
                     </div>
-                    <span className="font-display font-bold text-foreground text-sm">Janhit Admin</span>
+                    <span className="font-display font-bold text-foreground text-sm">
+                      Janhit Admin
+                    </span>
                   </div>
                   <button
                     onClick={() => setIsMobileOpen(false)}
@@ -308,7 +313,6 @@ function AdminLayoutContent() {
         <div className="flex-1 md:pl-64 flex flex-col min-h-[calc(100vh-65px)]">
           <Outlet />
         </div>
-
       </div>
     </div>
   );

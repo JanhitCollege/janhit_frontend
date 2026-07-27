@@ -1,7 +1,18 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SectionHeader, FadeIn } from "@/components/Section";
 import { useState } from "react";
-import { FileText, Download, ShieldCheck, Users, Calendar, Award, Scale, HelpCircle, ChevronRight, Clipboard } from "lucide-react";
+import {
+  FileText,
+  Download,
+  ShieldCheck,
+  Users,
+  Calendar,
+  Award,
+  Scale,
+  HelpCircle,
+  ChevronRight,
+  Clipboard,
+} from "lucide-react";
 
 export const Route = createFileRoute("/disclosures")({
   head: () => ({
@@ -9,7 +20,8 @@ export const Route = createFileRoute("/disclosures")({
       { title: "Public Disclosures & Committees — Janhit Group" },
       {
         name: "description",
-        content: "Access statutory disclosures, BCI/NCTE affiliation documents, code of conduct, syllabus, faculty lists, anti-ragging committees, and GRC members.",
+        content:
+          "Access statutory disclosures, BCI/NCTE affiliation documents, code of conduct, syllabus, faculty lists, anti-ragging committees, and GRC members.",
       },
     ],
   }),
@@ -17,14 +29,26 @@ export const Route = createFileRoute("/disclosures")({
 });
 
 const disclosures = [
-  { label: "Affiliation Certificates (B.A.LL.B., LLB and LL.M.)", file: "Affiliation_Law_CCS_University.pdf" },
+  {
+    label: "Affiliation Certificates (B.A.LL.B., LLB and LL.M.)",
+    file: "Affiliation_Law_CCS_University.pdf",
+  },
   { label: "College Prospectus & Guidelines 2026-27", file: "College_Prospectus_2026.pdf" },
-  { label: "Courses / Programs Approvals (BCI, NCTE, AICTE)", file: "Program_Regulatory_Approvals.pdf" },
-  { label: "Detailed Subject Syllabus (CCS University)", file: "Syllabus_CCS_University_Law_MGMT.pdf" },
+  {
+    label: "Courses / Programs Approvals (BCI, NCTE, AICTE)",
+    file: "Program_Regulatory_Approvals.pdf",
+  },
+  {
+    label: "Detailed Subject Syllabus (CCS University)",
+    file: "Syllabus_CCS_University_Law_MGMT.pdf",
+  },
   { label: "Code of Conduct (Students, Teachers & Staff)", file: "Code_of_Conduct_Janhit.pdf" },
   { label: "Core Faculty List & Academic Qualifications", file: "Faculty_List_Qualifications.pdf" },
   { label: "Alumni Association Registration & Bylaws", file: "Alumni_Association_Bylaws.pdf" },
-  { label: "RTI Act Statutory Disclosures (Right to Information)", file: "RTI_Act_Statutory_Declaration.pdf" },
+  {
+    label: "RTI Act Statutory Disclosures (Right to Information)",
+    file: "RTI_Act_Statutory_Declaration.pdf",
+  },
   { label: "Academic Calendar (Odd & Even Semesters 2026)", file: "Academic_Calendar_2026.pdf" },
   { label: "Management Committee Members & Governance", file: "Management_Committee_List.pdf" },
   { label: "Legal Aid Clinic Committee Roster", file: "Legal_Aid_Clinic_Members.pdf" },
@@ -33,49 +57,57 @@ const disclosures = [
 const committees = [
   {
     name: "IQAC Committee",
-    objective: "Coordinating quality parameters, planning curriculum enhancements, and designing annual AQAR reports.",
+    objective:
+      "Coordinating quality parameters, planning curriculum enhancements, and designing annual AQAR reports.",
     head: "Prof. S. C. Sharma (Dean Academics)",
     members: ["Dr. Anjali Verma", "Dr. P. K. Singh", "Mr. Satish Chandra"],
   },
   {
     name: "Anti-Ragging Committee",
-    objective: "Ensuring a 100% ragging-free campus. Conducting surprise checks and addressing student discipline.",
+    objective:
+      "Ensuring a 100% ragging-free campus. Conducting surprise checks and addressing student discipline.",
     head: "Dr. Arvind Kumar (Proctor)",
     members: ["Mr. Amit Bansal", "Ms. Ritu Rani", "Representative of Local Police Station"],
   },
   {
     name: "Grievance Redressal Committee (GRC)",
-    objective: "Addressing student complaints, resource needs, examination concerns, and other administrative grievances.",
+    objective:
+      "Addressing student complaints, resource needs, examination concerns, and other administrative grievances.",
     head: "Dr. N. K. Gupta (Director)",
     members: ["Prof. S. C. Sharma", "Dr. Anjali Verma", "Mr. Rajeev Kumar"],
   },
   {
     name: "Internal Complaint Committee (ICC) / POSH",
-    objective: "Ensuring gender equity, prevention of sexual harassment, and addressing safety matters for female students & staff.",
+    objective:
+      "Ensuring gender equity, prevention of sexual harassment, and addressing safety matters for female students & staff.",
     head: "Dr. Anjali Verma (Chairperson)",
     members: ["Ms. Ritu Rani", "Ms. Neha Sharma", "Mrs. Savita Devi (NGO Nominee)"],
   },
   {
     name: "Sport & Cultural Committee",
-    objective: "Organizing athletic sports meets, coordinating annual cultural festivals, and selecting teams for tournaments.",
+    objective:
+      "Organizing athletic sports meets, coordinating annual cultural festivals, and selecting teams for tournaments.",
     head: "Mr. P. K. Saxena (Physical Director)",
     members: ["Mr. Amit Bansal", "Ms. Ritu Rani", "Student Cultural Secretary"],
   },
   {
     name: "Library Committee",
-    objective: "Reviewing text editions, processing research journals purchases, and upgrading digital library networks.",
+    objective:
+      "Reviewing text editions, processing research journals purchases, and upgrading digital library networks.",
     head: "Mrs. Manju Bala (Librarian)",
     members: ["Dr. P. K. Singh", "Dr. Anjali Verma", "Mr. Rajeev Kumar"],
   },
   {
     name: "Proctorial Board",
-    objective: "Supervising campus discipline, issuing ID cards, enforcing dress code, and managing safety regulations.",
+    objective:
+      "Supervising campus discipline, issuing ID cards, enforcing dress code, and managing safety regulations.",
     head: "Dr. Arvind Kumar (Chief Proctor)",
     members: ["Mr. Amit Bansal", "Dr. P. K. Singh", "Security Supervisor"],
   },
   {
     name: "Equal Opportunity Cell",
-    objective: "Ensuring equal learning assistance, coordinating scholarships and fee relaxation rules for SC/ST and OBC students.",
+    objective:
+      "Ensuring equal learning assistance, coordinating scholarships and fee relaxation rules for SC/ST and OBC students.",
     head: "Mr. Rajeev Kumar (Registrar)",
     members: ["Dr. P. K. Singh", "Mr. Amit Bansal", "Mrs. Savita Devi"],
   },
@@ -102,7 +134,8 @@ function DisclosuresPage() {
               Public Disclosures <span className="text-gradient-gold">& Committees</span>
             </h1>
             <p className="mt-6 text-lg opacity-90 max-w-2xl">
-              Mandatory university and government disclosures, affiliation certificates, code of conduct declarations, and student welfare committee compositions.
+              Mandatory university and government disclosures, affiliation certificates, code of
+              conduct declarations, and student welfare committee compositions.
             </p>
           </FadeIn>
         </div>
@@ -207,13 +240,17 @@ function DisclosuresPage() {
                         <h3 className="font-display font-bold text-xl md:text-2xl text-foreground">
                           {committees[selectedCommittee].name}
                         </h3>
-                        <span className="text-xs text-muted-foreground font-semibold">Statutory Committee Cell</span>
+                        <span className="text-xs text-muted-foreground font-semibold">
+                          Statutory Committee Cell
+                        </span>
                       </div>
                     </div>
 
                     <div className="space-y-6">
                       <div>
-                        <h4 className="text-xs uppercase tracking-wider font-bold text-gold mb-2">Objective / Scope</h4>
+                        <h4 className="text-xs uppercase tracking-wider font-bold text-gold mb-2">
+                          Objective / Scope
+                        </h4>
                         <p className="text-sm text-muted-foreground leading-relaxed">
                           {committees[selectedCommittee].objective}
                         </p>
@@ -221,18 +258,27 @@ function DisclosuresPage() {
 
                       <div className="grid sm:grid-cols-2 gap-6 pt-4 border-t border-border/60">
                         <div>
-                          <h4 className="text-xs uppercase tracking-wider font-bold text-gold mb-2">Committee Head</h4>
+                          <h4 className="text-xs uppercase tracking-wider font-bold text-gold mb-2">
+                            Committee Head
+                          </h4>
                           <span className="text-sm font-bold text-foreground block">
                             {committees[selectedCommittee].head}
                           </span>
-                          <span className="text-[10px] text-muted-foreground uppercase font-bold">Chairperson / Proctor</span>
+                          <span className="text-[10px] text-muted-foreground uppercase font-bold">
+                            Chairperson / Proctor
+                          </span>
                         </div>
 
                         <div>
-                          <h4 className="text-xs uppercase tracking-wider font-bold text-gold mb-2">Key Members</h4>
+                          <h4 className="text-xs uppercase tracking-wider font-bold text-gold mb-2">
+                            Key Members
+                          </h4>
                           <ul className="space-y-1">
                             {committees[selectedCommittee].members.map((member, mIdx) => (
-                              <li key={mIdx} className="text-xs md:text-sm text-muted-foreground flex items-center gap-1.5">
+                              <li
+                                key={mIdx}
+                                className="text-xs md:text-sm text-muted-foreground flex items-center gap-1.5"
+                              >
                                 <span className="size-1.5 rounded-full bg-gold shrink-0" /> {member}
                               </li>
                             ))}

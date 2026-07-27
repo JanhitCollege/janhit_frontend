@@ -5,9 +5,7 @@ import { ProtectedRoute } from "@/admin/components/ProtectedRoute";
 export const Route = createFileRoute("/@admin/news/")({
   component: NewsNoticeListingRouteComponent,
   head: () => ({
-    meta: [
-      { title: "News & Notices Management — Janhit Group of Institutions" },
-    ],
+    meta: [{ title: "News & Notices Management — Janhit Group of Institutions" }],
   }),
 });
 

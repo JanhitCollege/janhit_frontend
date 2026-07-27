@@ -1,7 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { motion, AnimatePresence } from "framer-motion";
-import { GraduationCap, Lock, Mail, AlertCircle, Loader2, Eye, EyeOff, CheckCircle2 } from "lucide-react";
+import {
+  GraduationCap,
+  Lock,
+  Mail,
+  AlertCircle,
+  Loader2,
+  Eye,
+  EyeOff,
+  CheckCircle2,
+} from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,7 +19,7 @@ import { Label } from "@/components/ui/label";
 export const LoginPage: React.FC = () => {
   const { login, isAuthenticated } = useAuth();
   const navigate = useNavigate();
-  
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -38,7 +47,7 @@ export const LoginPage: React.FC = () => {
     setIsSubmitting(true);
     try {
       await login(email, password);
-      
+
       // Fetch the saved user details to display name in popup
       const savedUserStr = localStorage.getItem("janhit_admin_user");
       let userName = "Admin";
@@ -48,7 +57,7 @@ export const LoginPage: React.FC = () => {
           userName = parsed.name || "Admin";
         } catch (err) {}
       }
-      
+
       setLoggedInName(userName);
       setShowSuccessPopup(true);
     } catch (err: any) {
@@ -105,7 +114,10 @@ export const LoginPage: React.FC = () => {
             )}
 
             <div className="space-y-2">
-              <Label htmlFor="email" className="text-foreground/80 font-semibold text-xs uppercase tracking-wider pl-1">
+              <Label
+                htmlFor="email"
+                className="text-foreground/80 font-semibold text-xs uppercase tracking-wider pl-1"
+              >
                 Email Address
               </Label>
               <div className="relative">
@@ -123,7 +135,10 @@ export const LoginPage: React.FC = () => {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="password" className="text-foreground/80 font-semibold text-xs uppercase tracking-wider pl-1">
+              <Label
+                htmlFor="password"
+                className="text-foreground/80 font-semibold text-xs uppercase tracking-wider pl-1"
+              >
                 Password
               </Label>
               <div className="relative">
@@ -190,9 +205,12 @@ export const LoginPage: React.FC = () => {
                 <div className="size-14 rounded-2xl bg-gradient-gold grid place-items-center shadow-gold mb-4 text-gold-foreground">
                   <CheckCircle2 className="size-7 animate-pulse" />
                 </div>
-                <h3 className="font-display text-xl font-bold text-foreground mb-2">Login Successful</h3>
+                <h3 className="font-display text-xl font-bold text-foreground mb-2">
+                  Login Successful
+                </h3>
                 <p className="text-sm text-muted-foreground leading-relaxed mb-6">
-                  Account login successful. Welcome back, <span className="font-semibold text-foreground">{loggedInName}</span>!
+                  Account login successful. Welcome back,{" "}
+                  <span className="font-semibold text-foreground">{loggedInName}</span>!
                 </p>
                 <Button
                   onClick={handleProceed}

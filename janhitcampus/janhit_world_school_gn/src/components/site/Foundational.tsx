@@ -6,37 +6,43 @@ const items = [
   {
     icon: Blocks,
     title: "Montessori Lab",
-    bgClass: "bg-rose-50/40 border-rose-100/60 hover:border-rose-300 hover:shadow-[0_12px_24px_rgba(244,63,94,0.08)]",
+    bgClass:
+      "bg-rose-50/40 border-rose-100/60 hover:border-rose-300 hover:shadow-[0_12px_24px_rgba(244,63,94,0.08)]",
     iconClass: "bg-rose-500 text-white",
   },
   {
     icon: BookOpen,
     title: "Mini Library",
-    bgClass: "bg-sky-50/40 border-sky-100/60 hover:border-sky-300 hover:shadow-[0_12px_24px_rgba(14,165,233,0.08)]",
+    bgClass:
+      "bg-sky-50/40 border-sky-100/60 hover:border-sky-300 hover:shadow-[0_12px_24px_rgba(14,165,233,0.08)]",
     iconClass: "bg-sky-500 text-white",
   },
   {
     icon: Palette,
     title: "Creative Arts",
-    bgClass: "bg-amber-50/40 border-amber-100/60 hover:border-amber-300 hover:shadow-[0_12px_24px_rgba(245,158,11,0.08)]",
+    bgClass:
+      "bg-amber-50/40 border-amber-100/60 hover:border-amber-300 hover:shadow-[0_12px_24px_rgba(245,158,11,0.08)]",
     iconClass: "bg-amber-500 text-white",
   },
   {
     icon: Music,
     title: "Music & Activity Zone",
-    bgClass: "bg-indigo-50/40 border-indigo-100/60 hover:border-indigo-300 hover:shadow-[0_12px_24px_rgba(99,102,241,0.08)]",
+    bgClass:
+      "bg-indigo-50/40 border-indigo-100/60 hover:border-indigo-300 hover:shadow-[0_12px_24px_rgba(99,102,241,0.08)]",
     iconClass: "bg-indigo-500 text-white",
   },
   {
     icon: Shield,
     title: "Safe & Joyful Environment",
-    bgClass: "bg-emerald-50/40 border-emerald-100/60 hover:border-emerald-300 hover:shadow-[0_12px_24px_rgba(16,185,129,0.08)]",
+    bgClass:
+      "bg-emerald-50/40 border-emerald-100/60 hover:border-emerald-300 hover:shadow-[0_12px_24px_rgba(16,185,129,0.08)]",
     iconClass: "bg-emerald-500 text-white",
   },
   {
     icon: Sparkles,
     title: "Sensorial Discovery",
-    bgClass: "bg-purple-50/40 border-purple-100/60 hover:border-purple-300 hover:shadow-[0_12px_24px_rgba(168,85,247,0.08)]",
+    bgClass:
+      "bg-purple-50/40 border-purple-100/60 hover:border-purple-300 hover:shadow-[0_12px_24px_rgba(168,85,247,0.08)]",
     iconClass: "bg-purple-500 text-white",
   },
 ];
@@ -53,7 +59,8 @@ export function Foundational() {
             <span className="h-px w-8 bg-gold/60" /> Foundational Hub
           </div>
           <h2 className="mt-5 font-serif text-4xl md:text-5xl lg:text-6xl text-navy leading-[1.05]">
-            A magical first chapter for <span className="italic text-gradient-gold">little learners.</span>
+            A magical first chapter for{" "}
+            <span className="italic text-gradient-gold">little learners.</span>
           </h2>
           <p className="mt-6 text-muted-foreground text-lg leading-relaxed">
             From Playgroup to UKG, our dedicated Foundational Hub blends Montessori wisdom with
@@ -70,7 +77,9 @@ export function Foundational() {
                 transition={{ delay: i * 0.07, duration: 0.5 }}
                 className={`group p-5 rounded-2xl border hover-lift h-full flex flex-col justify-start items-start ${it.bgClass}`}
               >
-                <div className={`h-10 w-10 rounded-lg flex items-center justify-center mb-3 group-hover:rotate-6 transition-transform shadow-sm ${it.iconClass}`}>
+                <div
+                  className={`h-10 w-10 rounded-lg flex items-center justify-center mb-3 group-hover:rotate-6 transition-transform shadow-sm ${it.iconClass}`}
+                >
                   <it.icon className="size-5" />
                 </div>
                 <div className="font-serif text-lg text-navy font-semibold">{it.title}</div>

@@ -23,7 +23,8 @@ export const Route = createFileRoute("/admissions")({
       { title: "Admissions — Janhit Group of Institutions" },
       {
         name: "description",
-        content: "Apply online to Janhit colleges and schools. Review the step-by-step admission process, academic eligibility, fee structure, and prospectus.",
+        content:
+          "Apply online to Janhit colleges and schools. Review the step-by-step admission process, academic eligibility, fee structure, and prospectus.",
       },
       { property: "og:title", content: "Admissions Open — Janhit Group" },
       { property: "og:description", content: "Begin your Janhit journey today." },
@@ -50,14 +51,15 @@ function Admissions() {
     const campuses = getStoredCampuses();
     let campusId = "1"; // Default fallback
     const matchedCampus = campuses.find(
-      (c) => c.slug === campusSlug || c.slug.includes(campusSlug) || campusSlug.includes(c.slug)
+      (c) => c.slug === campusSlug || c.slug.includes(campusSlug) || campusSlug.includes(c.slug),
     );
     if (matchedCampus) {
       campusId = matchedCampus.id;
     } else {
-      const matchedByName = campuses.find((c) => 
-        c.name.toLowerCase().includes(campusSlug.toLowerCase()) || 
-        c.shortName.toLowerCase().includes(campusSlug.toLowerCase())
+      const matchedByName = campuses.find(
+        (c) =>
+          c.name.toLowerCase().includes(campusSlug.toLowerCase()) ||
+          c.shortName.toLowerCase().includes(campusSlug.toLowerCase()),
       );
       if (matchedByName) {
         campusId = matchedByName.id;
@@ -72,7 +74,7 @@ function Admissions() {
       course: course || "",
       campusId,
       city: city || "",
-      message: message || ""
+      message: message || "",
     });
 
     setSent(true);
@@ -93,7 +95,8 @@ function Admissions() {
               Shape your future. <span className="text-gradient-gold">Join Janhit</span>.
             </h1>
             <p className="mt-6 text-lg opacity-90 max-w-2xl">
-              We welcome ambitious minds to our colleges and schools across Uttar Pradesh. Review our criteria, download our brochure, and submit your application online.
+              We welcome ambitious minds to our colleges and schools across Uttar Pradesh. Review
+              our criteria, download our brochure, and submit your application online.
             </p>
           </FadeIn>
         </div>
@@ -104,16 +107,29 @@ function Admissions() {
         <div className="container-tight">
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {[
-              { icon: Send, title: "Apply Online", desc: "Fill the application inquiry form below to initiate your process." },
-              { icon: Download, title: "Download Prospectus", desc: "Get detailed brochure PDFs for all programs." },
+              {
+                icon: Send,
+                title: "Apply Online",
+                desc: "Fill the application inquiry form below to initiate your process.",
+              },
+              {
+                icon: Download,
+                title: "Download Prospectus",
+                desc: "Get detailed brochure PDFs for all programs.",
+              },
               { icon: Phone, title: "Admission Helpline", desc: "+91 98765 43210 (10 AM to 6 PM)" },
             ].map((c) => (
-              <div key={c.title} className="p-8 md:p-10 rounded-3xl bg-card border border-border flex items-start gap-6 hover:shadow-elegant hover:border-gold/20 transition-all duration-300">
+              <div
+                key={c.title}
+                className="p-8 md:p-10 rounded-3xl bg-card border border-border flex items-start gap-6 hover:shadow-elegant hover:border-gold/20 transition-all duration-300"
+              >
                 <div className="size-14 rounded-full bg-gold/10 text-gold grid place-items-center shrink-0">
                   <c.icon className="size-7" />
                 </div>
                 <div>
-                  <h3 className="font-display font-bold text-lg md:text-xl text-foreground">{c.title}</h3>
+                  <h3 className="font-display font-bold text-lg md:text-xl text-foreground">
+                    {c.title}
+                  </h3>
                   <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{c.desc}</p>
                 </div>
               </div>
@@ -167,12 +183,16 @@ function Admissions() {
                         <div className="size-14 rounded-full bg-gold/10 text-gold grid place-items-center group-hover:scale-105 transition-transform duration-300">
                           <Icon className="size-7" />
                         </div>
-                        <span className="font-display font-bold text-3xl text-gold/30">{item.step}</span>
+                        <span className="font-display font-bold text-3xl text-gold/30">
+                          {item.step}
+                        </span>
                       </div>
                       <h4 className="font-display font-bold text-lg md:text-xl text-foreground leading-tight">
                         {item.title}
                       </h4>
-                      <p className="mt-4 text-sm text-muted-foreground leading-relaxed">{item.desc}</p>
+                      <p className="mt-4 text-sm text-muted-foreground leading-relaxed">
+                        {item.desc}
+                      </p>
                     </div>
                   </div>
                 </FadeIn>
@@ -224,7 +244,9 @@ function Admissions() {
                       <CheckCircle className="size-5 text-gold flex-shrink-0 mt-0.5" />
                       <div>
                         <div className="text-sm font-bold text-foreground">{item.course}</div>
-                        <div className="text-xs md:text-sm text-muted-foreground mt-2 leading-relaxed">{item.req}</div>
+                        <div className="text-xs md:text-sm text-muted-foreground mt-2 leading-relaxed">
+                          {item.req}
+                        </div>
                       </div>
                     </div>
                   ))}
@@ -260,7 +282,9 @@ function Admissions() {
                       <CheckCircle className="size-5 text-primary flex-shrink-0 mt-0.5" />
                       <div>
                         <div className="text-sm font-bold text-foreground">{item.course}</div>
-                        <div className="text-xs md:text-sm text-muted-foreground mt-2 leading-relaxed">{item.req}</div>
+                        <div className="text-xs md:text-sm text-muted-foreground mt-2 leading-relaxed">
+                          {item.req}
+                        </div>
                       </div>
                     </div>
                   ))}
@@ -297,20 +321,32 @@ function Admissions() {
                     { course: "LL.M (Post-Grad Law)", duration: "2 Years", fee: "₹ 80,000" },
                     { course: "BBA / BCA (Management & CS)", duration: "3 Years", fee: "₹ 45,000" },
                     { course: "B.Ed (Teacher Training)", duration: "2 Years", fee: "₹ 51,250" },
-                    { course: "B.Sc / B.Com / B.A", duration: "3 Years", fee: "₹ 25,000 - ₹ 35,000" },
-                    { course: "Schooling (Nursery to Class XII)", duration: "Grade Wise", fee: "Contact Campus" },
+                    {
+                      course: "B.Sc / B.Com / B.A",
+                      duration: "3 Years",
+                      fee: "₹ 25,000 - ₹ 35,000",
+                    },
+                    {
+                      course: "Schooling (Nursery to Class XII)",
+                      duration: "Grade Wise",
+                      fee: "Contact Campus",
+                    },
                   ].map((row, idx) => (
                     <tr key={idx} className="hover:bg-accent/40 transition-colors">
                       <td className="p-4 md:p-5 font-semibold text-foreground">{row.course}</td>
                       <td className="p-4 md:p-5 text-muted-foreground">{row.duration}</td>
-                      <td className="p-4 md:p-5 text-right font-display font-bold text-gold">{row.fee}</td>
+                      <td className="p-4 md:p-5 text-right font-display font-bold text-gold">
+                        {row.fee}
+                      </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
             </div>
             <div className="p-4 md:p-5 bg-secondary/20 text-xs text-muted-foreground border-t border-border leading-relaxed">
-              * Note: The annual fees mentioned above are subject to revision according to State Government guidelines and university affiliations. Exam fees, bus transport, hostel, and uniform charges are billed separately based on individual utilization.
+              * Note: The annual fees mentioned above are subject to revision according to State
+              Government guidelines and university affiliations. Exam fees, bus transport, hostel,
+              and uniform charges are billed separately based on individual utilization.
             </div>
           </div>
         </div>
@@ -344,8 +380,12 @@ function Admissions() {
                     <div className="size-14 rounded-full bg-gold/10 text-gold grid place-items-center mb-6">
                       <Download className="size-7" />
                     </div>
-                    <h3 className="font-display font-bold text-xl md:text-2xl text-foreground">{brochure.title}</h3>
-                    <p className="mt-4 text-sm text-muted-foreground leading-relaxed">{brochure.desc}</p>
+                    <h3 className="font-display font-bold text-xl md:text-2xl text-foreground">
+                      {brochure.title}
+                    </h3>
+                    <p className="mt-4 text-sm text-muted-foreground leading-relaxed">
+                      {brochure.desc}
+                    </p>
                   </div>
                   <div className="mt-8 pt-4 border-t border-border flex items-center justify-between">
                     <span className="text-xs uppercase tracking-wider font-semibold text-muted-foreground">
@@ -376,7 +416,8 @@ function Admissions() {
               <div className="p-6 rounded-3xl border border-border bg-card">
                 <h3 className="font-display font-bold text-lg mb-4">Admissions Help Desk</h3>
                 <p className="text-xs text-muted-foreground leading-relaxed">
-                  Have questions about the admission process, eligibility requirements, or transport lines? Get in touch directly with our counselors.
+                  Have questions about the admission process, eligibility requirements, or transport
+                  lines? Get in touch directly with our counselors.
                 </p>
                 <div className="mt-6 space-y-4">
                   <div className="flex items-center gap-3 text-xs">
@@ -402,7 +443,10 @@ function Admissions() {
             </div>
 
             <div className="lg:col-span-2">
-              <form onSubmit={onSubmit} className="grid md:grid-cols-2 gap-4 p-8 rounded-3xl bg-card border border-border">
+              <form
+                onSubmit={onSubmit}
+                className="grid md:grid-cols-2 gap-4 p-8 rounded-3xl bg-card border border-border"
+              >
                 <Field label="Full Name" name="name" required />
                 <Field label="Phone" name="phone" type="tel" required />
                 <Field label="Email" name="email" type="email" required />
@@ -410,7 +454,11 @@ function Admissions() {
                   <label className="block text-xs uppercase tracking-wider font-semibold text-muted-foreground mb-1.5">
                     Course
                   </label>
-                  <select name="course" required className="w-full px-4 py-3 rounded-xl border border-border bg-background text-sm">
+                  <select
+                    name="course"
+                    required
+                    className="w-full px-4 py-3 rounded-xl border border-border bg-background text-sm"
+                  >
                     <option value="">Select a course</option>
                     {[
                       "LL.B",
@@ -435,7 +483,11 @@ function Admissions() {
                   <label className="block text-xs uppercase tracking-wider font-semibold text-muted-foreground mb-1.5">
                     Campus
                   </label>
-                  <select name="campus" required className="w-full px-4 py-3 rounded-xl border border-border bg-background text-sm">
+                  <select
+                    name="campus"
+                    required
+                    className="w-full px-4 py-3 rounded-xl border border-border bg-background text-sm"
+                  >
                     <option value="">Select a campus</option>
                     {institutions.map((i) => (
                       <option key={i.slug} value={i.slug}>
@@ -502,4 +554,3 @@ function Field({
     </div>
   );
 }
-

@@ -13,7 +13,7 @@ import {
   AlertCircle,
   Hash,
   Download,
-  Info
+  Info,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -51,10 +51,10 @@ export const NewsNoticeDetails: React.FC<NewsNoticeDetailsProps> = ({ id }) => {
         ...found,
         viewCount: found.viewCount + 1,
       };
-      
+
       const updatedList = [...list];
       updatedList[foundIdx] = updatedRecord;
-      
+
       setRecord(updatedRecord);
       saveNewsNotices(updatedList);
       setCampuses(getStoredCampuses());
@@ -95,17 +95,17 @@ export const NewsNoticeDetails: React.FC<NewsNoticeDetailsProps> = ({ id }) => {
 
       setRecord(updatedRecord);
       saveNewsNotices(updatedList);
-      
+
       // Simulate file download
       toast.success(`Downloading attachment: ${record.attachmentName}`);
-      
+
       // In a real application, this would trigger window.open or a link download.
     }
   };
 
   const getCampusNamesList = (ids: string[]) => {
     if (!ids || ids.length === 0) return [];
-    return ids.map(id => campuses.find(c => c.id === id)?.name || id);
+    return ids.map((id) => campuses.find((c) => c.id === id)?.name || id);
   };
 
   return (
@@ -151,7 +151,6 @@ export const NewsNoticeDetails: React.FC<NewsNoticeDetailsProps> = ({ id }) => {
         </div>
       ) : record ? (
         <div className="space-y-6 z-10">
-          
           {/* Header Action Bar */}
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div className="flex items-center gap-2">
@@ -166,8 +165,13 @@ export const NewsNoticeDetails: React.FC<NewsNoticeDetailsProps> = ({ id }) => {
                 </Link>
               </Button>
               <div>
-                <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest block">Announcement Profile</span>
-                <h1 className="font-display text-xl md:text-2xl font-bold text-foreground max-w-[500px] truncate" title={record.title}>
+                <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest block">
+                  Announcement Profile
+                </span>
+                <h1
+                  className="font-display text-xl md:text-2xl font-bold text-foreground max-w-[500px] truncate"
+                  title={record.title}
+                >
                   {record.title}
                 </h1>
               </div>
@@ -194,33 +198,47 @@ export const NewsNoticeDetails: React.FC<NewsNoticeDetailsProps> = ({ id }) => {
 
           {/* 3-Column Responsive Grid */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            
             {/* Left & Middle Column (2 spans) - Core Content & Excerpt */}
             <div className="lg:col-span-2 space-y-6">
-              
               {/* Main glass card: Content Details */}
               <div className="glass rounded-2xl p-6 border border-border/80 shadow-sm space-y-6">
-                
                 {/* Header section with badges */}
                 <div className="flex flex-wrap items-center gap-2 pb-4 border-b border-border/40">
                   {/* Type */}
-                  <Badge className={`rounded-full px-2.5 py-0.5 text-[9px] font-bold uppercase tracking-wider ${
-                    record.type === "news" ? "bg-blue-100 text-blue-800 border-blue-200" : "bg-purple-100 text-purple-800 border-purple-200"
-                  }`}>
+                  <Badge
+                    className={`rounded-full px-2.5 py-0.5 text-[9px] font-bold uppercase tracking-wider ${
+                      record.type === "news"
+                        ? "bg-blue-100 text-blue-800 border-blue-200"
+                        : "bg-purple-100 text-purple-800 border-purple-200"
+                    }`}
+                  >
                     {record.type}
                   </Badge>
 
                   {/* Status */}
-                  <Badge className={`rounded-full px-2.5 py-0.5 text-[9px] font-bold uppercase tracking-wider ${
-                    record.status === "published" ? "bg-green-150 text-green-700 border-green-200" : record.status === "draft" ? "bg-gray-100 text-gray-700 border-gray-200" : "bg-red-100 text-red-800 border-red-200"
-                  }`}>
+                  <Badge
+                    className={`rounded-full px-2.5 py-0.5 text-[9px] font-bold uppercase tracking-wider ${
+                      record.status === "published"
+                        ? "bg-green-150 text-green-700 border-green-200"
+                        : record.status === "draft"
+                          ? "bg-gray-100 text-gray-700 border-gray-200"
+                          : "bg-red-100 text-red-800 border-red-200"
+                    }`}
+                  >
                     {record.status}
                   </Badge>
 
                   {/* Priority */}
-                  <Badge variant="outline" className={`rounded-full px-2.5 py-0.5 text-[9px] font-bold uppercase tracking-wider ${
-                    record.priority === "high" ? "bg-red-50 text-red-700 border-red-200" : record.priority === "medium" ? "bg-orange-50 text-orange-700 border-orange-200" : "bg-slate-50 text-slate-700 border-slate-200"
-                  }`}>
+                  <Badge
+                    variant="outline"
+                    className={`rounded-full px-2.5 py-0.5 text-[9px] font-bold uppercase tracking-wider ${
+                      record.priority === "high"
+                        ? "bg-red-50 text-red-700 border-red-200"
+                        : record.priority === "medium"
+                          ? "bg-orange-50 text-orange-700 border-orange-200"
+                          : "bg-slate-50 text-slate-700 border-slate-200"
+                    }`}
+                  >
                     {record.priority} Priority
                   </Badge>
 
@@ -232,16 +250,23 @@ export const NewsNoticeDetails: React.FC<NewsNoticeDetailsProps> = ({ id }) => {
                   )}
 
                   {/* Visibility */}
-                  <Badge variant="outline" className={`rounded-full px-2.5 py-0.5 text-[9px] font-bold uppercase tracking-wider ${
-                    record.visibility === "group" ? "bg-amber-50 text-amber-700 border-amber-200" : "bg-sky-50 text-sky-700 border-sky-200"
-                  }`}>
+                  <Badge
+                    variant="outline"
+                    className={`rounded-full px-2.5 py-0.5 text-[9px] font-bold uppercase tracking-wider ${
+                      record.visibility === "group"
+                        ? "bg-amber-50 text-amber-700 border-amber-200"
+                        : "bg-sky-50 text-sky-700 border-sky-200"
+                    }`}
+                  >
                     {record.visibility === "group" ? "Group-wide" : "Campus Specific"}
                   </Badge>
                 </div>
 
                 {/* Excerpt Section */}
                 <div className="p-4 rounded-xl bg-muted/30 border border-border/60">
-                  <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block mb-1">Teaser Excerpt</span>
+                  <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block mb-1">
+                    Teaser Excerpt
+                  </span>
                   <p className="text-sm font-medium text-foreground leading-relaxed">
                     {record.excerpt}
                   </p>
@@ -249,7 +274,9 @@ export const NewsNoticeDetails: React.FC<NewsNoticeDetailsProps> = ({ id }) => {
 
                 {/* Main Body text */}
                 <div className="space-y-3">
-                  <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block">Description</span>
+                  <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block">
+                    Description
+                  </span>
                   <div
                     className="text-sm text-foreground/90 leading-relaxed font-sans prose prose-sm max-w-none space-y-4"
                     dangerouslySetInnerHTML={{ __html: record.description }}
@@ -290,16 +317,26 @@ export const NewsNoticeDetails: React.FC<NewsNoticeDetailsProps> = ({ id }) => {
 
             {/* Right Column - Thumbnail, Scheduling & Stats */}
             <div className="space-y-6">
-              
               {/* Thumbnail Display Card */}
               <div className="glass rounded-2xl overflow-hidden border border-border/80 shadow-sm flex flex-col">
-                <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider px-6 pt-5 pb-2 block">Post Thumbnail</span>
+                <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider px-6 pt-5 pb-2 block">
+                  Post Thumbnail
+                </span>
                 <div className="aspect-video w-full border-y border-border/40 relative bg-muted overflow-hidden">
                   {record.thumbnail ? (
-                    <img src={record.thumbnail} alt="Post Thumbnail" className="size-full object-cover" />
+                    <img
+                      src={record.thumbnail}
+                      alt="Post Thumbnail"
+                      className="size-full object-cover"
+                    />
                   ) : (
                     <div className="size-full bg-gradient-gold text-gold-foreground flex items-center justify-center font-bold text-2xl select-none">
-                      {record.title.split(" ").slice(0, 2).map(w => w[0]).join("").toUpperCase()}
+                      {record.title
+                        .split(" ")
+                        .slice(0, 2)
+                        .map((w) => w[0])
+                        .join("")
+                        .toUpperCase()}
                     </div>
                   )}
                 </div>
@@ -335,15 +372,23 @@ export const NewsNoticeDetails: React.FC<NewsNoticeDetailsProps> = ({ id }) => {
                 <h3 className="font-display text-sm font-bold text-foreground pb-2 border-b border-border/40 flex items-center gap-1.5">
                   <Calendar className="size-4 text-primary" /> Scheduling Timings
                 </h3>
-                
+
                 <div className="space-y-3.5 pt-1 text-xs">
                   <div>
-                    <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block mb-0.5">Publish Date</span>
-                    <span className="font-semibold text-foreground">{formatDate(record.publishDate)}</span>
+                    <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block mb-0.5">
+                      Publish Date
+                    </span>
+                    <span className="font-semibold text-foreground">
+                      {formatDate(record.publishDate)}
+                    </span>
                   </div>
                   <div>
-                    <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block mb-0.5">Expiry Date</span>
-                    <span className="font-semibold text-foreground">{record.expiryDate ? formatDate(record.expiryDate) : "Never Expires"}</span>
+                    <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block mb-0.5">
+                      Expiry Date
+                    </span>
+                    <span className="font-semibold text-foreground">
+                      {record.expiryDate ? formatDate(record.expiryDate) : "Never Expires"}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -359,30 +404,48 @@ export const NewsNoticeDetails: React.FC<NewsNoticeDetailsProps> = ({ id }) => {
                   <div className="grid grid-cols-2 gap-3">
                     <div className="p-3 rounded-xl bg-background/50 border border-border/60 text-center">
                       <Eye className="size-4 text-muted-foreground mx-auto mb-1" />
-                      <span className="font-mono text-base font-bold text-foreground">{record.viewCount}</span>
-                      <span className="text-[9px] text-muted-foreground uppercase tracking-wider block mt-0.5">Views</span>
+                      <span className="font-mono text-base font-bold text-foreground">
+                        {record.viewCount}
+                      </span>
+                      <span className="text-[9px] text-muted-foreground uppercase tracking-wider block mt-0.5">
+                        Views
+                      </span>
                     </div>
                     <div className="p-3 rounded-xl bg-background/50 border border-border/60 text-center">
                       <Download className="size-4 text-muted-foreground mx-auto mb-1" />
-                      <span className="font-mono text-base font-bold text-foreground">{record.downloadCount}</span>
-                      <span className="text-[9px] text-muted-foreground uppercase tracking-wider block mt-0.5">Downloads</span>
+                      <span className="font-mono text-base font-bold text-foreground">
+                        {record.downloadCount}
+                      </span>
+                      <span className="text-[9px] text-muted-foreground uppercase tracking-wider block mt-0.5">
+                        Downloads
+                      </span>
                     </div>
                   </div>
 
                   <div className="border-t border-border/40 pt-3 space-y-2">
                     <div>
-                      <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-wider block">Created By</span>
+                      <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-wider block">
+                        Created By
+                      </span>
                       <span className="font-semibold text-foreground flex items-center gap-1.5 mt-0.5">
                         <User className="size-3 text-muted-foreground" /> {record.createdBy}
                       </span>
                     </div>
                     <div>
-                      <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-wider block">Created Date</span>
-                      <span className="font-semibold text-foreground">{formatDate(record.createdDate)}</span>
+                      <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-wider block">
+                        Created Date
+                      </span>
+                      <span className="font-semibold text-foreground">
+                        {formatDate(record.createdDate)}
+                      </span>
                     </div>
                     <div>
-                      <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-wider block">Last Updated</span>
-                      <span className="font-semibold text-foreground">{formatDate(record.updatedDate)}</span>
+                      <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-wider block">
+                        Last Updated
+                      </span>
+                      <span className="font-semibold text-foreground">
+                        {formatDate(record.updatedDate)}
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -394,23 +457,33 @@ export const NewsNoticeDetails: React.FC<NewsNoticeDetailsProps> = ({ id }) => {
                   <h3 className="font-display text-sm font-bold text-foreground pb-2 border-b border-border/40 flex items-center gap-1.5">
                     <Hash className="size-4 text-primary" /> SEO Tags
                   </h3>
-                  
+
                   <div className="space-y-3.5 pt-1 text-xs leading-relaxed">
                     {record.metaTitle && (
                       <div>
-                        <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-wider block">Meta Title</span>
-                        <span className="font-medium text-foreground block mt-0.5">{record.metaTitle}</span>
+                        <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-wider block">
+                          Meta Title
+                        </span>
+                        <span className="font-medium text-foreground block mt-0.5">
+                          {record.metaTitle}
+                        </span>
                       </div>
                     )}
                     {record.metaDescription && (
                       <div>
-                        <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-wider block">Meta Description</span>
-                        <p className="text-muted-foreground block mt-0.5">{record.metaDescription}</p>
+                        <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-wider block">
+                          Meta Description
+                        </span>
+                        <p className="text-muted-foreground block mt-0.5">
+                          {record.metaDescription}
+                        </p>
                       </div>
                     )}
                     {record.metaKeywords && (
                       <div>
-                        <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-wider block">Meta Keywords</span>
+                        <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-wider block">
+                          Meta Keywords
+                        </span>
                         <span className="font-mono text-foreground block mt-0.5 bg-muted/60 p-1.5 rounded border border-border/60">
                           {record.metaKeywords}
                         </span>
@@ -419,7 +492,6 @@ export const NewsNoticeDetails: React.FC<NewsNoticeDetailsProps> = ({ id }) => {
                   </div>
                 </div>
               )}
-
             </div>
           </div>
         </div>

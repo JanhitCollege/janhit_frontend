@@ -29,7 +29,10 @@ export function Hero() {
 
   return (
     <>
-      <section id="home" className="relative h-[85vh] min-h-[600px] w-full overflow-hidden bg-black">
+      <section
+        id="home"
+        className="relative h-[85vh] min-h-[600px] w-full overflow-hidden bg-black"
+      >
         {/* Background Image Carousel */}
         <div className="absolute inset-0 z-0">
           <AnimatePresence>
@@ -141,7 +144,9 @@ export function Hero() {
             </div>
             <div>
               <h4 className="text-navy text-base font-bold">BCI Approved</h4>
-              <p className="text-navy/75 text-sm mt-1">Approved by Bar Council of India, New Delhi</p>
+              <p className="text-navy/75 text-sm mt-1">
+                Approved by Bar Council of India, New Delhi
+              </p>
             </div>
           </div>
 
@@ -161,7 +166,9 @@ export function Hero() {
             </div>
             <div>
               <h4 className="text-navy text-base font-bold">5Yrs & 3Yrs Programs</h4>
-              <p className="text-navy/75 text-sm mt-1">Comprehensive integrated & graduate law courses</p>
+              <p className="text-navy/75 text-sm mt-1">
+                Comprehensive integrated & graduate law courses
+              </p>
             </div>
           </div>
         </div>

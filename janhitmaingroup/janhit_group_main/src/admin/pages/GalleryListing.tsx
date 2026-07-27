@@ -16,7 +16,7 @@ import {
   Calendar,
   EyeOff,
   SlidersHorizontal,
-  ChevronDown
+  ChevronDown,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -118,7 +118,7 @@ export const GalleryListing: React.FC = () => {
         return {
           ...g,
           isActive: !g.isActive,
-          updatedAt: new Date().toISOString()
+          updatedAt: new Date().toISOString(),
         };
       }
       return g;
@@ -129,7 +129,9 @@ export const GalleryListing: React.FC = () => {
     setIsActionLoading(false);
     setIsStatusModalOpen(false);
 
-    toast.success(`Media "${selectedItem.title || selectedItem.fileName}" status changed successfully.`);
+    toast.success(
+      `Media "${selectedItem.title || selectedItem.fileName}" status changed successfully.`,
+    );
     setSelectedItem(null);
   };
 
@@ -162,17 +164,24 @@ export const GalleryListing: React.FC = () => {
 
   // Categories list
   const categoriesList = Array.from(
-    new Set(gallery.map((g) => g.category).filter(Boolean))
+    new Set(gallery.map((g) => g.category).filter(Boolean)),
   ) as string[];
 
   // Filter & Sort
   const filteredItems = gallery.filter((g) => {
     const q = searchQuery.toLowerCase().trim();
-    const matchesSearch = !q || (g.title && g.title.toLowerCase().includes(q)) || (g.description && g.description.toLowerCase().includes(q)) || g.fileName.toLowerCase().includes(q) || (g.category && g.category.toLowerCase().includes(q));
+    const matchesSearch =
+      !q ||
+      (g.title && g.title.toLowerCase().includes(q)) ||
+      (g.description && g.description.toLowerCase().includes(q)) ||
+      g.fileName.toLowerCase().includes(q) ||
+      (g.category && g.category.toLowerCase().includes(q));
     const matchesType = filterType === "all" || g.mediaType === filterType;
     const matchesCampus = filterCampus === "all" || g.campusId === filterCampus;
     const matchesCategory = filterCategory === "all" || g.category === filterCategory;
-    const matchesStatus = filterStatus === "all" || (filterStatus === "active" ? g.isActive === true : g.isActive === false);
+    const matchesStatus =
+      filterStatus === "all" ||
+      (filterStatus === "active" ? g.isActive === true : g.isActive === false);
 
     return matchesSearch && matchesType && matchesCampus && matchesCategory && matchesStatus;
   });
@@ -215,7 +224,9 @@ export const GalleryListing: React.FC = () => {
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 z-10">
         <div>
-          <h1 className="font-display text-2xl md:text-3xl font-bold text-foreground">Gallery Management</h1>
+          <h1 className="font-display text-2xl md:text-3xl font-bold text-foreground">
+            Gallery Management
+          </h1>
           <p className="text-xs md:text-sm text-muted-foreground mt-1">
             Upload, update, sort, and organize photos and video assets for your campuses.
           </p>
@@ -252,21 +263,30 @@ export const GalleryListing: React.FC = () => {
           <div className="flex items-center gap-2 border-l border-border/60 pl-0 lg:pl-4">
             <Button
               variant={filterType === "all" ? "default" : "outline"}
-              onClick={() => { setFilterType("all"); setCurrentPage(1); }}
+              onClick={() => {
+                setFilterType("all");
+                setCurrentPage(1);
+              }}
               className="h-8 rounded-lg text-xs font-semibold px-3"
             >
               All Media
             </Button>
             <Button
               variant={filterType === "IMAGE" ? "default" : "outline"}
-              onClick={() => { setFilterType("IMAGE"); setCurrentPage(1); }}
+              onClick={() => {
+                setFilterType("IMAGE");
+                setCurrentPage(1);
+              }}
               className="h-8 rounded-lg text-xs font-semibold px-3 flex items-center gap-1"
             >
               <Image className="size-3.5" /> Images
             </Button>
             <Button
               variant={filterType === "VIDEO" ? "default" : "outline"}
-              onClick={() => { setFilterType("VIDEO"); setCurrentPage(1); }}
+              onClick={() => {
+                setFilterType("VIDEO");
+                setCurrentPage(1);
+              }}
               className="h-8 rounded-lg text-xs font-semibold px-3 flex items-center gap-1"
             >
               <Video className="size-3.5" /> Videos
@@ -278,29 +298,47 @@ export const GalleryListing: React.FC = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-3 pt-1">
           {/* Campus Filter */}
           <div className="flex flex-col space-y-1">
-            <Select value={filterCampus} onValueChange={(val) => { setFilterCampus(val); setCurrentPage(1); }}>
+            <Select
+              value={filterCampus}
+              onValueChange={(val) => {
+                setFilterCampus(val);
+                setCurrentPage(1);
+              }}
+            >
               <SelectTrigger className="h-9 rounded-lg border-border bg-background/50 hover:border-gold/40 text-xs">
                 <SelectValue placeholder="All Campuses" />
               </SelectTrigger>
               <SelectContent className="rounded-lg border-border">
                 <SelectItem value="all">All Campuses</SelectItem>
-                {campuses.filter(c => c.status === "active").map((c) => (
-                  <SelectItem key={c.id} value={c.id}>{c.shortName}</SelectItem>
-                ))}
+                {campuses
+                  .filter((c) => c.status === "active")
+                  .map((c) => (
+                    <SelectItem key={c.id} value={c.id}>
+                      {c.shortName}
+                    </SelectItem>
+                  ))}
               </SelectContent>
             </Select>
           </div>
 
           {/* Category Filter */}
           <div className="flex flex-col space-y-1">
-            <Select value={filterCategory} onValueChange={(val) => { setFilterCategory(val); setCurrentPage(1); }}>
+            <Select
+              value={filterCategory}
+              onValueChange={(val) => {
+                setFilterCategory(val);
+                setCurrentPage(1);
+              }}
+            >
               <SelectTrigger className="h-9 rounded-lg border-border bg-background/50 hover:border-gold/40 text-xs">
                 <SelectValue placeholder="All Categories" />
               </SelectTrigger>
               <SelectContent className="rounded-lg border-border">
                 <SelectItem value="all">All Categories</SelectItem>
                 {categoriesList.map((cat) => (
-                  <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+                  <SelectItem key={cat} value={cat}>
+                    {cat}
+                  </SelectItem>
                 ))}
               </SelectContent>
             </Select>
@@ -308,7 +346,13 @@ export const GalleryListing: React.FC = () => {
 
           {/* Status Filter */}
           <div className="flex flex-col space-y-1">
-            <Select value={filterStatus} onValueChange={(val) => { setFilterStatus(val); setCurrentPage(1); }}>
+            <Select
+              value={filterStatus}
+              onValueChange={(val) => {
+                setFilterStatus(val);
+                setCurrentPage(1);
+              }}
+            >
               <SelectTrigger className="h-9 rounded-lg border-border bg-background/50 hover:border-gold/40 text-xs">
                 <SelectValue placeholder="All Statuses" />
               </SelectTrigger>
@@ -322,7 +366,13 @@ export const GalleryListing: React.FC = () => {
 
           {/* Sort By Field */}
           <div className="flex flex-col space-y-1">
-            <Select value={sortBy} onValueChange={(val: any) => { setSortBy(val); setCurrentPage(1); }}>
+            <Select
+              value={sortBy}
+              onValueChange={(val: any) => {
+                setSortBy(val);
+                setCurrentPage(1);
+              }}
+            >
               <SelectTrigger className="h-9 rounded-lg border-border bg-background/50 hover:border-gold/40 text-xs">
                 <SelectValue placeholder="Sort By" />
               </SelectTrigger>
@@ -337,7 +387,13 @@ export const GalleryListing: React.FC = () => {
 
           {/* Sort Direction */}
           <div className="flex flex-col space-y-1">
-            <Select value={sortOrderDirection} onValueChange={(val: any) => { setSortOrderDirection(val); setCurrentPage(1); }}>
+            <Select
+              value={sortOrderDirection}
+              onValueChange={(val: any) => {
+                setSortOrderDirection(val);
+                setCurrentPage(1);
+              }}
+            >
               <SelectTrigger className="h-9 rounded-lg border-border bg-background/50 hover:border-gold/40 text-xs">
                 <SelectValue />
               </SelectTrigger>
@@ -355,7 +411,10 @@ export const GalleryListing: React.FC = () => {
         {isLoading ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {[...Array(6)].map((_, i) => (
-              <div key={i} className="glass rounded-2xl overflow-hidden border border-border/60 p-4 space-y-3">
+              <div
+                key={i}
+                className="glass rounded-2xl overflow-hidden border border-border/60 p-4 space-y-3"
+              >
                 <Skeleton className="w-full aspect-video rounded-xl" />
                 <Skeleton className="h-5 w-2/3" />
                 <Skeleton className="h-4 w-1/2" />
@@ -369,11 +428,18 @@ export const GalleryListing: React.FC = () => {
         ) : paginatedItems.length === 0 ? (
           <div className="glass rounded-2xl p-16 text-center border border-border/80 bg-card/45 backdrop-blur-md flex flex-col items-center justify-center">
             <SlidersHorizontal className="size-12 text-muted-foreground/60 mb-3" />
-            <h3 className="font-display text-base font-bold text-foreground">No media assets found</h3>
+            <h3 className="font-display text-base font-bold text-foreground">
+              No media assets found
+            </h3>
             <p className="text-xs text-muted-foreground mt-1 max-w-sm">
-              Try adjusting your query searches, or upload a new photo/video to start showcasing your campus.
+              Try adjusting your query searches, or upload a new photo/video to start showcasing
+              your campus.
             </p>
-            <Button asChild variant="outline" className="mt-5 h-8 rounded-lg text-xs font-semibold border-border">
+            <Button
+              asChild
+              variant="outline"
+              className="mt-5 h-8 rounded-lg text-xs font-semibold border-border"
+            >
               <Link to="/@admin/gallery/create">
                 <Plus className="size-3.5 mr-1" /> Upload Media
               </Link>
@@ -384,8 +450,8 @@ export const GalleryListing: React.FC = () => {
             {/* Grid display */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {paginatedItems.map((item) => (
-                <div 
-                  key={item.id} 
+                <div
+                  key={item.id}
                   className={`group glass rounded-2xl border border-border/80 bg-card/50 overflow-hidden flex flex-col hover-lift relative ${
                     !item.isActive ? "opacity-75 border-slate-300 dark:border-slate-800" : ""
                   }`}
@@ -393,17 +459,17 @@ export const GalleryListing: React.FC = () => {
                   {/* Media Preview Area */}
                   <div className="aspect-video w-full bg-slate-950 overflow-hidden relative border-b border-border/50">
                     {item.mediaType === "IMAGE" ? (
-                      <img 
-                        src={item.fileUrl} 
-                        alt={item.title || "Gallery photo"} 
-                        className="size-full object-cover group-hover:scale-105 transition-transform duration-500" 
+                      <img
+                        src={item.fileUrl}
+                        alt={item.title || "Gallery photo"}
+                        className="size-full object-cover group-hover:scale-105 transition-transform duration-500"
                       />
                     ) : (
                       <div className="relative size-full">
-                        <img 
-                          src={item.thumbnail || ""} 
-                          alt={item.title || "Video thumbnail"} 
-                          className="size-full object-cover group-hover:scale-105 transition-transform duration-500" 
+                        <img
+                          src={item.thumbnail || ""}
+                          alt={item.title || "Video thumbnail"}
+                          className="size-full object-cover group-hover:scale-105 transition-transform duration-500"
                         />
                         <div className="absolute inset-0 bg-black/30 grid place-items-center">
                           <div className="size-12 rounded-full bg-white/20 backdrop-blur border border-white/30 grid place-items-center group-hover:bg-gold group-hover:text-gold-foreground transition-all duration-300">
@@ -412,7 +478,8 @@ export const GalleryListing: React.FC = () => {
                         </div>
                         {item.duration && (
                           <span className="absolute bottom-2 right-2 px-1.5 py-0.5 rounded bg-black/75 text-[10px] text-white font-semibold">
-                            {Math.floor(item.duration / 60)}:{(item.duration % 60).toString().padStart(2, "0")}
+                            {Math.floor(item.duration / 60)}:
+                            {(item.duration % 60).toString().padStart(2, "0")}
                           </span>
                         )}
                       </div>
@@ -427,7 +494,11 @@ export const GalleryListing: React.FC = () => {
 
                     {/* Format Indicator Badge */}
                     <span className="absolute top-2 right-2 size-6 rounded-lg bg-black/60 backdrop-blur text-white flex items-center justify-center shadow-sm">
-                      {item.mediaType === "IMAGE" ? <Image className="size-3.5" /> : <Video className="size-3.5" />}
+                      {item.mediaType === "IMAGE" ? (
+                        <Image className="size-3.5" />
+                      ) : (
+                        <Video className="size-3.5" />
+                      )}
                     </span>
                   </div>
 
@@ -455,7 +526,7 @@ export const GalleryListing: React.FC = () => {
                           {getCampusName(item.campusId)}
                         </span>
                       </div>
-                      
+
                       <span className="font-mono text-muted-foreground">
                         Rank: {item.sortOrder}
                       </span>
@@ -469,7 +540,9 @@ export const GalleryListing: React.FC = () => {
                           onCheckedChange={() => handleToggleStatusClick(item)}
                           className="scale-90"
                         />
-                        <span className="text-[10px] font-medium text-muted-foreground">Active</span>
+                        <span className="text-[10px] font-medium text-muted-foreground">
+                          Active
+                        </span>
                       </div>
 
                       <div className="flex items-center gap-1">
@@ -522,7 +595,9 @@ export const GalleryListing: React.FC = () => {
 
                 <div className="flex items-center gap-4">
                   <div className="flex items-center gap-2">
-                    <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Size:</span>
+                    <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
+                      Size:
+                    </span>
                     <Select
                       value={String(pageSize)}
                       onValueChange={(val) => {
@@ -550,13 +625,13 @@ export const GalleryListing: React.FC = () => {
                             variant="ghost"
                             size="icon"
                             disabled={currentPage === 1}
-                            onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
                             className="size-8 rounded-lg border border-border bg-background disabled:opacity-50"
                           >
                             <PaginationPrevious className="size-4 p-0 shrink-0" />
                           </Button>
                         </PaginationItem>
-                        
+
                         {[...Array(totalPages)].map((_, i) => (
                           <PaginationItem key={i}>
                             <PaginationLink
@@ -578,7 +653,7 @@ export const GalleryListing: React.FC = () => {
                             variant="ghost"
                             size="icon"
                             disabled={currentPage === totalPages}
-                            onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                            onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
                             className="size-8 rounded-lg border border-border bg-background disabled:opacity-50"
                           >
                             <PaginationNext className="size-4 p-0 shrink-0" />
@@ -636,7 +711,8 @@ export const GalleryListing: React.FC = () => {
               Delete Media Item?
             </DialogTitle>
             <DialogDescription className="text-xs text-muted-foreground leading-relaxed">
-              This action is permanent and cannot be undone. Are you sure you want to delete this media asset?
+              This action is permanent and cannot be undone. Are you sure you want to delete this
+              media asset?
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="mt-4 flex gap-2">
@@ -666,11 +742,15 @@ export const GalleryListing: React.FC = () => {
                   {selectedItem?.title || "Media Preview"}
                 </DialogTitle>
                 <div className="flex flex-wrap gap-2 mt-1">
-                  <Badge variant="secondary" className="rounded-full text-[10px] px-2 bg-primary/10 text-primary border-transparent">
+                  <Badge
+                    variant="secondary"
+                    className="rounded-full text-[10px] px-2 bg-primary/10 text-primary border-transparent"
+                  >
                     {selectedItem?.category || "General"}
                   </Badge>
                   <span className="text-[10px] text-muted-foreground font-medium flex items-center gap-1">
-                    <Building className="size-3 text-gold" /> {selectedItem ? getCampusName(selectedItem.campusId) : ""}
+                    <Building className="size-3 text-gold" />{" "}
+                    {selectedItem ? getCampusName(selectedItem.campusId) : ""}
                   </span>
                 </div>
               </div>
@@ -680,15 +760,15 @@ export const GalleryListing: React.FC = () => {
           {/* Media Player Box */}
           <div className="mt-4 aspect-video w-full bg-slate-950 rounded-xl overflow-hidden border border-border flex items-center justify-center relative">
             {selectedItem?.mediaType === "IMAGE" ? (
-              <img 
-                src={selectedItem.fileUrl} 
-                alt={selectedItem.title || "Preview image"} 
+              <img
+                src={selectedItem.fileUrl}
+                alt={selectedItem.title || "Preview image"}
                 className="max-h-full max-w-full object-contain"
               />
             ) : selectedItem ? (
-              <video 
+              <video
                 src={selectedItem.fileUrl}
-                controls 
+                controls
                 autoPlay
                 poster={selectedItem.thumbnail || ""}
                 className="size-full object-contain"
@@ -699,27 +779,45 @@ export const GalleryListing: React.FC = () => {
           {/* Metadata information details */}
           <div className="mt-4 grid grid-cols-2 sm:grid-cols-4 gap-4 p-3 bg-muted/30 rounded-xl border border-border/40 text-[11px] leading-snug">
             <div>
-              <span className="text-muted-foreground block font-semibold text-[9px] uppercase tracking-wider mb-0.5">Filename</span>
-              <span className="text-foreground font-mono truncate block max-w-[150px]">{selectedItem?.fileName}</span>
+              <span className="text-muted-foreground block font-semibold text-[9px] uppercase tracking-wider mb-0.5">
+                Filename
+              </span>
+              <span className="text-foreground font-mono truncate block max-w-[150px]">
+                {selectedItem?.fileName}
+              </span>
             </div>
             <div>
-              <span className="text-muted-foreground block font-semibold text-[9px] uppercase tracking-wider mb-0.5">File Size</span>
-              <span className="text-foreground font-semibold">{selectedItem ? formatBytes(selectedItem.fileSize) : ""}</span>
+              <span className="text-muted-foreground block font-semibold text-[9px] uppercase tracking-wider mb-0.5">
+                File Size
+              </span>
+              <span className="text-foreground font-semibold">
+                {selectedItem ? formatBytes(selectedItem.fileSize) : ""}
+              </span>
             </div>
             {selectedItem?.mediaType === "VIDEO" && selectedItem.duration && (
               <div>
-                <span className="text-muted-foreground block font-semibold text-[9px] uppercase tracking-wider mb-0.5">Duration</span>
-                <span className="text-foreground font-semibold">{selectedItem.duration} seconds</span>
+                <span className="text-muted-foreground block font-semibold text-[9px] uppercase tracking-wider mb-0.5">
+                  Duration
+                </span>
+                <span className="text-foreground font-semibold">
+                  {selectedItem.duration} seconds
+                </span>
               </div>
             )}
             {selectedItem?.width && selectedItem?.height && (
               <div>
-                <span className="text-muted-foreground block font-semibold text-[9px] uppercase tracking-wider mb-0.5">Resolution</span>
-                <span className="text-foreground font-semibold">{selectedItem.width} x {selectedItem.height} px</span>
+                <span className="text-muted-foreground block font-semibold text-[9px] uppercase tracking-wider mb-0.5">
+                  Resolution
+                </span>
+                <span className="text-foreground font-semibold">
+                  {selectedItem.width} x {selectedItem.height} px
+                </span>
               </div>
             )}
             <div>
-              <span className="text-muted-foreground block font-semibold text-[9px] uppercase tracking-wider mb-0.5">Uploaded On</span>
+              <span className="text-muted-foreground block font-semibold text-[9px] uppercase tracking-wider mb-0.5">
+                Uploaded On
+              </span>
               <span className="text-foreground font-semibold flex items-center gap-1">
                 <Calendar className="size-3 text-gold" />
                 {selectedItem ? new Date(selectedItem.createdAt).toLocaleDateString() : ""}
@@ -729,8 +827,12 @@ export const GalleryListing: React.FC = () => {
 
           {selectedItem?.description && (
             <div className="mt-3 p-3 bg-background/50 rounded-xl border border-border/40 text-xs">
-              <span className="text-muted-foreground block font-semibold text-[9px] uppercase tracking-wider mb-1">Description / Notes</span>
-              <p className="text-foreground leading-relaxed whitespace-pre-wrap">{selectedItem.description}</p>
+              <span className="text-muted-foreground block font-semibold text-[9px] uppercase tracking-wider mb-1">
+                Description / Notes
+              </span>
+              <p className="text-foreground leading-relaxed whitespace-pre-wrap">
+                {selectedItem.description}
+              </p>
             </div>
           )}
 
@@ -743,7 +845,6 @@ export const GalleryListing: React.FC = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-
     </div>
   );
 };

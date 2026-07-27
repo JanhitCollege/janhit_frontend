@@ -19,7 +19,8 @@ export const Route = createFileRoute("/news")({
       { title: "News & Events — Janhit Group of Institutions" },
       {
         name: "description",
-        content: "Stay updated with Janhit Group's recent news, academic announcements, moot court trials, legal awareness camps, and campus activities.",
+        content:
+          "Stay updated with Janhit Group's recent news, academic announcements, moot court trials, legal awareness camps, and campus activities.",
       },
     ],
   }),
@@ -147,7 +148,8 @@ function NewsAndEvents() {
               News, Announcements <span className="text-gradient-gold">& Events</span>
             </h1>
             <p className="mt-6 text-lg opacity-90 max-w-2xl">
-              Stay connected with daily academic notifications, legal cell outreach camps, moot court milestones, and extension activities across our campuses.
+              Stay connected with daily academic notifications, legal cell outreach camps, moot
+              court milestones, and extension activities across our campuses.
             </p>
           </FadeIn>
         </div>
@@ -202,9 +204,7 @@ function NewsAndEvents() {
                     <h3 className="font-display font-bold text-lg md:text-xl text-foreground leading-snug group-hover:text-gold transition-colors">
                       {ann.title}
                     </h3>
-                    <p className="mt-4 text-sm text-muted-foreground leading-relaxed">
-                      {ann.desc}
-                    </p>
+                    <p className="mt-4 text-sm text-muted-foreground leading-relaxed">{ann.desc}</p>
                   </div>
                   <div className="mt-6 pt-4 border-t border-border/80 flex items-center justify-between text-xs font-semibold text-gold">
                     <span>CCS University Notice</span>
@@ -321,7 +321,9 @@ function EventCard({
       <div className="p-8 md:p-10 rounded-3xl bg-card border border-border h-full flex flex-col justify-between hover:border-gold/30 hover:shadow-elegant transition duration-300 group">
         <div>
           <div className="flex justify-between items-center mb-6">
-            <div className={`size-14 rounded-full bg-gold/10 ${colorClass} grid place-items-center`}>
+            <div
+              className={`size-14 rounded-full bg-gold/10 ${colorClass} grid place-items-center`}
+            >
               <Icon className="size-7" />
             </div>
             <span className="text-xs text-muted-foreground font-mono font-medium">
@@ -331,9 +333,7 @@ function EventCard({
           <h3 className="font-display font-bold text-xl md:text-2xl text-foreground leading-tight group-hover:text-gold transition-colors">
             {event.title}
           </h3>
-          <p className="mt-4 text-sm text-muted-foreground leading-relaxed">
-            {event.desc}
-          </p>
+          <p className="mt-4 text-sm text-muted-foreground leading-relaxed">{event.desc}</p>
         </div>
         <div className="mt-8 pt-4 border-t border-border/80 flex items-center justify-between text-xs text-muted-foreground font-semibold">
           <span>Janhit Event Diaries</span>
