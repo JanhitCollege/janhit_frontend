@@ -1,18 +1,20 @@
 name: Deploy JWSGN
 
 on:
-  workflow_dispatch:
-
   push:
     branches:
       - main
+    paths:
+      - "janhitcampus/janhit_world_school_gn/**"
+      - "package.json"
+      - "package-lock.json"
+      - ".github/workflows/jwsgn.yml"
+
+  workflow_dispatch:
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-
-    permissions:
-      contents: read
 
     steps:
       - name: Checkout Repository
@@ -21,21 +23,11 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "22"
+          node-version: 22
           cache: npm
-
-      - name: Show Versions
-        run: |
-          node -v
-          npm -v
 
       - name: Install Dependencies
         run: npm install
-
-      - name: Verify Workspace
-        run: |
-          npm ls vite
-          npm ls rollup
 
       - name: Build JWSGN
         run: npm run build:jwsgn
@@ -45,11 +37,11 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_REGION }}
+          aws-region: ap-south-1
 
       - name: Deploy to S3
         run: |
-          aws s3 sync janhitcampus/janhit_world_school_gn/dist s3://jwsgn.janhitgroup.com --delete
+          aws s3 sync ./janhitcampus/janhit_world_school_gn/dist s3://jwsgn.janhitgroup.com --delete
 
       - name: Invalidate CloudFront
         run: |
