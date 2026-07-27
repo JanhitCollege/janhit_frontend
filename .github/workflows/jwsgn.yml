@@ -1,14 +1,11 @@
 name: Deploy JWSGN
 
 on:
+  workflow_dispatch:
+
   push:
     branches:
       - main
-      - master
-    paths:
-      - "janhitcampus/janhit_world_school_gn/**"
-      - "package.json"
-      - "package-lock.json"
 
 jobs:
   deploy:
@@ -24,24 +21,24 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: "22"
           cache: npm
 
-      - name: Clean Install
+      - name: Show Versions
         run: |
-          rm -rf node_modules
-          rm -rf janhitcampus/janhit_world_school_gn/node_modules
-          rm -f package-lock.json
+          node -v
+          npm -v
 
-          npm install
+      - name: Install Dependencies
+        run: npm install
 
-      - name: Verify Rollup
+      - name: Verify Workspace
         run: |
+          npm ls vite
           npm ls rollup
 
       - name: Build JWSGN
-        run: |
-          npm run build:jwsgn
+        run: npm run build:jwsgn
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -52,13 +49,10 @@ jobs:
 
       - name: Deploy to S3
         run: |
-          aws s3 sync \
-          janhitcampus/janhit_world_school_gn/dist \
-          s3://jwsgn.janhitgroup.com \
-          --delete
+          aws s3 sync janhitcampus/janhit_world_school_gn/dist s3://jwsgn.janhitgroup.com --delete
 
       - name: Invalidate CloudFront
         run: |
           aws cloudfront create-invalidation \
-          --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} \
-          --paths "/*"
+            --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} \
+            --paths "/*"
