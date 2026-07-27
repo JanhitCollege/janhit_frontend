@@ -1,33 +1,64 @@
-name: Janhit World School GN CI
+name: Deploy JWSGN
 
 on:
   push:
-    branches: [ main, master ]
+    branches:
+      - main
+      - master
     paths:
-      - 'janhitcampus/janhit_world_school_gn/**'
-  pull_request:
-    branches: [ main, master ]
-    paths:
-      - 'janhitcampus/janhit_world_school_gn/**'
+      - "janhitcampus/janhit_world_school_gn/**"
+      - "package.json"
+      - "package-lock.json"
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
 
-    steps:
-      - uses: actions/checkout@v4
+    permissions:
+      contents: read
 
-      - name: Use Node.js
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'npm'
+          node-version: 22
+          cache: npm
 
-      - name: Install dependencies
-        run: npm ci
+      - name: Clean Install
+        run: |
+          rm -rf node_modules
+          rm -rf janhitcampus/janhit_world_school_gn/node_modules
+          rm -f package-lock.json
 
-      - name: Build project
-        run: npm run build --workspace=janhit_world_school_gn
+          npm install
 
-      - name: Lint project
-        run: npm run lint --workspace=janhit_world_school_gn
+      - name: Verify Rollup
+        run: |
+          npm ls rollup
+
+      - name: Build JWSGN
+        run: |
+          npm run build:jwsgn
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Deploy to S3
+        run: |
+          aws s3 sync \
+          janhitcampus/janhit_world_school_gn/dist \
+          s3://jwsgn.janhitgroup.com \
+          --delete
+
+      - name: Invalidate CloudFront
+        run: |
+          aws cloudfront create-invalidation \
+          --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} \
+          --paths "/*"
