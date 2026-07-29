@@ -104,7 +104,7 @@ export function Foundational() {
             className="rounded-3xl shadow-luxury w-full object-cover aspect-[4/5]"
           />
           <div className="absolute -top-6 -left-6 glass rounded-2xl p-5 shadow-luxury">
-            <div className="font-serif text-3xl text-navy">Pre-K – UKG</div>
+            <div className="font-serif text-3xl text-navy">Early - Classes </div>
             <div className="text-xs uppercase tracking-[0.2em] text-muted-foreground mt-1">
               Foundational Stage
             </div>

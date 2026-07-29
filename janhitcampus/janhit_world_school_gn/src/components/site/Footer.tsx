@@ -19,10 +19,17 @@ export function Footer() {
             Stage to Class 8 · Session 2026-27.
           </p>
           <div className="mt-6 flex gap-3">
-            {[Instagram, Facebook, Youtube, Linkedin].map((Icon, i) => (
+            {[
+              { Icon: Instagram, href: "https://www.instagram.com/janhitworldschool/" },
+              { Icon: Facebook, href: "https://www.facebook.com/jws.gzb/" },
+              { Icon: Youtube, href: "#" },
+              { Icon: Linkedin, href: "#" },
+            ].map(({ Icon, href }, i) => (
               <a
                 key={i}
-                href="#"
+                href={href}
+                target={href !== "#" ? "_blank" : undefined}
+                rel={href !== "#" ? "noopener noreferrer" : undefined}
                 aria-label="Social link"
                 className="h-10 w-10 rounded-full border border-gold/30 flex items-center justify-center text-gold hover:bg-gold hover:text-navy-deep transition-all"
               >
@@ -54,7 +61,7 @@ export function Footer() {
             <br /> Greater Noida, U.P. – 201306
           </p>
           <a
-            href="https://maps.app.goo.gl/BRJU2eUYEGZTfQUJ6"
+            href="https://maps.app.goo.gl/XhyLojU9h8RMsvUF9"
             target="_blank"
             rel="noreferrer"
             className="mt-3 inline-block text-sm text-gold underline-offset-4 hover:underline"

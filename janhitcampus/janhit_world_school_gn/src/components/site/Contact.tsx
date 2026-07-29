@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { MapPin, Phone, MessageCircle, QrCode, Mail, Send } from "lucide-react";
+import { MapPin, Phone, MessageCircle, Mail, Send } from "lucide-react";
 import { SectionHeader } from "./SectionHeader";
 import { toast } from "sonner";
 
@@ -90,7 +90,7 @@ export function Contact() {
                     <br /> Greater Noida, U.P. – 201306
                   </div>
                   <a
-                    href="https://maps.app.goo.gl/BRJU2eUYEGZTfQUJ6"
+                    href="https://maps.app.goo.gl/XhyLojU9h8RMsvUF9"
                     target="_blank"
                     rel="noreferrer"
                     className="mt-3 inline-block text-sm text-gold underline-offset-4 hover:underline"
@@ -103,60 +103,57 @@ export function Contact() {
 
             <div className="grid grid-cols-2 gap-4">
               <a
-                href="tel:+910000000000"
+                href="tel:+91928677770"
                 className="p-4 rounded-2xl bg-white border border-border hover:border-gold/50 hover-lift flex flex-col gap-2.5"
               >
-                <Phone className="size-4.5 text-navy" />
+                <Phone className="size-4.5 text-gold" />
                 <div>
-                  <div className="text-[10px] uppercase tracking-[0.15em] text-muted-foreground">
-                    Call
+                  <div className="text-[10px] uppercase tracking-[0.15em] text-muted-foreground font-bold">
+                    Call Admissions
                   </div>
-                  <div className="font-serif text-sm text-navy font-semibold mt-0.5">
-                    Admissions
+                  <div className="font-serif text-sm text-navy font-semibold mt-0.5 whitespace-nowrap">
+                    +91 92867 77770
                   </div>
                 </div>
               </a>
+
               <a
-                href="https://wa.me/910000000000"
+                href="https://wa.me/91928677770"
                 target="_blank"
                 rel="noreferrer"
                 className="p-4 rounded-2xl bg-white border border-border hover:border-gold/50 hover-lift flex flex-col gap-2.5"
               >
-                <MessageCircle className="size-4.5 text-navy" />
+                <MessageCircle className="size-4.5 text-gold" />
                 <div>
-                  <div className="text-[10px] uppercase tracking-[0.15em] text-muted-foreground">
-                    WhatsApp
+                  <div className="text-[10px] uppercase tracking-[0.15em] text-muted-foreground font-bold">
+                    WhatsApp Chat
                   </div>
-                  <div className="font-serif text-sm text-navy font-semibold mt-0.5">Chat Now</div>
+                  <div className="font-serif text-sm text-navy font-semibold mt-0.5 whitespace-nowrap">
+                    +91 92867 77770
+                  </div>
                 </div>
               </a>
+
               <a
-                href="mailto:admissions@janhitworld.school"
-                className="p-4 rounded-2xl bg-white border border-border hover:border-gold/50 hover-lift flex flex-col gap-2.5"
+                href="mailto:info@janhitworld.school"
+                className="p-4 rounded-2xl bg-white border border-border hover:border-gold/50 hover-lift flex flex-col gap-2.5 col-span-2"
               >
-                <Mail className="size-4.5 text-navy" />
+                <Mail className="size-4.5 text-gold" />
                 <div>
-                  <div className="text-[10px] uppercase tracking-[0.15em] text-muted-foreground">
-                    Email
+                  <div className="text-[10px] uppercase tracking-[0.15em] text-muted-foreground font-bold">
+                    Email Enquiries
                   </div>
-                  <div className="font-serif text-sm text-navy font-semibold mt-0.5">Enquire</div>
+                  <div className="font-serif text-sm text-navy font-semibold mt-0.5 break-all">
+                    info@janhitworld.school
+                  </div>
                 </div>
               </a>
-              <div className="p-4 rounded-2xl bg-white border border-border flex flex-col gap-2.5">
-                <QrCode className="size-4.5 text-navy" />
-                <div>
-                  <div className="text-[10px] uppercase tracking-[0.15em] text-muted-foreground">
-                    Scan
-                  </div>
-                  <div className="font-serif text-sm text-navy font-semibold mt-0.5">QR Code</div>
-                </div>
-              </div>
             </div>
 
-            <div className="rounded-2xl overflow-hidden border border-border shadow-glass h-[180px] w-full">
+            <div className="rounded-2xl overflow-hidden border border-border shadow-glass h-[300px] w-full">
               <iframe
                 title="Janhit World School map"
-                src="https://www.google.com/maps?q=Knowledge+Park+5,+Greater+Noida&output=embed"
+                src="https://www.google.com/maps?q=Janhit+World+School+Greater+Noida&output=embed"
                 className="w-full h-full border-0"
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"

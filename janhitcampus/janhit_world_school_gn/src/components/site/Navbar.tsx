@@ -91,12 +91,6 @@ export function Navbar() {
                         Fee Structure & Policy
                       </a>
                       <a
-                        href="#reservation-policy"
-                        className="block px-4 py-2.5 text-xs font-semibold text-[#0B2566]/80 hover:text-gold hover:bg-beige/40 rounded-lg transition-colors"
-                      >
-                        Reservation & Inclusion
-                      </a>
-                      <a
                         href="#transfer-admissions"
                         className="block px-4 py-2.5 text-xs font-semibold text-[#0B2566]/80 hover:text-gold hover:bg-beige/40 rounded-lg transition-colors"
                       >
@@ -172,13 +166,6 @@ export function Navbar() {
                       className="block text-sm text-[#0B2566]/70 hover:text-gold font-medium"
                     >
                       Fee Structure & Policy
-                    </a>
-                    <a
-                      href="#reservation-policy"
-                      onClick={() => setOpen(false)}
-                      className="block text-sm text-[#0B2566]/70 hover:text-gold font-medium"
-                    >
-                      Reservation & Inclusion
                     </a>
                     <a
                       href="#transfer-admissions"

@@ -93,7 +93,7 @@ export function Hero() {
               href="#contact"
               className="inline-flex items-center gap-2 px-5 h-11 rounded-md gradient-gold text-navy-deep font-semibold text-xs tracking-wide shadow-gold hover:-translate-y-0.5 hover:shadow-luxury duration-300 transition-all"
             >
-              <Calendar className="size-3.5" /> Book Campus Tour
+              <Calendar className="size-3.5" />See Virtual Tour 
             </a>
             <a
               href="#admissions"

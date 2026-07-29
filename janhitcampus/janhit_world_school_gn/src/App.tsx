@@ -12,6 +12,9 @@ import { Faq } from "@/components/site/Faq";
 import { Contact } from "@/components/site/Contact";
 import { Footer } from "@/components/site/Footer";
 import { Toaster } from "@/components/ui/sonner";
+import { AdmissionsDialog } from "@/components/site/AdmissionsDialog";
+import { FloatingActions } from "@/components/site/FloatingActions";
+import { FounderPromoModal } from "@/components/site/FounderPromoModal";
 
 // Initialize standard React QueryClient
 const queryClient = new QueryClient({
@@ -31,16 +34,19 @@ export default function App() {
         <main>
           <Hero />
           <About />
+          <FounderBatch />
           <WhyChoose />
           <Foundational />
           <Sports />
           <Admissions />
-          <FounderBatch />
           <Campus />
           <Faq />
           <Contact />
         </main>
         <Footer />
+        <FloatingActions />
+        <FounderPromoModal />
+        <AdmissionsDialog />
         <Toaster position="top-center" />
       </div>
     </QueryClientProvider>
