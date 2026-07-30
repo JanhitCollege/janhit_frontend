@@ -7,8 +7,9 @@ interface AuthContextType {
   isAuthenticated: boolean;
   isLoading: boolean;
   login: (email: string, password: string) => Promise<void>;
-  logout: () => void;
+  logout: () => Promise<void>;
   updateUser: (updatedUser: Partial<AdminUser>) => void;
+  fetchProfile: () => Promise<AdminUser>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -19,22 +20,46 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Load existing auth data from localStorage
-    const savedToken = localStorage.getItem("janhit_admin_token");
-    const savedUser = localStorage.getItem("janhit_admin_user");
+    const initializeAuth = async () => {
+      const savedToken = localStorage.getItem("janhit_admin_token");
+      const savedUser = localStorage.getItem("janhit_admin_user");
 
-    if (savedToken && savedUser) {
-      setToken(savedToken);
-      try {
-        setUser(JSON.parse(savedUser));
-      } catch (e) {
-        console.error("Failed to parse saved user details from localStorage", e);
-        // Clear corrupt data
-        localStorage.removeItem("janhit_admin_token");
-        localStorage.removeItem("janhit_admin_user");
+      if (savedToken) {
+        setToken(savedToken);
+        if (savedUser) {
+          try {
+            setUser(JSON.parse(savedUser));
+          } catch (e) {
+            console.error("Failed to parse saved user details from localStorage", e);
+          }
+        }
+
+        // Background fetch to verify token & get freshest data
+        try {
+          const profile = await authService.getProfile();
+          setUser(profile);
+          localStorage.setItem("janhit_admin_user", JSON.stringify(profile));
+        } catch (e: any) {
+          console.error("Failed to fetch profile on init", e);
+          // If token expired (usually 401/Unauthorized), clear session
+          if (
+            e.message &&
+            (e.message.includes("401") ||
+              e.message.toLowerCase().includes("unauthorized") ||
+              e.message.toLowerCase().includes("token"))
+          ) {
+            setToken(null);
+            setUser(null);
+            localStorage.removeItem("janhit_admin_token");
+            localStorage.removeItem("janhit_admin_user");
+            localStorage.removeItem("janhit_admin_refresh_token");
+          }
+        }
       }
-    }
-    setIsLoading(false);
+      setIsLoading(false);
+    };
+
+    initializeAuth();
   }, []);
 
   const login = async (email: string, password: string) => {
@@ -52,19 +77,37 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  const logout = () => {
-    setToken(null);
-    setUser(null);
-    localStorage.removeItem("janhit_admin_token");
-    localStorage.removeItem("janhit_admin_user");
+  const logout = async () => {
+    try {
+      await authService.logout();
+    } catch (error) {
+      console.error("API logout failed:", error);
+    } finally {
+      setToken(null);
+      setUser(null);
+      localStorage.removeItem("janhit_admin_token");
+      localStorage.removeItem("janhit_admin_user");
+      localStorage.removeItem("janhit_admin_refresh_token");
+    }
+  };
+
+  const fetchProfile = async (): Promise<AdminUser> => {
+    try {
+      const profile = await authService.getProfile();
+      setUser(profile);
+      localStorage.setItem("janhit_admin_user", JSON.stringify(profile));
+      return profile;
+    } catch (error) {
+      console.error("Failed to fetch profile in AuthProvider:", error);
+      throw error;
+    }
   };
 
   const updateUser = (updatedUser: Partial<AdminUser>) => {
-    if (user) {
-      const newUser = { ...user, ...updatedUser };
-      setUser(newUser);
-      localStorage.setItem("janhit_admin_user", JSON.stringify(newUser));
-    }
+    const baseUser = user || { id: "", name: "", email: "", phone: "", role: "", avatarUrl: "" };
+    const newUser = { ...baseUser, ...updatedUser };
+    setUser(newUser);
+    localStorage.setItem("janhit_admin_user", JSON.stringify(newUser));
   };
 
   return (
@@ -77,6 +120,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         login,
         logout,
         updateUser,
+        fetchProfile,
       }}
     >
       {children}

@@ -47,9 +47,9 @@ function AdminLayoutContent() {
   // Mobile drawer state
   const [isMobileOpen, setIsMobileOpen] = useState(false);
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     setIsMobileOpen(false);
-    logout();
+    await logout();
     navigate({ to: "/@admin" });
   };
 

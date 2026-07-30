@@ -571,7 +571,7 @@ export const EventForm: React.FC<EventFormProps> = ({
                   <div className="flex items-center gap-4">
                     <div className="h-16 w-28 rounded-lg bg-muted border border-border flex items-center justify-center overflow-hidden shrink-0 shadow-sm">
                       <img
-                        src={bannerImage}
+                        src={bannerImage || undefined}
                         alt="Banner Preview"
                         className="size-full object-cover"
                       />

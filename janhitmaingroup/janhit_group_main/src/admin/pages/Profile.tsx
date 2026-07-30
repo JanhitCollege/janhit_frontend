@@ -27,21 +27,48 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 export const ProfilePage: React.FC = () => {
-  const { user, logout, updateUser } = useAuth();
+  const { user, logout, updateUser, fetchProfile } = useAuth();
   const navigate = useNavigate();
 
   const [isEditing, setIsEditing] = useState(false);
   const [name, setName] = useState(user?.name || "");
   const [email, setEmail] = useState(user?.email || "");
   const [phone, setPhone] = useState(user?.phone || "");
-  const [role] = useState(user?.role || "Super Admin");
+  const [role, setRole] = useState(user?.role || "Super Admin");
   const [avatarUrl, setAvatarUrl] = useState(user?.avatarUrl || "");
 
   const [isSaving, setIsSaving] = useState(false);
+  const [isLoadingProfile, setIsLoadingProfile] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleLogout = () => {
-    logout();
+  // Sync state with user data from context
+  React.useEffect(() => {
+    if (user) {
+      setName(user.name || "");
+      setEmail(user.email || "");
+      setPhone(user.phone || "");
+      setRole(user.role || "Super Admin");
+      setAvatarUrl(user.avatarUrl || "");
+    }
+  }, [user]);
+
+  // Fetch profile on mount
+  React.useEffect(() => {
+    const loadProfile = async () => {
+      setIsLoadingProfile(true);
+      try {
+        await fetchProfile();
+      } catch (error) {
+        console.error("Failed to load profile in ProfilePage:", error);
+      } finally {
+        setIsLoadingProfile(false);
+      }
+    };
+    loadProfile();
+  }, []);
+
+  const handleLogout = async () => {
+    await logout();
     navigate({ to: "/@admin" });
   };
 
@@ -89,6 +116,19 @@ export const ProfilePage: React.FC = () => {
       reader.readAsDataURL(file);
     }
   };
+
+  if (isLoadingProfile && !user) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="flex flex-col items-center gap-4">
+          <Loader2 className="size-12 rounded-full border-4 border-muted border-t-gold animate-spin" />
+          <p className="text-sm font-medium text-muted-foreground tracking-wide">
+            Loading Profile...
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   const adminName = user?.name || "Admin";
   const initials = adminName

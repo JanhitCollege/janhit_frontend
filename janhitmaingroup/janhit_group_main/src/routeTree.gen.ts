@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as NewsRouteImport } from './routes/news'
 import { Route as NaacRouteImport } from './routes/naac'
 import { Route as GalleryRouteImport } from './routes/gallery'
@@ -55,6 +56,11 @@ import { Route as AtadminDownloadsIdEditRouteImport } from './routes/@admin.down
 import { Route as AtadminCommitteesIdEditRouteImport } from './routes/@admin.committees.$id.edit'
 import { Route as AtadminCampusesIdEditRouteImport } from './routes/@admin.campuses.$id.edit'
 
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const NewsRoute = NewsRouteImport.update({
   id: '/news',
   path: '/news',
@@ -295,6 +301,7 @@ export interface FileRoutesByFullPath {
   '/gallery': typeof GalleryRoute
   '/naac': typeof NaacRoute
   '/news': typeof NewsRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/@admin/dashboard': typeof AtadminDashboardRoute
   '/@admin/forgot-password': typeof AtadminForgotPasswordRoute
   '/@admin/profile': typeof AtadminProfileRoute
@@ -341,6 +348,7 @@ export interface FileRoutesByTo {
   '/gallery': typeof GalleryRoute
   '/naac': typeof NaacRoute
   '/news': typeof NewsRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/@admin/dashboard': typeof AtadminDashboardRoute
   '/@admin/forgot-password': typeof AtadminForgotPasswordRoute
   '/@admin/profile': typeof AtadminProfileRoute
@@ -389,6 +397,7 @@ export interface FileRoutesById {
   '/gallery': typeof GalleryRoute
   '/naac': typeof NaacRoute
   '/news': typeof NewsRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/@admin/dashboard': typeof AtadminDashboardRoute
   '/@admin/forgot-password': typeof AtadminForgotPasswordRoute
   '/@admin/profile': typeof AtadminProfileRoute
@@ -438,6 +447,7 @@ export interface FileRouteTypes {
     | '/gallery'
     | '/naac'
     | '/news'
+    | '/reset-password'
     | '/@admin/dashboard'
     | '/@admin/forgot-password'
     | '/@admin/profile'
@@ -484,6 +494,7 @@ export interface FileRouteTypes {
     | '/gallery'
     | '/naac'
     | '/news'
+    | '/reset-password'
     | '/@admin/dashboard'
     | '/@admin/forgot-password'
     | '/@admin/profile'
@@ -531,6 +542,7 @@ export interface FileRouteTypes {
     | '/gallery'
     | '/naac'
     | '/news'
+    | '/reset-password'
     | '/@admin/dashboard'
     | '/@admin/forgot-password'
     | '/@admin/profile'
@@ -579,12 +591,20 @@ export interface RootRouteChildren {
   GalleryRoute: typeof GalleryRoute
   NaacRoute: typeof NaacRoute
   NewsRoute: typeof NewsRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
   InstitutionsSlugRoute: typeof InstitutionsSlugRoute
   InstitutionsIndexRoute: typeof InstitutionsIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/news': {
       id: '/news'
       path: '/news'
@@ -1024,6 +1044,7 @@ const rootRouteChildren: RootRouteChildren = {
   GalleryRoute: GalleryRoute,
   NaacRoute: NaacRoute,
   NewsRoute: NewsRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
   InstitutionsSlugRoute: InstitutionsSlugRoute,
   InstitutionsIndexRoute: InstitutionsIndexRoute,
 }

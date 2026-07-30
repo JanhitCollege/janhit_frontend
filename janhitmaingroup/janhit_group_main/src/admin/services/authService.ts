@@ -1,3 +1,5 @@
+import { apiRequest } from "../../services/api";
+
 /**
  * AuthService provides authentication services for the Admin panel.
  *
@@ -17,40 +19,53 @@ export const authService = {
   /**
    * Performs authentication using email and password.
    *
-   * TODO: Implement actual backend POST call to '/api/admin/login'.
    * @param email The admin email address
    * @param password The admin password
    */
   async login(email: string, password: string): Promise<{ token: string; user: AdminUser }> {
-    // Simulate network delay
-    await new Promise((resolve) => setTimeout(resolve, 800));
-
-    // Mock validation
     if (!email || !password) {
       throw new Error("Email and password are required.");
     }
 
-    const normalizedEmail = email.trim().toLowerCase();
+    const response = await apiRequest<{
+      success: boolean;
+      message: string;
+      data: {
+        user: {
+          id: string;
+          name: string;
+          email: string;
+          mobile: string;
+          role: string;
+          isActive: boolean;
+          createdAt: string;
+          updatedAt: string;
+        };
+        accessToken: string;
+        refreshToken: string;
+      };
+    }>("/auth/login", {
+      method: "POST",
+      body: JSON.stringify({ email, password }),
+    });
 
-    // Check email
-    if (normalizedEmail !== "admin@janhit.org") {
-      throw new Error("Email not registered");
+    if (!response.success) {
+      throw new Error(response.message || "Login failed");
     }
 
-    // Check password
-    if (password !== "admin123") {
-      throw new Error("Invalid password");
+    // Save refresh token
+    if (response.data.refreshToken) {
+      localStorage.setItem("janhit_admin_refresh_token", response.data.refreshToken);
     }
 
-    // Mock successful response
     return {
-      token: "mock-jwt-token-janhit-admin-xyz",
+      token: response.data.accessToken,
       user: {
-        id: "admin-1",
-        name: "Janhit Admin",
-        email: "admin@janhit.org",
-        phone: "+91 9876543210",
-        role: "Super Admin",
+        id: response.data.user.id,
+        name: response.data.user.name,
+        email: response.data.user.email,
+        phone: response.data.user.mobile || "",
+        role: response.data.user.role,
         avatarUrl: "", // Empty for default avatar
       },
     };
@@ -59,27 +74,113 @@ export const authService = {
   /**
    * Requests a password reset link for the provided email address.
    *
-   * TODO: Implement actual backend POST call to '/api/admin/forgot-password'.
    * @param email The registered admin email address
    */
   async forgotPassword(email: string): Promise<{ success: boolean; message: string }> {
-    // Simulate network delay
-    await new Promise((resolve) => setTimeout(resolve, 800));
-
     if (!email) {
       throw new Error("Email is required.");
     }
 
-    const normalizedEmail = email.trim().toLowerCase();
+    const response = await apiRequest<{
+      success: boolean;
+      message: string;
+      data: any;
+    }>("/auth/forgot-password", {
+      method: "POST",
+      body: JSON.stringify({ email }),
+    });
 
-    // Mock check (assume the email is valid for demonstration)
-    if (normalizedEmail !== "admin@janhit.org") {
-      throw new Error("Email not registered");
+    if (!response.success) {
+      throw new Error(response.message || "Failed to request password reset");
     }
 
     return {
-      success: true,
-      message: "Forgot password link shared to your registered email.",
+      success: response.success,
+      message: response.message,
     };
+  },
+
+  /**
+   * Resets the user's password using the token sent in the email.
+   *
+   * @param token The reset token
+   * @param password The new password
+   */
+  async resetPassword(token: string, password: string): Promise<{ success: boolean; message: string }> {
+    if (!token || !password) {
+      throw new Error("Token and password are required.");
+    }
+
+    const response = await apiRequest<{
+      success: boolean;
+      message: string;
+      data: any;
+    }>("/auth/reset-password", {
+      method: "POST",
+      body: JSON.stringify({ token, password }),
+    });
+
+    if (!response.success) {
+      throw new Error(response.message || "Password reset failed");
+    }
+
+    return {
+      success: response.success,
+      message: response.message,
+    };
+  },
+
+  /**
+   * Retrieves the current user's profile details.
+   */
+  async getProfile(): Promise<AdminUser> {
+    const response = await apiRequest<{
+      success: boolean;
+      message: string;
+      data: {
+        user: {
+          id: string;
+          name: string;
+          email: string;
+          mobile: string;
+          role: string;
+          isActive: boolean;
+          createdAt: string;
+          updatedAt: string;
+        };
+      };
+    }>("/auth/profile", {
+      method: "GET",
+    });
+
+    if (!response.success) {
+      throw new Error(response.message || "Failed to retrieve profile");
+    }
+
+    return {
+      id: response.data.user.id,
+      name: response.data.user.name,
+      email: response.data.user.email,
+      phone: response.data.user.mobile || "",
+      role: response.data.user.role,
+      avatarUrl: "",
+    };
+  },
+
+  /**
+   * Terminates the current admin session.
+   */
+  async logout(): Promise<void> {
+    const response = await apiRequest<{
+      success: boolean;
+      message: string;
+      data: any;
+    }>("/auth/logout", {
+      method: "POST",
+    });
+
+    if (!response.success) {
+      throw new Error(response.message || "Logout failed");
+    }
   },
 };

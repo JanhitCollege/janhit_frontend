@@ -13,6 +13,7 @@ export const ForgotPasswordPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -25,7 +26,8 @@ export const ForgotPasswordPage: React.FC = () => {
 
     setIsSubmitting(true);
     try {
-      await authService.forgotPassword(email);
+      const response = await authService.forgotPassword(email);
+      setSuccessMessage(response.message || "If a user with this email exists, a password reset token has been sent.");
       setShowPopup(true);
       setEmail("");
     } catch (err: any) {
@@ -145,10 +147,10 @@ export const ForgotPasswordPage: React.FC = () => {
                   <CheckCircle2 className="size-7" />
                 </div>
                 <h3 className="font-display text-xl font-bold text-foreground mb-2">
-                  Link Shared!
+                  Request Sent
                 </h3>
                 <p className="text-sm text-muted-foreground leading-relaxed mb-6">
-                  Forgot password link shared to your registered email.
+                  {successMessage}
                 </p>
                 <Button
                   onClick={handleClosePopup}
