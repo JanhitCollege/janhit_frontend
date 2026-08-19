@@ -31,19 +31,6 @@ export function Contact() {
       setLoading(false);
       return;
     }
-
-    const message = `Hello, I would like to submit an admission enquiry.
-Here are the details:
-- *Parent Name:* ${parentName}
-- *Child's Name:* ${childName}
-- *Phone:* ${mobile}
-- *Email:* ${email}
-- *Grade Seeking:* ${grade || "Not specified"}
-- *Session:* ${session || "Not specified"}
-- *Message:* ${messageText || "None"}`;
-
-    const whatsappUrl = `https://wa.me/919958574400?text=${encodeURIComponent(message)}`;
-
     try {
       const BASE_URL = "https://api.janhitgroup.com/api";
       const apiResponse = await fetch(`${BASE_URL}/enquiries`, {
@@ -74,11 +61,11 @@ Here are the details:
       // Reset form
       (e.target as HTMLFormElement).reset();
 
-      // Open WhatsApp in a new tab
-      window.open(whatsappUrl, "_blank", "noopener,noreferrer");
+      // Trigger custom success popup event
+      window.dispatchEvent(new CustomEvent("open-success-dialog"));
 
       toast.success("Enquiry submitted successfully", {
-        description: "Your lead has been saved, and you are being redirected to WhatsApp.",
+        description: "Your details have been successfully received.",
       });
     } catch (err: any) {
       console.error(err);

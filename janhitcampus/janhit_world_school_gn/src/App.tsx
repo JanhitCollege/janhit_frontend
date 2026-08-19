@@ -15,6 +15,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { AdmissionsDialog } from "@/components/site/AdmissionsDialog";
 import { FloatingActions } from "@/components/site/FloatingActions";
 import { FounderPromoModal } from "@/components/site/FounderPromoModal";
+import { SuccessDialog } from "@/components/site/SuccessDialog";
 
 // Initialize standard React QueryClient
 const queryClient = new QueryClient({
@@ -47,6 +48,7 @@ export default function App() {
         <FloatingActions />
         <FounderPromoModal />
         <AdmissionsDialog />
+        <SuccessDialog />
         <Toaster position="top-center" />
       </div>
     </QueryClientProvider>
