@@ -19,7 +19,7 @@ export function AdmissionsDialog() {
     return () => window.removeEventListener("open-admissions", handleOpen);
   }, []);
 
-  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
 
@@ -32,11 +32,23 @@ export function AdmissionsDialog() {
     const session = formData.get("year") as string;
     const messageText = formData.get("message") as string;
 
+    // Sanitize phone number to exactly 10 digits as required by the backend regex validator
+    const cleanPhone = phone.replace(/\D/g, "");
+    const mobile = cleanPhone.length > 10 ? cleanPhone.slice(-10) : cleanPhone;
+
+    if (mobile.length !== 10) {
+      toast.error("Invalid Phone Number", {
+        description: "Please enter a valid 10-digit mobile number.",
+      });
+      setLoading(false);
+      return;
+    }
+
     const message = `Hello, I would like to submit an admission enquiry.
 Here are the details:
 - *Parent Name:* ${parentName}
 - *Child's Name:* ${childName}
-- *Phone:* ${phone}
+- *Phone:* ${mobile}
 - *Email:* ${email}
 - *Grade Seeking:* ${grade || "Not specified"}
 - *Session:* ${session || "Not specified"}
@@ -44,8 +56,34 @@ Here are the details:
 
     const whatsappUrl = `https://wa.me/919958574400?text=${encodeURIComponent(message)}`;
 
-    setTimeout(() => {
-      setLoading(false);
+    try {
+      const BASE_URL = "https://api.janhitgroup.com/api";
+      const apiResponse = await fetch(`${BASE_URL}/enquiries`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: parentName,
+          parentName: parentName,
+          childName: childName,
+          email: email,
+          mobile: mobile,
+          phone: mobile,
+          grade: grade,
+          course: grade,
+          session: session,
+          message: messageText,
+          campus: "jwsgn",
+        }),
+      });
+
+      if (!apiResponse.ok) {
+        const errorData = await apiResponse.json().catch(() => ({}));
+        throw new Error(errorData.message || "Failed to submit enquiry to the database.");
+      }
+
+      // Reset form and close dialog
       (e.target as HTMLFormElement).reset();
       setIsOpen(false);
 
@@ -53,9 +91,16 @@ Here are the details:
       window.open(whatsappUrl, "_blank", "noopener,noreferrer");
 
       toast.success("Enquiry submitted successfully", {
-        description: "Redirecting you to WhatsApp to send the details.",
+        description: "Your lead has been saved, and you are being redirected to WhatsApp.",
       });
-    }, 900);
+    } catch (err: any) {
+      console.error(err);
+      toast.error("Submission Failed", {
+        description: err.message || "Something went wrong. Please try again.",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
