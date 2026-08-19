@@ -33,7 +33,9 @@ import {
   DialogFooter,
   DialogClose,
 } from "@/components/ui/dialog";
-import { getStoredCampuses, saveCampuses, Campus } from "@/data/campuses";
+import { Campus } from "@/data/campuses";
+import { campusService } from "@/admin/services/campusService";
+import { toast } from "sonner";
 
 interface CampusDetailsProps {
   id: string;
@@ -44,49 +46,44 @@ export const CampusDetails: React.FC<CampusDetailsProps> = ({ id }) => {
 
   const [campus, setCampus] = useState<Campus | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   // Status Modal State
   const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
   const [isTogglingStatus, setIsTogglingStatus] = useState(false);
 
   // Retrieve campus on load
-  useEffect(() => {
-    const list = getStoredCampuses();
-    const found = list.find((c) => c.id === id);
-    if (found) {
-      setCampus(found);
-    } else {
-      setErrorMsg("Campus not found. It may have been deleted or the ID is invalid.");
+  const fetchCampus = async () => {
+    setIsLoading(true);
+    try {
+      const data = await campusService.getCampusById(id);
+      setCampus(data);
+    } catch (error: any) {
+      setErrorMsg(error.message || "Campus not found. It may have been deleted or the ID is invalid.");
+    } finally {
+      setIsLoading(false);
     }
+  };
+
+  useEffect(() => {
+    fetchCampus();
   }, [id]);
 
   const handleStatusToggle = async () => {
     if (!campus) return;
     setIsTogglingStatus(true);
 
-    // Simulate short network delay
-    await new Promise((resolve) => setTimeout(resolve, 500));
-
-    const list = getStoredCampuses();
-    const updated = list.map((c) => {
-      if (c.id === id) {
-        return {
-          ...c,
-          status: c.status === "active" ? ("inactive" as const) : ("active" as const),
-          updatedDate: new Date().toISOString(),
-        };
-      }
-      return c;
-    });
-
-    saveCampuses(updated);
-
-    // Update local state
-    const found = updated.find((c) => c.id === id);
-    if (found) setCampus(found);
-
-    setIsTogglingStatus(false);
-    setIsStatusModalOpen(false);
+    try {
+      const newStatus = campus.status === "inactive";
+      const updated = await campusService.updateCampusStatus(id, newStatus);
+      setCampus(updated);
+      toast.success("Campus status updated successfully.");
+    } catch (error: any) {
+      toast.error(error.message || "Failed to update campus status.");
+    } finally {
+      setIsTogglingStatus(false);
+      setIsStatusModalOpen(false);
+    }
   };
 
   const formatDate = (dateStr?: string) => {

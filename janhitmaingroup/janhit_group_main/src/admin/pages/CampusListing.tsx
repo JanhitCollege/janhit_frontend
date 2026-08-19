@@ -50,7 +50,9 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { Skeleton } from "@/components/ui/skeleton";
-import { getStoredCampuses, saveCampuses, Campus } from "@/data/campuses";
+import { Campus } from "@/data/campuses";
+import { campusService } from "@/admin/services/campusService";
+import { toast } from "sonner";
 
 export const CampusListing: React.FC = () => {
   // State
@@ -63,21 +65,38 @@ export const CampusListing: React.FC = () => {
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(5);
+  const [totalItems, setTotalItems] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
 
   // Status Modal State
   const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
   const [campusToToggle, setCampusToToggle] = useState<Campus | null>(null);
   const [isTogglingStatus, setIsTogglingStatus] = useState(false);
 
-  // Load campuses with a simulated loader
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setCampuses(getStoredCampuses());
+  // Load campuses from API
+  const fetchCampuses = async () => {
+    setIsLoading(true);
+    try {
+      const response = await campusService.getAllCampuses({
+        page: currentPage,
+        limit: pageSize,
+        search: searchQuery || undefined,
+        sortBy,
+        sortOrder,
+      });
+      setCampuses(response.campuses);
+      setTotalItems(response.pagination.total);
+      setTotalPages(response.pagination.totalPages);
+    } catch (error: any) {
+      toast.error(error.message || "Failed to load campuses");
+    } finally {
       setIsLoading(false);
-    }, 450);
+    }
+  };
 
-    return () => clearTimeout(timer);
-  }, []);
+  useEffect(() => {
+    fetchCampuses();
+  }, [currentPage, pageSize, searchQuery, sortBy, sortOrder]);
 
   // Open Status Confirmation Modal
   const openStatusModal = (campus: Campus) => {
@@ -90,58 +109,22 @@ export const CampusListing: React.FC = () => {
     if (!campusToToggle) return;
     setIsTogglingStatus(true);
 
-    // Simulate short network delay
-    await new Promise((resolve) => setTimeout(resolve, 500));
-
-    const updated = campuses.map((c) => {
-      if (c.id === campusToToggle.id) {
-        return {
-          ...c,
-          status: c.status === "active" ? ("inactive" as const) : ("active" as const),
-          updatedDate: new Date().toISOString(),
-        };
-      }
-      return c;
-    });
-
-    setCampuses(updated);
-    saveCampuses(updated);
-    setIsTogglingStatus(false);
-    setIsStatusModalOpen(false);
-    setCampusToToggle(null);
+    try {
+      const newStatus = campusToToggle.status === "inactive";
+      await campusService.updateCampusStatus(campusToToggle.id, newStatus);
+      toast.success("Campus status updated successfully.");
+      await fetchCampuses();
+    } catch (error: any) {
+      toast.error(error.message || "Failed to update campus status.");
+    } finally {
+      setIsTogglingStatus(false);
+      setIsStatusModalOpen(false);
+      setCampusToToggle(null);
+    }
   };
 
-  // Filter & Sort Logics
-  const filteredCampuses = campuses.filter((campus) => {
-    const q = searchQuery.toLowerCase().trim();
-    if (!q) return true;
-    return (
-      campus.name.toLowerCase().includes(q) ||
-      campus.shortName.toLowerCase().includes(q) ||
-      campus.code.toLowerCase().includes(q) ||
-      campus.city.toLowerCase().includes(q) ||
-      campus.state.toLowerCase().includes(q)
-    );
-  });
-
-  const sortedCampuses = [...filteredCampuses].sort((a, b) => {
-    let valA = a[sortBy] || "";
-    let valB = b[sortBy] || "";
-
-    // Case insensitive for strings
-    if (typeof valA === "string") valA = valA.toLowerCase();
-    if (typeof valB === "string") valB = valB.toLowerCase();
-
-    if (valA < valB) return sortOrder === "asc" ? -1 : 1;
-    if (valA > valB) return sortOrder === "asc" ? 1 : -1;
-    return 0;
-  });
-
-  // Pagination Logic
-  const totalItems = sortedCampuses.length;
-  const totalPages = Math.ceil(totalItems / pageSize) || 1;
   const startIndex = (currentPage - 1) * pageSize;
-  const paginatedCampuses = sortedCampuses.slice(startIndex, startIndex + pageSize);
+  const paginatedCampuses = campuses;
 
   // Keep page index within bounds if filters change
   useEffect(() => {

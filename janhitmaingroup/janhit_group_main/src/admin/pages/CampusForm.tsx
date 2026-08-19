@@ -52,15 +52,37 @@ export const CampusForm: React.FC<CampusFormProps> = ({
   const [description, setDescription] = useState(initialData?.description || "");
   const [status, setStatus] = useState<"active" | "inactive">(initialData?.status || "active");
 
+  // Sync state with initialData when it loads/changes
+  useEffect(() => {
+    if (initialData) {
+      setName(initialData.name || "");
+      setShortName(initialData.shortName || "");
+      setCode(initialData.code || "");
+      setSlug(initialData.slug || "");
+      setSubdomain(initialData.subdomain || "");
+      setEmail(initialData.email || "");
+      setPhone(initialData.phone || "");
+      setAddress(initialData.address || "");
+      setCity(initialData.city || "");
+      setStateVal(initialData.state || "");
+      setPincode(initialData.pincode || "");
+      setLogo(initialData.logo || "");
+      setDescription(initialData.description || "");
+      setStatus(initialData.status || "active");
+    }
+  }, [initialData]);
+
   // Validation errors
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isTouched, setIsTouched] = useState<Record<string, boolean>>({});
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Auto-generate slug and subdomain from name if not touched yet
+  // Auto-generate slug and subdomain from name if name changed and fields not touched yet
   useEffect(() => {
-    if (!initialData) {
+    const hasNameChanged = !initialData || name !== initialData.name;
+
+    if (hasNameChanged) {
       if (!isTouched.slug) {
         const generatedSlug = name
           .toLowerCase()

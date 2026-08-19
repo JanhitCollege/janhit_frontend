@@ -6,7 +6,7 @@ type CommitteeSearch = {
   tab?: "overview" | "members" | "documents";
 };
 
-export const Route = createFileRoute("/@admin/committees/$id")({
+export const Route = createFileRoute("/@admin/committees/$id/")({
   validateSearch: (search: Record<string, unknown>): CommitteeSearch => {
     return {
       tab: (search.tab as "overview" | "members" | "documents") || undefined,

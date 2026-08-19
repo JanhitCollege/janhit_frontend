@@ -10,7 +10,9 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { CampusForm } from "./CampusForm";
-import { getStoredCampuses, saveCampuses, Campus } from "@/data/campuses";
+import { Campus } from "@/data/campuses";
+import { campusService } from "@/admin/services/campusService";
+import { toast } from "sonner";
 
 interface CampusEditProps {
   id: string;
@@ -21,35 +23,35 @@ export const CampusEdit: React.FC<CampusEditProps> = ({ id }) => {
 
   const [campus, setCampus] = useState<Campus | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   // Retrieve campus on load
-  useEffect(() => {
-    const list = getStoredCampuses();
-    const found = list.find((c) => c.id === id);
-    if (found) {
-      setCampus(found);
-    } else {
-      setErrorMsg("Campus not found. It may have been deleted or the ID is invalid.");
+  const fetchCampus = async () => {
+    setIsLoading(true);
+    try {
+      const data = await campusService.getCampusById(id);
+      setCampus(data);
+    } catch (error: any) {
+      setErrorMsg(error.message || "Campus not found. It may have been deleted or the ID is invalid.");
+    } finally {
+      setIsLoading(false);
     }
+  };
+
+  useEffect(() => {
+    fetchCampus();
   }, [id]);
 
-  const handleSubmit = (formData: Omit<Campus, "id" | "createdDate" | "updatedDate">) => {
+  const handleSubmit = async (formData: Omit<Campus, "id" | "createdDate" | "updatedDate">) => {
     if (!campus) return;
 
-    const existing = getStoredCampuses();
-    const updated = existing.map((c) => {
-      if (c.id === id) {
-        return {
-          ...c,
-          ...formData,
-          updatedDate: new Date().toISOString(),
-        };
-      }
-      return c;
-    });
-
-    saveCampuses(updated);
-    navigate({ to: "/@admin/campuses" });
+    try {
+      await campusService.updateCampus(id, formData);
+      toast.success("Campus updated successfully.");
+      navigate({ to: "/@admin/campuses" });
+    } catch (error: any) {
+      toast.error(error.message || "Failed to update campus.");
+    }
   };
 
   const handleCancel = () => {

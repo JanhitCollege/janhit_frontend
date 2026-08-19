@@ -10,11 +10,37 @@ export function Contact() {
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
+
+    const formData = new FormData(e.currentTarget);
+    const parentName = formData.get("name") as string;
+    const childName = formData.get("child") as string;
+    const phone = formData.get("phone") as string;
+    const email = formData.get("email") as string;
+    const grade = formData.get("grade") as string;
+    const session = formData.get("year") as string;
+    const messageText = formData.get("message") as string;
+
+    const message = `Hello, I would like to submit an admission enquiry.
+Here are the details:
+- *Parent Name:* ${parentName}
+- *Child's Name:* ${childName}
+- *Phone:* ${phone}
+- *Email:* ${email}
+- *Grade Seeking:* ${grade || "Not specified"}
+- *Session:* ${session || "Not specified"}
+- *Message:* ${messageText || "None"}`;
+
+    const whatsappUrl = `https://wa.me/919958574400?text=${encodeURIComponent(message)}`;
+
     setTimeout(() => {
       setLoading(false);
       (e.target as HTMLFormElement).reset();
-      toast.success("Enquiry submitted", {
-        description: "Our admissions team will reach out within 24 hours.",
+
+      // Open WhatsApp in a new tab
+      window.open(whatsappUrl, "_blank", "noopener,noreferrer");
+
+      toast.success("Enquiry submitted successfully", {
+        description: "Redirecting you to WhatsApp to send the details.",
       });
     }, 900);
   };

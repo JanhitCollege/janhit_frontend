@@ -9,27 +9,21 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { CampusForm } from "./CampusForm";
-import { getStoredCampuses, saveCampuses, Campus } from "@/data/campuses";
+import { Campus } from "@/data/campuses";
+import { campusService } from "@/admin/services/campusService";
+import { toast } from "sonner";
 
 export const CampusCreate: React.FC = () => {
   const navigate = useNavigate();
 
-  const handleSubmit = (formData: Omit<Campus, "id" | "createdDate" | "updatedDate">) => {
-    const existing = getStoredCampuses();
-
-    // Create new campus object
-    const newCampus: Campus = {
-      ...formData,
-      id: String(existing.length + 1) + "_" + Date.now(), // Unique ID
-      createdDate: new Date().toISOString(),
-      updatedDate: new Date().toISOString(),
-    };
-
-    const updated = [...existing, newCampus];
-    saveCampuses(updated);
-
-    // Navigate back to listing page
-    navigate({ to: "/@admin/campuses" });
+  const handleSubmit = async (formData: Omit<Campus, "id" | "createdDate" | "updatedDate">) => {
+    try {
+      await campusService.createCampus(formData);
+      toast.success("Campus created successfully.");
+      navigate({ to: "/@admin/campuses" });
+    } catch (error: any) {
+      toast.error(error.message || "Failed to create campus.");
+    }
   };
 
   const handleCancel = () => {
