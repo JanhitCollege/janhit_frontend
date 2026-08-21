@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 import { ArrowRight, Calendar, Sparkles } from "lucide-react";
 import hero from "@/assets/jwsheroimage.jpeg";
 
@@ -89,18 +90,18 @@ export function Hero() {
 
           {/* Compact CTA Buttons */}
           <div className="mt-6 flex flex-wrap items-center gap-3">
-            <a
-              href="#contact"
+            <Link
+              to="/contact"
               className="inline-flex items-center gap-2 px-5 h-11 rounded-md gradient-gold text-navy-deep font-semibold text-xs tracking-wide shadow-gold hover:-translate-y-0.5 hover:shadow-luxury duration-300 transition-all"
             >
               <Calendar className="size-3.5" />See Virtual Tour 
-            </a>
-            <a
-              href="#admissions"
+            </Link>
+            <Link
+              to="/admissions"
               className="inline-flex items-center gap-2 px-5 h-11 rounded-md border border-[#0B2566]/40 text-[#0B2566] hover:bg-[#0B2566]/5 hover:-translate-y-0.5 duration-300 transition-all tracking-wide text-xs font-bold"
             >
               Apply for Admission <ArrowRight className="size-3.5" />
-            </a>
+            </Link>
           </div>
         </motion.div>
       </div>

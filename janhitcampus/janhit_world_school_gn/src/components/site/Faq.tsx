@@ -33,7 +33,7 @@ const faqs = [
 export function Faq() {
   const [open, setOpen] = useState<number | null>(null);
   return (
-    <section className="relative py-28 md:py-36 bg-beige">
+    <section className="relative py-28 md:py-36 bg-white">
       <div className="max-w-4xl mx-auto px-6">
         <SectionHeader
           eyebrow="Questions"

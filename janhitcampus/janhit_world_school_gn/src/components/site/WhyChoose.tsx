@@ -15,7 +15,7 @@ import { SectionHeader } from "./SectionHeader";
 const features = [
   {
     icon: Target,
-    title: "Indoor Shooting Range",
+    title: "10m Indoor Shooting Range",
     desc: "A first-of-its-kind facility for precision, focus and Olympic-track exposure.",
   },
   {

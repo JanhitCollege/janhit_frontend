@@ -1,5 +1,18 @@
-import { Instagram, Facebook, Youtube, Linkedin } from "lucide-react";
+import { Link } from "react-router-dom";
+import { Instagram, Facebook, Youtube, Linkedin, Phone, Mail } from "lucide-react";
 import logo from "@/assets/logo-web.png";
+
+const exploreLinks = [
+  { label: "Home", href: "/" },
+  { label: "About Us", href: "/about" },
+  { label: "Why Us", href: "/why-us" },
+  { label: "Foundation", href: "/foundation" },
+  { label: "Sports", href: "/sports" },
+  { label: "Admissions", href: "/admissions" },
+  { label: "Gallery", href: "/gallery" },
+  { label: "FAQ", href: "/faq" },
+  { label: "Contact Us", href: "/contact" },
+];
 
 export function Footer() {
   return (
@@ -7,13 +20,13 @@ export function Footer() {
       <div className="absolute top-0 inset-x-0 gold-divider opacity-60" />
       <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-4 gap-12">
         <div className="md:col-span-2">
-          <div className="flex items-center gap-3">
+          <Link to="/" className="flex items-center gap-3 group inline-flex">
             <img src={logo} alt="Janhit World School Logo" className="h-20 w-20 object-contain" />
             <div>
               <div className="font-serif text-xl">Janhit World School</div>
               <div className="text-[11px] uppercase tracking-[0.3em] text-gold">Greater Noida</div>
             </div>
-          </div>
+          </Link>
           <p className="mt-6 text-white/65 max-w-md leading-relaxed">
             Where Global Foundations Meet Elite Excellence. To be affiliated with CBSE. Foundational
             Stage to Class 8 · Session 2026-27.
@@ -41,14 +54,11 @@ export function Footer() {
         <div>
           <div className="text-gold text-xs tracking-[0.3em] uppercase mb-5">Explore</div>
           <ul className="space-y-3 text-white/75">
-            {["About", "Why Us", "Foundation", "Sports", "Admissions", "Contact"].map((l) => (
-              <li key={l}>
-                <a
-                  href={`#${l.toLowerCase().replace(" ", "")}`}
-                  className="hover:text-gold transition-colors"
-                >
-                  {l}
-                </a>
+            {exploreLinks.map((l) => (
+              <li key={l.href}>
+                <Link to={l.href} className="hover:text-gold transition-colors">
+                  {l.label}
+                </Link>
               </li>
             ))}
           </ul>
@@ -68,6 +78,22 @@ export function Footer() {
           >
             Get Directions →
           </a>
+          <div className="mt-4 space-y-2.5 text-sm text-white/75 border-t border-gold/15 pt-3">
+            <a
+              href="tel:+919958574400"
+              className="flex items-center gap-2 hover:text-gold transition-colors"
+            >
+              <Phone className="size-4 text-gold shrink-0" />
+              <span>+91 99585 74400</span>
+            </a>
+            <a
+              href="mailto:Info@janhitgroup.com"
+              className="flex items-center gap-2 hover:text-gold transition-colors break-all"
+            >
+              <Mail className="size-4 text-gold shrink-0" />
+              <span>Info@janhitgroup.com</span>
+            </a>
+          </div>
         </div>
       </div>
 

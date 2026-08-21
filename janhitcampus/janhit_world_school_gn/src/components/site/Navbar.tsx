@@ -1,22 +1,24 @@
 import { useEffect, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import logo from "@/assets/logo-web.png";
 
 const links = [
-  { label: "About", href: "#about" },
-  { label: "Why Us", href: "#why" },
-  { label: "Foundation", href: "#foundation" },
-  { label: "Sports", href: "#sports" },
-  { label: "Admissions", href: "#admissions" },
-  { label: "Campus", href: "#campus" },
-  { label: "Contact", href: "#contact" },
+  { label: "Home", href: "/" },
+  { label: "About", href: "/about" },
+  { label: "Why Us", href: "/why-us" },
+  { label: "Sports", href: "/sports" },
+  { label: "Admissions", href: "/admissions" },
+  { label: "Gallery", href: "/gallery" },
+  { label: "Contact", href: "/contact" },
 ];
 
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const [admissionsHovered, setAdmissionsHovered] = useState(false);
+  const location = useLocation();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 30);
@@ -35,7 +37,7 @@ export function Navbar() {
       }`}
     >
       <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
-        <a href="#top" className="flex items-center gap-3 group">
+        <Link to="/" className="flex items-center gap-3 group">
           <img src={logo} alt="Janhit World School Logo" className="h-14 w-14 object-contain" />
           <div className="leading-tight">
             <div className="font-serif text-lg tracking-wide font-semibold text-[#0B2566] transition-colors duration-300">
@@ -43,10 +45,15 @@ export function Navbar() {
             </div>
             <div className="text-[10px] uppercase tracking-[0.25em] text-gold">Greater Noida</div>
           </div>
-        </a>
+        </Link>
 
-        <nav className="hidden lg:flex items-center gap-8">
+        <nav className="hidden lg:flex items-center gap-7">
           {links.map((l) => {
+            const isActive =
+              l.href === "/"
+                ? location.pathname === "/"
+                : location.pathname.startsWith(l.href);
+
             if (l.label === "Admissions") {
               return (
                 <div
@@ -55,9 +62,11 @@ export function Navbar() {
                   onMouseEnter={() => setAdmissionsHovered(true)}
                   onMouseLeave={() => setAdmissionsHovered(false)}
                 >
-                  <a
-                    href={l.href}
-                    className="text-sm tracking-wide font-medium text-[#0B2566]/85 hover:text-[#0B2566] transition-colors duration-300 flex items-center gap-1 cursor-pointer"
+                  <Link
+                    to={l.href}
+                    className={`text-sm tracking-wide font-medium transition-colors duration-300 flex items-center gap-1 cursor-pointer ${
+                      isActive ? "text-gold font-bold" : "text-[#0B2566]/85 hover:text-[#0B2566]"
+                    }`}
                   >
                     {l.label}
                     <svg
@@ -75,56 +84,60 @@ export function Navbar() {
                         d="M19 9l-7 7-7-7"
                       />
                     </svg>
-                  </a>
+                  </Link>
                   {admissionsHovered && (
                     <div className="absolute top-full left-1/2 -translate-x-1/2 mt-1 w-56 rounded-xl bg-white border border-gold/20 p-2 shadow-xl animate-in fade-in slide-in-from-top-2 duration-200 z-50">
-                      <a
-                        href="#admissions"
+                      <Link
+                        to="/admissions#admissions"
                         className="block px-4 py-2.5 text-xs font-semibold text-[#0B2566]/80 hover:text-gold hover:bg-beige/40 rounded-lg transition-colors"
                       >
                         Required Documents
-                      </a>
-                      <a
-                        href="#fee-structure"
+                      </Link>
+                      <Link
+                        to="/admissions#fee-structure"
                         className="block px-4 py-2.5 text-xs font-semibold text-[#0B2566]/80 hover:text-gold hover:bg-beige/40 rounded-lg transition-colors"
                       >
                         Fee Structure & Policy
-                      </a>
-                      <a
-                        href="#transfer-admissions"
+                      </Link>
+                      <Link
+                        to="/admissions#transfer-admissions"
                         className="block px-4 py-2.5 text-xs font-semibold text-[#0B2566]/80 hover:text-gold hover:bg-beige/40 rounded-lg transition-colors"
                       >
                         Transfer Admissions
-                      </a>
-                      <a
-                        href="#conduct-policy"
+                      </Link>
+                      <Link
+                        to="/admissions#conduct-policy"
                         className="block px-4 py-2.5 text-xs font-semibold text-[#0B2566]/80 hover:text-gold hover:bg-beige/40 rounded-lg transition-colors"
                       >
                         Admission Conduct
-                      </a>
+                      </Link>
                     </div>
                   )}
                 </div>
               );
             }
             return (
-              <a
+              <Link
                 key={l.href}
-                href={l.href}
-                className="text-sm tracking-wide font-medium text-[#0B2566]/85 hover:text-[#0B2566] transition-colors duration-300 relative after:absolute after:left-0 after:-bottom-1 after:h-px after:w-0 after:bg-gold hover:after:w-full after:transition-all after:duration-300"
+                to={l.href}
+                className={`text-sm tracking-wide font-medium transition-colors duration-300 relative after:absolute after:left-0 after:-bottom-1 after:h-px after:bg-gold hover:after:w-full after:transition-all after:duration-300 ${
+                  isActive
+                    ? "text-gold font-bold after:w-full"
+                    : "text-[#0B2566]/85 hover:text-[#0B2566] after:w-0"
+                }`}
               >
                 {l.label}
-              </a>
+              </Link>
             );
           })}
         </nav>
 
-        <a
-          href="#contact"
+        <Link
+          to="/contact"
           className="hidden lg:inline-flex items-center px-5 py-2.5 rounded-md gradient-gold text-navy-deep font-semibold text-sm tracking-wide shadow-gold hover:-translate-y-0.5 transition-all"
         >
           Apply Now
-        </a>
+        </Link>
 
         <button
           aria-label="Toggle menu"
@@ -142,67 +155,76 @@ export function Navbar() {
           className="lg:hidden mt-3 mx-4 rounded-xl bg-white border border-gold/20 p-6 space-y-3 shadow-2xl"
         >
           {links.map((l) => {
+            const isActive =
+              l.href === "/"
+                ? location.pathname === "/"
+                : location.pathname.startsWith(l.href);
+
             if (l.label === "Admissions") {
               return (
                 <div key={l.href} className="space-y-2">
-                  <a
-                    href={l.href}
+                  <Link
+                    to={l.href}
                     onClick={() => setOpen(false)}
-                    className="block text-[#0B2566]/90 hover:text-gold tracking-wide font-medium"
+                    className={`block tracking-wide font-medium ${
+                      isActive ? "text-gold font-bold" : "text-[#0B2566]/90 hover:text-gold"
+                    }`}
                   >
                     {l.label}
-                  </a>
+                  </Link>
                   <div className="pl-4 border-l-2 border-gold/30 space-y-2 ml-1">
-                    <a
-                      href="#admissions"
+                    <Link
+                      to="/admissions#admissions"
                       onClick={() => setOpen(false)}
                       className="block text-sm text-[#0B2566]/70 hover:text-gold font-medium"
                     >
                       Required Documents
-                    </a>
-                    <a
-                      href="#fee-structure"
+                    </Link>
+                    <Link
+                      to="/admissions#fee-structure"
                       onClick={() => setOpen(false)}
                       className="block text-sm text-[#0B2566]/70 hover:text-gold font-medium"
                     >
                       Fee Structure & Policy
-                    </a>
-                    <a
-                      href="#transfer-admissions"
+                    </Link>
+                    <Link
+                      to="/admissions#transfer-admissions"
                       onClick={() => setOpen(false)}
                       className="block text-sm text-[#0B2566]/70 hover:text-gold font-medium"
                     >
                       Transfer Admissions
-                    </a>
-                    <a
-                      href="#conduct-policy"
+                    </Link>
+                    <Link
+                      to="/admissions#conduct-policy"
                       onClick={() => setOpen(false)}
                       className="block text-sm text-[#0B2566]/70 hover:text-gold font-medium"
                     >
                       Admission Conduct
-                    </a>
+                    </Link>
                   </div>
                 </div>
               );
             }
             return (
-              <a
+              <Link
                 key={l.href}
-                href={l.href}
+                to={l.href}
                 onClick={() => setOpen(false)}
-                className="block text-[#0B2566]/90 hover:text-gold tracking-wide font-medium"
+                className={`block tracking-wide font-medium ${
+                  isActive ? "text-gold font-bold" : "text-[#0B2566]/90 hover:text-gold"
+                }`}
               >
                 {l.label}
-              </a>
+              </Link>
             );
           })}
-          <a
-            href="#contact"
+          <Link
+            to="/contact"
             onClick={() => setOpen(false)}
             className="block text-center px-5 py-3 rounded-md gradient-gold text-navy-deep font-semibold"
           >
             Apply Now
-          </a>
+          </Link>
         </motion.div>
       )}
     </motion.header>

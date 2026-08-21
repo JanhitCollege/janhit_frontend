@@ -12,7 +12,7 @@ const sports = [
     title: "Morning Sports Electives",
     desc: "Choose your sport. Start every day energised.",
   },
-  { icon: Target, title: "Indoor Shooting Range", desc: "A signature facility unique to Janhit." },
+  { icon: Target, title: "10m Indoor Shooting Range", desc: "A signature facility unique to Janhit." },
 ];
 
 export function Sports() {

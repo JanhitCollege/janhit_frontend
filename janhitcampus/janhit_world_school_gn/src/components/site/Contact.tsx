@@ -78,7 +78,7 @@ export function Contact() {
   };
 
   return (
-    <section id="contact" className="relative py-28 md:py-36 bg-background">
+    <section id="contact" className="relative py-28 md:py-36 bg-white">
       <div className="max-w-7xl mx-auto px-6">
         <SectionHeader
           eyebrow="Get in Touch"
@@ -161,7 +161,7 @@ export function Contact() {
 
             <div className="grid grid-cols-2 gap-4">
               <a
-                href="tel:+91928677770"
+                href="tel:+919958574400"
                 className="p-4 rounded-2xl bg-white border border-border hover:border-gold/50 hover-lift flex flex-col gap-2.5"
               >
                 <Phone className="size-4.5 text-gold" />
@@ -170,13 +170,13 @@ export function Contact() {
                     Call Admissions
                   </div>
                   <div className="font-serif text-sm text-navy font-semibold mt-0.5 whitespace-nowrap">
-                    +91 92867 77770
+                    +91 99585 74400
                   </div>
                 </div>
               </a>
 
               <a
-                href="https://wa.me/91928677770"
+                href="https://wa.me/919958574400"
                 target="_blank"
                 rel="noreferrer"
                 className="p-4 rounded-2xl bg-white border border-border hover:border-gold/50 hover-lift flex flex-col gap-2.5"
@@ -187,13 +187,13 @@ export function Contact() {
                     WhatsApp Chat
                   </div>
                   <div className="font-serif text-sm text-navy font-semibold mt-0.5 whitespace-nowrap">
-                    +91 92867 77770
+                    +91 99585 74400
                   </div>
                 </div>
               </a>
 
               <a
-                href="mailto:info@janhitworld.school"
+                href="mailto:Info@janhitgroup.com"
                 className="p-4 rounded-2xl bg-white border border-border hover:border-gold/50 hover-lift flex flex-col gap-2.5 col-span-2"
               >
                 <Mail className="size-4.5 text-gold" />
@@ -202,7 +202,7 @@ export function Contact() {
                     Email Enquiries
                   </div>
                   <div className="font-serif text-sm text-navy font-semibold mt-0.5 break-all">
-                    info@janhitworld.school
+                    Info@janhitgroup.com
                   </div>
                 </div>
               </a>
