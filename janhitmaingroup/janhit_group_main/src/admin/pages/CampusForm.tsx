@@ -1,10 +1,11 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Camera, X, Upload, Info } from "lucide-react";
+import { Camera, X, Upload, Info, AlertCircle, Loader2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
+import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { Campus } from "@/data/campuses";
 
 interface CampusFormProps {
@@ -28,6 +29,7 @@ interface CampusFormProps {
   }) => void;
   onCancel: () => void;
   submitButtonText: string;
+  isSubmitting?: boolean;
 }
 
 export const CampusForm: React.FC<CampusFormProps> = ({
@@ -35,6 +37,7 @@ export const CampusForm: React.FC<CampusFormProps> = ({
   onSubmit,
   onCancel,
   submitButtonText,
+  isSubmitting = false,
 }) => {
   // State for form fields
   const [name, setName] = useState(initialData?.name || "");
@@ -75,6 +78,7 @@ export const CampusForm: React.FC<CampusFormProps> = ({
   // Validation errors
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isTouched, setIsTouched] = useState<Record<string, boolean>>({});
+  const [formValidationError, setFormValidationError] = useState<string | null>(null);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -197,6 +201,8 @@ export const CampusForm: React.FC<CampusFormProps> = ({
 
     const hasErrors = Object.values(newErrors).some((err) => err !== "");
     if (hasErrors) {
+      const activeErrors = Object.values(newErrors).filter((err) => err !== "").join(" ");
+      setFormValidationError(`Please resolve form validation errors: ${activeErrors}`);
       // Find first error and scroll to it
       const firstErrorField = Object.keys(newErrors).find(
         (key) => newErrors[key as keyof typeof newErrors] !== "",
@@ -210,6 +216,8 @@ export const CampusForm: React.FC<CampusFormProps> = ({
       }
       return;
     }
+
+    setFormValidationError(null);
 
     onSubmit({
       name: name.trim(),
@@ -232,6 +240,16 @@ export const CampusForm: React.FC<CampusFormProps> = ({
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6 pb-24">
+      {formValidationError && (
+        <Alert variant="destructive" className="rounded-2xl border-destructive/30 bg-destructive/10">
+          <AlertCircle className="size-5" />
+          <AlertTitle className="font-bold text-base">Validation Error</AlertTitle>
+          <AlertDescription className="text-xs md:text-sm mt-1">
+            {formValidationError}
+          </AlertDescription>
+        </Alert>
+      )}
+
       {/* 2 Column Layout on Desktop, 1 Column on Tablet/Mobile */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Left Column */}
@@ -662,15 +680,24 @@ export const CampusForm: React.FC<CampusFormProps> = ({
             type="button"
             variant="outline"
             onClick={onCancel}
+            disabled={isSubmitting}
             className="rounded-xl border-border font-semibold px-6 hover:bg-accent text-sm h-11"
           >
             Cancel
           </Button>
           <Button
             type="submit"
-            className="rounded-xl bg-primary text-primary-foreground font-semibold px-8 hover:bg-primary/95 text-sm h-11 shadow-sm"
+            disabled={isSubmitting}
+            className="rounded-xl bg-primary text-primary-foreground font-semibold px-8 hover:bg-primary/95 text-sm h-11 shadow-sm flex items-center gap-2"
           >
-            {submitButtonText}
+            {isSubmitting ? (
+              <>
+                <Loader2 className="size-4 animate-spin" />
+                <span>Saving...</span>
+              </>
+            ) : (
+              submitButtonText
+            )}
           </Button>
         </div>
       </div>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
-import { AlertCircle } from "lucide-react";
+import { AlertCircle, CheckCircle2 } from "lucide-react";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -9,6 +9,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { CampusForm } from "./CampusForm";
 import { Campus } from "@/data/campuses";
 import { campusService } from "@/admin/services/campusService";
@@ -24,10 +25,14 @@ export const CampusEdit: React.FC<CampusEditProps> = ({ id }) => {
   const [campus, setCampus] = useState<Campus | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [submitSuccess, setSubmitSuccess] = useState<string | null>(null);
 
   // Retrieve campus on load
   const fetchCampus = async () => {
     setIsLoading(true);
+    setErrorMsg(null);
     try {
       const data = await campusService.getCampusById(id);
       setCampus(data);
@@ -44,13 +49,23 @@ export const CampusEdit: React.FC<CampusEditProps> = ({ id }) => {
 
   const handleSubmit = async (formData: Omit<Campus, "id" | "createdDate" | "updatedDate">) => {
     if (!campus) return;
+    setIsSubmitting(true);
+    setSubmitError(null);
+    setSubmitSuccess(null);
 
     try {
       await campusService.updateCampus(id, formData);
+      setSubmitSuccess("Campus updated successfully!");
       toast.success("Campus updated successfully.");
-      navigate({ to: "/@admin/campuses" });
+      setTimeout(() => {
+        navigate({ to: "/@admin/campuses" });
+      }, 1000);
     } catch (error: any) {
-      toast.error(error.message || "Failed to update campus.");
+      const errMsg = error.message || "Failed to update campus. Please try again.";
+      setSubmitError(errMsg);
+      toast.error(errMsg);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -95,17 +110,41 @@ export const CampusEdit: React.FC<CampusEditProps> = ({ id }) => {
         </p>
       </div>
 
+      {submitError && (
+        <Alert variant="destructive" className="mb-6 rounded-2xl border-destructive/30 bg-destructive/10">
+          <AlertCircle className="size-5" />
+          <AlertTitle className="font-bold text-base">Error Updating Campus</AlertTitle>
+          <AlertDescription className="text-xs md:text-sm mt-1">{submitError}</AlertDescription>
+        </Alert>
+      )}
+
+      {submitSuccess && (
+        <Alert className="mb-6 rounded-2xl border-green-500/30 bg-green-500/10 text-green-700 dark:text-green-400">
+          <CheckCircle2 className="size-5 text-green-600 dark:text-green-400" />
+          <AlertTitle className="font-bold text-base">Success</AlertTitle>
+          <AlertDescription className="text-xs md:text-sm mt-1">{submitSuccess}</AlertDescription>
+        </Alert>
+      )}
+
       {errorMsg ? (
         <div className="glass rounded-2xl p-8 border border-destructive/20 bg-destructive/5 text-center flex flex-col items-center justify-center max-w-lg mx-auto my-12 z-10">
           <AlertCircle className="size-12 text-destructive mb-3" />
           <h2 className="font-display text-lg font-bold text-foreground">Failed to Load Campus</h2>
           <p className="text-sm text-muted-foreground mt-2">{errorMsg}</p>
-          <Link
-            to="/@admin/campuses"
-            className="mt-6 inline-flex px-5 py-2 rounded-xl bg-primary text-primary-foreground font-semibold text-sm hover:bg-primary/95 shadow-sm"
-          >
-            Back to Campus Listing
-          </Link>
+          <div className="flex items-center gap-3 mt-6">
+            <button
+              onClick={fetchCampus}
+              className="px-4 py-2 rounded-xl bg-accent hover:bg-accent/80 text-foreground font-semibold text-sm transition"
+            >
+              Try Again
+            </button>
+            <Link
+              to="/@admin/campuses"
+              className="inline-flex px-5 py-2 rounded-xl bg-primary text-primary-foreground font-semibold text-sm hover:bg-primary/95 shadow-sm"
+            >
+              Back to Campus Listing
+            </Link>
+          </div>
         </div>
       ) : campus ? (
         /* Form Container */
@@ -114,6 +153,7 @@ export const CampusEdit: React.FC<CampusEditProps> = ({ id }) => {
           onSubmit={handleSubmit}
           onCancel={handleCancel}
           submitButtonText="Update Campus"
+          isSubmitting={isSubmitting}
         />
       ) : (
         /* Loading Spinner */

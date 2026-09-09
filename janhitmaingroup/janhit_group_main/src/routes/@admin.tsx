@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { createFileRoute, Outlet, useLocation, Link, useNavigate } from "@tanstack/react-router";
 import { AuthProvider, useAuth } from "@/admin/context/AuthContext";
+import { Toaster } from "@/components/ui/sonner";
 import {
   GraduationCap,
   User,
@@ -69,7 +70,12 @@ function AdminLayoutContent() {
 
   // Render normal route outlet for login/forgot-password
   if (isAuthPage || !isAuthenticated) {
-    return <Outlet />;
+    return (
+      <>
+        <Toaster position="top-right" richColors />
+        <Outlet />
+      </>
+    );
   }
 
   // Sidebar Menu Items
@@ -138,6 +144,7 @@ function AdminLayoutContent() {
 
   return (
     <div className="min-h-screen bg-background flex flex-col relative">
+      <Toaster position="top-right" richColors />
       {/* Top Fixed Header */}
       <header className="fixed top-0 inset-x-0 z-40 bg-background/95 backdrop-blur-md border-b shadow-sm py-3">
         <div className="flex items-center justify-between gap-4 px-4 md:px-6">

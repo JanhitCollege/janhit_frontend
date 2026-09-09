@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
+import { AlertCircle, CheckCircle2 } from "lucide-react";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -8,6 +9,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { CampusForm } from "./CampusForm";
 import { Campus } from "@/data/campuses";
 import { campusService } from "@/admin/services/campusService";
@@ -15,14 +17,28 @@ import { toast } from "sonner";
 
 export const CampusCreate: React.FC = () => {
   const navigate = useNavigate();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [submitSuccess, setSubmitSuccess] = useState<string | null>(null);
 
   const handleSubmit = async (formData: Omit<Campus, "id" | "createdDate" | "updatedDate">) => {
+    setIsSubmitting(true);
+    setSubmitError(null);
+    setSubmitSuccess(null);
+
     try {
       await campusService.createCampus(formData);
+      setSubmitSuccess("Campus created successfully!");
       toast.success("Campus created successfully.");
-      navigate({ to: "/@admin/campuses" });
+      setTimeout(() => {
+        navigate({ to: "/@admin/campuses" });
+      }, 1000);
     } catch (error: any) {
-      toast.error(error.message || "Failed to create campus.");
+      const errMsg = error.message || "Failed to create campus. Please try again.";
+      setSubmitError(errMsg);
+      toast.error(errMsg);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -69,8 +85,30 @@ export const CampusCreate: React.FC = () => {
         </p>
       </div>
 
+      {/* Inline Feedback Alerts */}
+      {submitError && (
+        <Alert variant="destructive" className="mb-6 rounded-2xl border-destructive/30 bg-destructive/10">
+          <AlertCircle className="size-5" />
+          <AlertTitle className="font-bold text-base">Error Creating Campus</AlertTitle>
+          <AlertDescription className="text-xs md:text-sm mt-1">{submitError}</AlertDescription>
+        </Alert>
+      )}
+
+      {submitSuccess && (
+        <Alert className="mb-6 rounded-2xl border-green-500/30 bg-green-500/10 text-green-700 dark:text-green-400">
+          <CheckCircle2 className="size-5 text-green-600 dark:text-green-400" />
+          <AlertTitle className="font-bold text-base">Success</AlertTitle>
+          <AlertDescription className="text-xs md:text-sm mt-1">{submitSuccess}</AlertDescription>
+        </Alert>
+      )}
+
       {/* Form Container */}
-      <CampusForm onSubmit={handleSubmit} onCancel={handleCancel} submitButtonText="Save Campus" />
+      <CampusForm
+        onSubmit={handleSubmit}
+        onCancel={handleCancel}
+        submitButtonText="Save Campus"
+        isSubmitting={isSubmitting}
+      />
     </div>
   );
 };

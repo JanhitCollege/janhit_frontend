@@ -50,6 +50,8 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
+import { CheckCircle2 } from "lucide-react";
 import { Campus } from "@/data/campuses";
 import { campusService } from "@/admin/services/campusService";
 import { toast } from "sonner";
@@ -68,6 +70,11 @@ export const CampusListing: React.FC = () => {
   const [totalItems, setTotalItems] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
 
+  // Alert Messages State
+  const [fetchError, setFetchError] = useState<string | null>(null);
+  const [statusError, setStatusError] = useState<string | null>(null);
+  const [statusSuccess, setStatusSuccess] = useState<string | null>(null);
+
   // Status Modal State
   const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
   const [campusToToggle, setCampusToToggle] = useState<Campus | null>(null);
@@ -76,6 +83,7 @@ export const CampusListing: React.FC = () => {
   // Load campuses from API
   const fetchCampuses = async () => {
     setIsLoading(true);
+    setFetchError(null);
     try {
       const response = await campusService.getAllCampuses({
         page: currentPage,
@@ -88,7 +96,9 @@ export const CampusListing: React.FC = () => {
       setTotalItems(response.pagination.total);
       setTotalPages(response.pagination.totalPages);
     } catch (error: any) {
-      toast.error(error.message || "Failed to load campuses");
+      const errMsg = error.message || "Failed to load campuses. Please check network connection.";
+      setFetchError(errMsg);
+      toast.error(errMsg);
     } finally {
       setIsLoading(false);
     }
@@ -101,6 +111,8 @@ export const CampusListing: React.FC = () => {
   // Open Status Confirmation Modal
   const openStatusModal = (campus: Campus) => {
     setCampusToToggle(campus);
+    setStatusError(null);
+    setStatusSuccess(null);
     setIsStatusModalOpen(true);
   };
 
@@ -108,14 +120,20 @@ export const CampusListing: React.FC = () => {
   const confirmStatusToggle = async () => {
     if (!campusToToggle) return;
     setIsTogglingStatus(true);
+    setStatusError(null);
+    setStatusSuccess(null);
 
     try {
       const newStatus = campusToToggle.status === "inactive";
       await campusService.updateCampusStatus(campusToToggle.id, newStatus);
-      toast.success("Campus status updated successfully.");
+      const msg = `Status of "${campusToToggle.name}" updated to ${newStatus ? "Active" : "Inactive"}.`;
+      setStatusSuccess(msg);
+      toast.success(msg);
       await fetchCampuses();
     } catch (error: any) {
-      toast.error(error.message || "Failed to update campus status.");
+      const errMsg = error.message || "Failed to update campus status.";
+      setStatusError(errMsg);
+      toast.error(errMsg);
     } finally {
       setIsTogglingStatus(false);
       setIsStatusModalOpen(false);
@@ -158,6 +176,36 @@ export const CampusListing: React.FC = () => {
           </Link>
         </Button>
       </div>
+
+      {/* Alert Banners */}
+      {fetchError && (
+        <Alert variant="destructive" className="z-10 rounded-2xl border-destructive/30 bg-destructive/10">
+          <AlertCircle className="size-5" />
+          <AlertTitle className="font-bold text-base">Error Loading Campuses</AlertTitle>
+          <AlertDescription className="text-xs md:text-sm mt-1 flex items-center justify-between">
+            <span>{fetchError}</span>
+            <Button size="sm" variant="outline" onClick={fetchCampuses} className="ml-4 rounded-xl text-xs">
+              Retry
+            </Button>
+          </AlertDescription>
+        </Alert>
+      )}
+
+      {statusError && (
+        <Alert variant="destructive" className="z-10 rounded-2xl border-destructive/30 bg-destructive/10">
+          <AlertCircle className="size-5" />
+          <AlertTitle className="font-bold text-base">Status Update Failed</AlertTitle>
+          <AlertDescription className="text-xs md:text-sm mt-1">{statusError}</AlertDescription>
+        </Alert>
+      )}
+
+      {statusSuccess && (
+        <Alert className="z-10 rounded-2xl border-green-500/30 bg-green-500/10 text-green-700 dark:text-green-400">
+          <CheckCircle2 className="size-5 text-green-600 dark:text-green-400" />
+          <AlertTitle className="font-bold text-base">Success</AlertTitle>
+          <AlertDescription className="text-xs md:text-sm mt-1">{statusSuccess}</AlertDescription>
+        </Alert>
+      )}
 
       {/* Filters and Search Bar Section */}
       <div className="glass rounded-xl p-4 border border-border/80 flex flex-col lg:flex-row gap-4 z-10">
