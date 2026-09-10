@@ -186,7 +186,7 @@ export function Contact() {
                     WhatsApp Chat
                   </div>
                   <div className="font-serif text-sm text-navy font-semibold mt-0.5 whitespace-nowrap">
-                    +91 99585 
+                    +91 99
                   </div>
                 </div>
               </a>
