@@ -3,8 +3,6 @@ import {
   Menu,
   X,
   GraduationCap,
-  Sun,
-  Moon,
   Search,
   ChevronDown,
   Landmark,
@@ -671,7 +669,6 @@ function DisclosuresDropdown() {
 export function Header() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [dark, setDark] = useState(false);
   const [activeMobileSection, setActiveMobileSection] = useState<string | null>(null);
 
   useEffect(() => {
@@ -680,10 +677,6 @@ export function Header() {
     window.addEventListener("scroll", onScroll);
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
-
-  useEffect(() => {
-    document.documentElement.classList.toggle("dark", dark);
-  }, [dark]);
 
   return (
     <header
@@ -741,13 +734,6 @@ export function Header() {
             className="hidden md:grid place-items-center size-9 rounded-lg hover:bg-accent transition"
           >
             <Search className="size-4" />
-          </button>
-          <button
-            aria-label="Toggle theme"
-            onClick={() => setDark((v) => !v)}
-            className="grid place-items-center size-9 rounded-lg hover:bg-accent transition"
-          >
-            {dark ? <Sun className="size-4" /> : <Moon className="size-4" />}
           </button>
           <Link
             to="/admissions"
