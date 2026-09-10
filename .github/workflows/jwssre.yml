@@ -30,7 +30,7 @@ jobs:
         run: npm install
 
       - name: Build JWS Saharanpur
-        run: npm run build:jwssre
+        run: npm run build -w janhit_world_school_saharanpur
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
