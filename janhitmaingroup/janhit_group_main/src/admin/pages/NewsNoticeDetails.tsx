@@ -25,7 +25,9 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { getStoredNewsNotices, saveNewsNotices, NewsNotice } from "@/data/newsNotices";
+import { NewsNotice } from "@/data/newsNotices";
+import { newsNoticeService } from "../services/newsNoticeService";
+import { campusService } from "../services/campusService";
 import { getStoredCampuses } from "@/data/campuses";
 import { toast } from "sonner";
 
@@ -40,27 +42,23 @@ export const NewsNoticeDetails: React.FC<NewsNoticeDetailsProps> = ({ id }) => {
   const [campuses, setCampuses] = useState<any[]>([]);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
-  // Load record and increment view count
+  // Load record and campuses from API
   useEffect(() => {
-    const list = getStoredNewsNotices();
-    const foundIdx = list.findIndex((r) => r.id === id);
-    if (foundIdx !== -1) {
-      const found = list[foundIdx];
-      // Increment view count on details page load
-      const updatedRecord = {
-        ...found,
-        viewCount: found.viewCount + 1,
-      };
-
-      const updatedList = [...list];
-      updatedList[foundIdx] = updatedRecord;
-
-      setRecord(updatedRecord);
-      saveNewsNotices(updatedList);
-      setCampuses(getStoredCampuses());
-    } else {
-      setErrorMsg("Announcement not found. It may have been deleted or the ID is invalid.");
+    async function loadDetails() {
+      try {
+        const [found, campusRes] = await Promise.all([
+          newsNoticeService.getNewsNoticeById(id),
+          campusService.getAllCampuses({ limit: 100 }).catch(() => ({ campuses: getStoredCampuses() })),
+        ]);
+        setRecord(found);
+        setCampuses(campusRes.campuses || []);
+      } catch (err: any) {
+        setErrorMsg(
+          err.message || "Announcement not found. It may have been deleted or the ID is invalid."
+        );
+      }
     }
+    loadDetails();
   }, [id]);
 
   const formatDate = (dateStr?: string) => {
@@ -82,25 +80,7 @@ export const NewsNoticeDetails: React.FC<NewsNoticeDetailsProps> = ({ id }) => {
   // Simulating downloading the attachment
   const handleDownload = () => {
     if (!record) return;
-
-    const list = getStoredNewsNotices();
-    const foundIdx = list.findIndex((r) => r.id === id);
-    if (foundIdx !== -1) {
-      const updatedRecord = {
-        ...record,
-        downloadCount: record.downloadCount + 1,
-      };
-      const updatedList = [...list];
-      updatedList[foundIdx] = updatedRecord;
-
-      setRecord(updatedRecord);
-      saveNewsNotices(updatedList);
-
-      // Simulate file download
-      toast.success(`Downloading attachment: ${record.attachmentName}`);
-
-      // In a real application, this would trigger window.open or a link download.
-    }
+    toast.success(`Downloading attachment: ${record.attachmentName || "file"}`);
   };
 
   const getCampusNamesList = (ids: string[]) => {

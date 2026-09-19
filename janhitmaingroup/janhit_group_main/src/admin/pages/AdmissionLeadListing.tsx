@@ -13,9 +13,6 @@ import {
   FileText,
   ArrowUpDown,
   Calendar,
-  Layers,
-  MapPin,
-  ExternalLink,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -46,8 +43,8 @@ import {
 } from "@/components/ui/dialog";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
-import { getStoredAdmissionLeads, saveAdmissionLeads, AdmissionLead } from "@/data/admissionLeads";
-import { getStoredCampuses } from "@/data/campuses";
+import { admissionLeadService, AdmissionLead } from "../services/admissionLeadService";
+import { campusService } from "../services/campusService";
 
 export const AdmissionLeadListing: React.FC = () => {
   // State
@@ -67,6 +64,8 @@ export const AdmissionLeadListing: React.FC = () => {
   // Pagination
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(5);
+  const [totalItems, setTotalItems] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
 
   // Status Change Dialog State
   const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
@@ -74,15 +73,56 @@ export const AdmissionLeadListing: React.FC = () => {
   const [nextStatus, setNextStatus] = useState<string>("");
   const [isTogglingStatus, setIsTogglingStatus] = useState(false);
 
-  // Load initial data
+  // Load campuses once on mount
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setLeads(getStoredAdmissionLeads());
-      setCampuses(getStoredCampuses().filter((c) => c.status === "active"));
-      setIsLoading(false);
-    }, 400);
-    return () => clearTimeout(timer);
+    async function loadCampuses() {
+      try {
+        const res = await campusService.getAllCampuses({ limit: 100 });
+        setCampuses(res.campuses);
+      } catch (e) {
+        console.error("Failed to load campuses for admission leads filter", e);
+      }
+    }
+    loadCampuses();
   }, []);
+
+  // Fetch admission leads whenever pagination, filters, search, or sorting changes
+  useEffect(() => {
+    let isMounted = true;
+    async function fetchLeads() {
+      setIsLoading(true);
+      try {
+        const res = await admissionLeadService.getAllAdmissionLeads({
+          page: currentPage,
+          limit: pageSize,
+          search: searchQuery.trim() || undefined,
+          status: filterStatus !== "all" ? filterStatus : undefined,
+          campusId: filterCampus !== "all" ? filterCampus : undefined,
+          sortBy,
+          sortOrder,
+        });
+
+        if (isMounted) {
+          setLeads(res.leads);
+          setTotalItems(res.pagination.total);
+          setTotalPages(res.pagination.totalPages || 1);
+        }
+      } catch (err: any) {
+        if (isMounted) {
+          toast.error(err.message || "Failed to retrieve admission leads.");
+        }
+      } finally {
+        if (isMounted) {
+          setIsLoading(false);
+        }
+      }
+    }
+
+    fetchLeads();
+    return () => {
+      isMounted = false;
+    };
+  }, [currentPage, pageSize, searchQuery, filterCampus, filterStatus, sortBy, sortOrder]);
 
   // Reset all filters
   const handleResetFilters = () => {
@@ -105,46 +145,50 @@ export const AdmissionLeadListing: React.FC = () => {
     if (!leadToToggle || !nextStatus) return;
     setIsTogglingStatus(true);
 
-    // Simulate brief network delay
-    await new Promise((resolve) => setTimeout(resolve, 350));
+    try {
+      await admissionLeadService.updateAdmissionLeadStatus(leadToToggle.id, nextStatus);
 
-    const updated = leads.map((l) => {
-      if (l.id === leadToToggle.id) {
-        return {
-          ...l,
-          status: nextStatus as any,
-          updatedAt: new Date().toISOString(),
-        };
+      // Save status log note inside localstorage timeline notes
+      const storedNotesKey = `janhit_lead_notes_${leadToToggle.id}`;
+      const storedNotes = localStorage.getItem(storedNotesKey);
+      let notes = [];
+      if (storedNotes) {
+        try {
+          notes = JSON.parse(storedNotes);
+        } catch {
+          notes = [];
+        }
       }
-      return l;
-    });
+      const newNote = {
+        id: "note-status-" + Date.now(),
+        text: `Lead status updated from ${leadToToggle.status} to ${nextStatus} via Listing Panel.`,
+        createdAt: new Date().toISOString(),
+        author: "Admin",
+      };
+      localStorage.setItem(storedNotesKey, JSON.stringify([newNote, ...notes]));
 
-    setLeads(updated);
-    saveAdmissionLeads(updated);
+      toast.success(`Enquiry status updated to ${nextStatus} successfully.`);
+      setIsStatusModalOpen(false);
+      setLeadToToggle(null);
 
-    // Save status log note inside localstorage timeline notes
-    const storedNotesKey = `janhit_lead_notes_${leadToToggle.id}`;
-    const storedNotes = localStorage.getItem(storedNotesKey);
-    let notes = [];
-    if (storedNotes) {
-      try {
-        notes = JSON.parse(storedNotes);
-      } catch {
-        notes = [];
-      }
+      // Re-fetch current page of leads
+      const res = await admissionLeadService.getAllAdmissionLeads({
+        page: currentPage,
+        limit: pageSize,
+        search: searchQuery.trim() || undefined,
+        status: filterStatus !== "all" ? filterStatus : undefined,
+        campusId: filterCampus !== "all" ? filterCampus : undefined,
+        sortBy,
+        sortOrder,
+      });
+      setLeads(res.leads);
+      setTotalItems(res.pagination.total);
+      setTotalPages(res.pagination.totalPages || 1);
+    } catch (err: any) {
+      toast.error(err.message || "Failed to update lead status.");
+    } finally {
+      setIsTogglingStatus(false);
     }
-    const newNote = {
-      id: "note-status-" + Date.now(),
-      text: `Lead status updated from ${leadToToggle.status} to ${nextStatus} via Listing Panel.`,
-      createdAt: new Date().toISOString(),
-      author: "Admin",
-    };
-    localStorage.setItem(storedNotesKey, JSON.stringify([newNote, ...notes]));
-
-    setIsTogglingStatus(false);
-    setIsStatusModalOpen(false);
-    setLeadToToggle(null);
-    toast.success(`Enquiry status updated to ${nextStatus} successfully.`);
   };
 
   // Sort toggle handler
@@ -155,63 +199,15 @@ export const AdmissionLeadListing: React.FC = () => {
       setSortBy(field);
       setSortOrder("asc");
     }
+    setCurrentPage(1);
   };
 
-  // Filter & Search Logic
-  const filteredLeads = leads.filter((lead) => {
-    // Search query matches name, email, mobile
-    const q = searchQuery.toLowerCase().trim();
-    if (q) {
-      const matchSearch =
-        lead.name.toLowerCase().includes(q) ||
-        lead.email.toLowerCase().includes(q) ||
-        lead.mobile.includes(q) ||
-        (lead.city && lead.city.toLowerCase().includes(q));
-      if (!matchSearch) return false;
-    }
-
-    // Campus filter
-    if (filterCampus !== "all" && lead.campusId !== filterCampus) {
-      return false;
-    }
-
-    // Status filter
-    if (filterStatus !== "all" && lead.status !== filterStatus) {
-      return false;
-    }
-
-    return true;
-  });
-
-  // Sorting logic
-  const sortedLeads = [...filteredLeads].sort((a, b) => {
-    let valA = a[sortBy];
-    let valB = b[sortBy];
-
-    if (typeof valA === "string") valA = valA.toLowerCase();
-    if (typeof valB === "string") valB = valB.toLowerCase();
-
-    if (valA < valB) return sortOrder === "asc" ? -1 : 1;
-    if (valA > valB) return sortOrder === "asc" ? 1 : -1;
-    return 0;
-  });
-
-  // Pagination logic
-  const totalItems = sortedLeads.length;
-  const totalPages = Math.ceil(totalItems / pageSize) || 1;
   const startIndex = (currentPage - 1) * pageSize;
-  const paginatedLeads = sortedLeads.slice(startIndex, startIndex + pageSize);
-
-  // Keep page index within bounds if filters update
-  useEffect(() => {
-    if (currentPage > totalPages) {
-      setCurrentPage(totalPages);
-    }
-  }, [totalPages, currentPage]);
 
   // Helper to resolve campus name
-  const getCampusName = (cid: string) => {
-    const found = campuses.find((c) => c.id === cid);
+  const getCampusName = (lead: AdmissionLead) => {
+    if (lead.campus?.name) return lead.campus.name;
+    const found = campuses.find((c) => String(c.id) === String(lead.campusId));
     return found ? found.name : "Unknown Campus";
   };
 
@@ -352,7 +348,7 @@ export const AdmissionLeadListing: React.FC = () => {
             <Skeleton className="h-20 w-full rounded-xl" />
             <Skeleton className="h-10 w-full rounded-xl" />
           </div>
-        ) : paginatedLeads.length > 0 ? (
+        ) : leads.length > 0 ? (
           <div className="overflow-x-auto">
             <Table>
               <TableHeader className="bg-background/80 border-b">
@@ -402,7 +398,7 @@ export const AdmissionLeadListing: React.FC = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {paginatedLeads.map((l) => (
+                {leads.map((l) => (
                   <TableRow
                     key={l.id}
                     className="hover:bg-accent/40 border-b last:border-0 transition-colors"
@@ -444,10 +440,10 @@ export const AdmissionLeadListing: React.FC = () => {
                     <TableCell className="py-4 text-xs font-semibold text-foreground/80">
                       <div
                         className="flex items-center gap-1.5 max-w-[190px] truncate"
-                        title={getCampusName(l.campusId)}
+                        title={getCampusName(l)}
                       >
                         <Building className="size-3.5 text-muted-foreground shrink-0" />
-                        <span>{getCampusName(l.campusId)}</span>
+                        <span>{getCampusName(l)}</span>
                       </div>
                     </TableCell>
 
@@ -522,7 +518,7 @@ export const AdmissionLeadListing: React.FC = () => {
         )}
 
         {/* Table Footer with Pagination */}
-        {!isLoading && sortedLeads.length > 0 && (
+        {!isLoading && totalItems > 0 && (
           <div className="border-t border-border/40 p-4 flex flex-col sm:flex-row items-center justify-between gap-4 bg-background/40">
             <div className="text-xs text-muted-foreground font-medium">
               Showing <span className="font-bold text-foreground">{startIndex + 1}</span> to{" "}

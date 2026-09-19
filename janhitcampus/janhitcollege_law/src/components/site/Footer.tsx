@@ -1,5 +1,6 @@
 import logo from "@/assets/janhitlawcollege_logo.png";
 import { Phone, Mail, MapPin } from "lucide-react";
+import { Link } from "react-router-dom";
 
 export function Footer() {
   return (
@@ -31,44 +32,44 @@ export function Footer() {
           </h4>
           <ul className="grid grid-cols-2 gap-2 text-xs text-white/75">
             <li>
-              <a href="#home" className="hover:text-gold transition-colors">
+              <Link to="/" className="hover:text-gold transition-colors">
                 Home
-              </a>
+              </Link>
             </li>
             <li>
-              <a href="#about" className="hover:text-gold transition-colors">
+              <Link to="/about" className="hover:text-gold transition-colors">
                 About Us
-              </a>
+              </Link>
             </li>
             <li>
-              <a href="#courses" className="hover:text-gold transition-colors">
+              <Link to="/courses" className="hover:text-gold transition-colors">
                 Law Courses
-              </a>
+              </Link>
             </li>
             <li>
-              <a href="#admissions" className="hover:text-gold transition-colors">
+              <Link to="/admissions" className="hover:text-gold transition-colors">
                 Admissions
-              </a>
+              </Link>
             </li>
             <li>
-              <a href="#calendar" className="hover:text-gold transition-colors">
+              <Link to="/academic-calendar" className="hover:text-gold transition-colors">
                 Calendar
-              </a>
+              </Link>
             </li>
             <li>
-              <a href="#downloads" className="hover:text-gold transition-colors">
+              <Link to="/downloads" className="hover:text-gold transition-colors">
                 Downloads
-              </a>
+              </Link>
             </li>
             <li>
-              <a href="#faculty" className="hover:text-gold transition-colors">
+              <Link to="/faculty" className="hover:text-gold transition-colors">
                 Faculty
-              </a>
+              </Link>
             </li>
             <li>
-              <a href="#disclosures" className="hover:text-gold transition-colors">
+              <Link to="/disclosures" className="hover:text-gold transition-colors">
                 Disclosures
-              </a>
+              </Link>
             </li>
           </ul>
         </div>

@@ -10,7 +10,7 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { DownloadForm } from "./DownloadForm";
-import { getStoredDownloads, saveDownloads, Download } from "@/data/downloads";
+import { downloadService, Download } from "../services/downloadService";
 import { toast } from "sonner";
 
 interface DownloadEditProps {
@@ -20,36 +20,48 @@ interface DownloadEditProps {
 export const DownloadEdit: React.FC<DownloadEditProps> = ({ id }) => {
   const navigate = useNavigate();
   const [record, setRecord] = useState<Download | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   useEffect(() => {
-    const list = getStoredDownloads();
-    const found = list.find((r) => r.id === id);
-    if (found) {
-      setRecord(found);
-    } else {
-      setErrorMsg("Download document not found. It may have been deleted or the ID is invalid.");
+    const fetchRecord = async () => {
+      try {
+        setIsLoading(true);
+        const download = await downloadService.getDownloadById(id);
+        setRecord(download);
+      } catch (err: any) {
+        setErrorMsg(err.message || "Download document not found. It may have been deleted or the ID is invalid.");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    if (id) {
+      fetchRecord();
     }
   }, [id]);
 
-  const handleSubmit = (formData: Omit<Download, "id" | "createdAt" | "updatedAt">) => {
+  const handleSubmit = async (formData: any) => {
     if (!record) return;
 
-    const list = getStoredDownloads();
-    const updated = list.map((r) => {
-      if (r.id === id) {
-        return {
-          ...r,
-          ...formData,
-          updatedAt: new Date().toISOString(),
-        };
-      }
-      return r;
-    });
+    try {
+      setIsSubmitting(true);
+      await downloadService.updateDownload(id, {
+        title: formData.title,
+        category: formData.category,
+        campusId: formData.campusId,
+        description: formData.description,
+        isActive: formData.isActive,
+        file: formData.file || null,
+      });
 
-    saveDownloads(updated);
-    toast.success("Download document updated successfully");
-    navigate({ to: "/@admin/downloads" });
+      toast.success("Download document updated successfully");
+      navigate({ to: "/@admin/downloads" });
+    } catch (err: any) {
+      toast.error(err.message || "Failed to update download document");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleCancel = () => {
@@ -119,6 +131,7 @@ export const DownloadEdit: React.FC<DownloadEditProps> = ({ id }) => {
               onSubmit={handleSubmit}
               onCancel={handleCancel}
               submitButtonText="Save Changes"
+              isSubmitting={isSubmitting}
             />
           </div>
         </>

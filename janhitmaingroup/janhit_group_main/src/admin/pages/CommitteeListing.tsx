@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Link } from "@tanstack/react-router";
 import {
   Search,
@@ -8,16 +8,12 @@ import {
   Trash2,
   Filter,
   RotateCcw,
-  Building,
-  EyeOff,
   Users,
   FileText,
   ArrowUpDown,
-  Calendar,
   Layers,
   AlertCircle,
   Loader2,
-  BookOpen,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -48,7 +44,9 @@ import {
 } from "@/components/ui/dialog";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
-import { getStoredCommittees, saveCommittees, Committee } from "@/data/committees";
+import { Committee } from "@/data/committees";
+import { committeeService } from "../services/committeeService";
+import { campusService } from "../services/campusService";
 import { getStoredCampuses } from "@/data/campuses";
 
 export const CommitteeListing: React.FC = () => {
@@ -67,9 +65,11 @@ export const CommitteeListing: React.FC = () => {
   const [sortBy, setSortBy] = useState<"title" | "displayOrder" | "createdAt">("displayOrder");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
 
-  // Pagination
+  // Server Pagination
   const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(5);
+  const [pageSize, setPageSize] = useState(10);
+  const [totalItems, setTotalItems] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
 
   // Modals state
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -81,15 +81,49 @@ export const CommitteeListing: React.FC = () => {
   const [nextStatus, setNextStatus] = useState<"DRAFT" | "PUBLISHED" | "ARCHIVED" | "">("");
   const [isTogglingStatus, setIsTogglingStatus] = useState(false);
 
-  // Load initial data
+  // Load campuses
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setCommittees(getStoredCommittees());
-      setCampuses(getStoredCampuses().filter((c) => c.status === "active"));
-      setIsLoading(false);
-    }, 400);
-    return () => clearTimeout(timer);
+    async function loadCampuses() {
+      try {
+        const res = await campusService.getAllCampuses({ limit: 100 });
+        setCampuses(res.campuses.filter((c: any) => c.status === "active" || c.isActive));
+      } catch (err) {
+        setCampuses(getStoredCampuses().filter((c) => c.status === "active"));
+      }
+    }
+    loadCampuses();
   }, []);
+
+  // Load Committees from API
+  const fetchCommittees = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      const res = await committeeService.getCommittees({
+        page: currentPage,
+        limit: pageSize,
+        search: searchQuery || undefined,
+        status: filterStatus !== "all" ? filterStatus : undefined,
+        campusId: filterCampus !== "all" ? filterCampus : undefined,
+        category: filterCategory !== "all" ? filterCategory : undefined,
+        sortBy,
+        sortOrder,
+      });
+      setCommittees(res.committees);
+      setTotalItems(res.pagination.totalItems);
+      setTotalPages(res.pagination.totalPages);
+    } catch (error: any) {
+      toast.error(error.message || "Failed to load committees from server.");
+      setCommittees([]);
+      setTotalItems(0);
+      setTotalPages(1);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [currentPage, pageSize, searchQuery, filterStatus, filterCampus, filterCategory, sortBy, sortOrder]);
+
+  useEffect(() => {
+    fetchCommittees();
+  }, [fetchCommittees]);
 
   // Unique categories list
   const categoriesList = Array.from(
@@ -123,28 +157,24 @@ export const CommitteeListing: React.FC = () => {
     if (!committeeToToggle || !nextStatus) return;
     setIsTogglingStatus(true);
 
-    await new Promise((resolve) => setTimeout(resolve, 350));
-
-    const updated = committees.map((c) => {
-      if (c.id === committeeToToggle.id) {
-        return {
-          ...c,
-          status: nextStatus as any,
-          publishDate:
-            nextStatus === "PUBLISHED" && !c.publishDate ? new Date().toISOString() : c.publishDate,
-          updatedAt: new Date().toISOString(),
-        };
+    try {
+      if (nextStatus === "PUBLISHED") {
+        await committeeService.publishCommittee(committeeToToggle.id);
+      } else if (nextStatus === "ARCHIVED") {
+        await committeeService.archiveCommittee(committeeToToggle.id);
+      } else {
+        await committeeService.updateCommittee(committeeToToggle.id, { status: "DRAFT" });
       }
-      return c;
-    });
 
-    setCommittees(updated);
-    saveCommittees(updated);
-
-    setIsTogglingStatus(false);
-    setIsStatusModalOpen(false);
-    setCommitteeToToggle(null);
-    toast.success(`Committee status updated to ${nextStatus} successfully.`);
+      toast.success(`Committee status updated to ${nextStatus} successfully.`);
+      fetchCommittees();
+    } catch (error: any) {
+      toast.error(error.message || "Failed to update committee status.");
+    } finally {
+      setIsTogglingStatus(false);
+      setIsStatusModalOpen(false);
+      setCommitteeToToggle(null);
+    }
   };
 
   // Open Delete Modal
@@ -158,19 +188,17 @@ export const CommitteeListing: React.FC = () => {
     if (!committeeToDelete) return;
     setIsDeleting(true);
 
-    await new Promise((resolve) => setTimeout(resolve, 400));
-
-    const updated = committees.filter((c) => c.id !== committeeToDelete.id);
-    setCommittees(updated);
-    saveCommittees(updated);
-
-    // Also clean up any linked local storage member photos or doc references if simulated
-    // ...
-
-    setIsDeleting(false);
-    setIsDeleteModalOpen(false);
-    setCommitteeToDelete(null);
-    toast.success("Committee and cascade records deleted.");
+    try {
+      await committeeService.deleteCommittee(committeeToDelete.id);
+      toast.success("Committee and cascade records deleted.");
+      fetchCommittees();
+    } catch (error: any) {
+      toast.error(error.message || "Failed to delete committee.");
+    } finally {
+      setIsDeleting(false);
+      setIsDeleteModalOpen(false);
+      setCommitteeToDelete(null);
+    }
   };
 
   // Sort handler
@@ -183,69 +211,13 @@ export const CommitteeListing: React.FC = () => {
     }
   };
 
-  // Filter & Search Logic
-  const filteredCommittees = committees.filter((c) => {
-    const q = searchQuery.toLowerCase().trim();
-    if (q) {
-      const matchSearch =
-        c.title.toLowerCase().includes(q) ||
-        (c.category && c.category.toLowerCase().includes(q)) ||
-        (c.shortDescription && c.shortDescription.toLowerCase().includes(q)) ||
-        (c.description && c.description.toLowerCase().includes(q)) ||
-        c.members.some(
-          (m) => m.name.toLowerCase().includes(q) || m.committeeRole.toLowerCase().includes(q),
-        );
-      if (!matchSearch) return false;
-    }
-
-    // Campus filter
-    if (filterCampus !== "all" && !c.campuses.includes(filterCampus)) {
-      return false;
-    }
-
-    // Status filter
-    if (filterStatus !== "all" && c.status !== filterStatus) {
-      return false;
-    }
-
-    // Category filter
-    if (filterCategory !== "all" && c.category !== filterCategory) {
-      return false;
-    }
-
-    return true;
-  });
-
-  // Sorting
-  const sortedCommittees = [...filteredCommittees].sort((a, b) => {
-    let valA = a[sortBy];
-    let valB = b[sortBy];
-
-    if (typeof valA === "string") valA = valA.toLowerCase();
-    if (typeof valB === "string") valB = valB.toLowerCase();
-
-    if (valA < valB) return sortOrder === "asc" ? -1 : 1;
-    if (valA > valB) return sortOrder === "asc" ? 1 : -1;
-    return 0;
-  });
-
-  // Pagination
-  const totalItems = sortedCommittees.length;
-  const totalPages = Math.ceil(totalItems / pageSize) || 1;
   const startIndex = (currentPage - 1) * pageSize;
-  const paginatedCommittees = sortedCommittees.slice(startIndex, startIndex + pageSize);
-
-  useEffect(() => {
-    if (currentPage > totalPages) {
-      setCurrentPage(totalPages);
-    }
-  }, [totalPages, currentPage]);
 
   // Helper to resolve campus tags
   const getCampusBadges = (campIds: string[]) => {
     return campIds
       .map((cid) => {
-        const found = campuses.find((c) => c.id === cid);
+        const found = campuses.find((c) => String(c.id) === String(cid));
         return found ? found.shortName || found.name : null;
       })
       .filter(Boolean);
@@ -344,7 +316,7 @@ export const CommitteeListing: React.FC = () => {
               <SelectContent className="rounded-xl border border-border/80 text-xs">
                 <SelectItem value="all">All Campuses</SelectItem>
                 {campuses.map((c) => (
-                  <SelectItem key={c.id} value={c.id}>
+                  <SelectItem key={c.id} value={String(c.id)}>
                     {c.shortName || c.name}
                   </SelectItem>
                 ))}
@@ -384,7 +356,7 @@ export const CommitteeListing: React.FC = () => {
             <Skeleton className="h-20 w-full rounded-xl" />
             <Skeleton className="h-10 w-full rounded-xl" />
           </div>
-        ) : paginatedCommittees.length > 0 ? (
+        ) : committees.length > 0 ? (
           <div className="overflow-x-auto">
             <Table>
               <TableHeader className="bg-background/80 border-b">
@@ -425,7 +397,7 @@ export const CommitteeListing: React.FC = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {paginatedCommittees.map((c) => (
+                {committees.map((c) => (
                   <TableRow
                     key={c.id}
                     className="hover:bg-accent/40 border-b last:border-0 transition-colors"
@@ -443,10 +415,10 @@ export const CommitteeListing: React.FC = () => {
                           ) : (
                             <div className="size-full bg-gradient-gold text-gold-foreground flex items-center justify-center font-sans font-bold text-sm">
                               {c.title
-                                .split(" ")
+                                ?.split(" ")
                                 .map((n) => n[0])
                                 .join("")
-                                .toUpperCase()}
+                                .toUpperCase() || "C"}
                             </div>
                           )}
                         </div>
@@ -500,7 +472,7 @@ export const CommitteeListing: React.FC = () => {
                         className="inline-flex items-center justify-center gap-1.5 text-xs font-semibold text-primary hover:underline cursor-pointer group"
                       >
                         <Users className="size-3.5 text-muted-foreground group-hover:text-primary transition-colors" />
-                        <span>{c.members.length}</span>
+                        <span>{c.membersCount ?? c.members?.length ?? 0}</span>
                       </Link>
                     </TableCell>
 
@@ -513,7 +485,7 @@ export const CommitteeListing: React.FC = () => {
                         className="inline-flex items-center justify-center gap-1.5 text-xs font-semibold text-primary hover:underline cursor-pointer group"
                       >
                         <FileText className="size-3.5 text-muted-foreground group-hover:text-primary transition-colors" />
-                        <span>{c.documents.length}</span>
+                        <span>{c.documentsCount ?? c.documents?.length ?? 0}</span>
                       </Link>
                     </TableCell>
 
@@ -617,7 +589,7 @@ export const CommitteeListing: React.FC = () => {
         )}
 
         {/* Table Footer with Pagination */}
-        {!isLoading && sortedCommittees.length > 0 && (
+        {!isLoading && totalItems > 0 && (
           <div className="border-t border-border/40 p-4 flex flex-col sm:flex-row items-center justify-between gap-4 bg-background/40">
             <div className="text-xs text-muted-foreground font-medium">
               Showing <span className="font-bold text-foreground">{startIndex + 1}</span> to{" "}

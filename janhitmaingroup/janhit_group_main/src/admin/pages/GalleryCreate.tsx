@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import {
   Breadcrumb,
@@ -9,27 +9,45 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { GalleryForm } from "./GalleryForm";
-import { getStoredGallery, saveGallery, GalleryItem } from "@/data/gallery";
+import { galleryService } from "../services/galleryService";
 import { toast } from "sonner";
 
 export const GalleryCreate: React.FC = () => {
   const navigate = useNavigate();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [progressMsg, setProgressMsg] = useState("");
 
-  const handleSubmit = (formData: Omit<GalleryItem, "id" | "createdAt" | "updatedAt">) => {
-    const existing = getStoredGallery();
+  const handleSubmit = async (formDataList: FormData[]) => {
+    if (formDataList.length === 0) return;
+    setIsSubmitting(true);
 
-    const newRecord: GalleryItem = {
-      ...formData,
-      id: "gal_" + Date.now() + "_" + Math.floor(Math.random() * 1000), // Unique ID
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    };
-
-    const updated = [newRecord, ...existing];
-    saveGallery(updated);
-
-    toast.success("Gallery item uploaded successfully");
-    navigate({ to: "/@admin/gallery" });
+    try {
+      if (formDataList.length === 1) {
+        setProgressMsg("Uploading media...");
+        await galleryService.createGalleryItem(formDataList[0]);
+        toast.success("Gallery item uploaded successfully");
+      } else {
+        let successCount = 0;
+        for (let i = 0; i < formDataList.length; i++) {
+          setProgressMsg(`Uploading photo ${i + 1} of ${formDataList.length}...`);
+          try {
+            await galleryService.createGalleryItem(formDataList[i]);
+            successCount++;
+          } catch (err: any) {
+            toast.error(`Photo ${i + 1} upload failed: ${err.message || "Server error"}`);
+          }
+        }
+        if (successCount > 0) {
+          toast.success(`Successfully uploaded ${successCount} of ${formDataList.length} photos.`);
+        }
+      }
+      navigate({ to: "/@admin/gallery" });
+    } catch (error: any) {
+      toast.error(error.message || "Failed to upload gallery items");
+    } finally {
+      setIsSubmitting(false);
+      setProgressMsg("");
+    }
   };
 
   const handleCancel = () => {
@@ -68,10 +86,10 @@ export const GalleryCreate: React.FC = () => {
       {/* Page Header */}
       <div className="mb-6 z-10">
         <h1 className="font-display text-2xl md:text-3xl font-bold text-foreground">
-          Upload Gallery Item
+          Upload Gallery Items
         </h1>
         <p className="text-xs md:text-sm text-muted-foreground mt-1">
-          Add a new photo or video clip to campus galleries.
+          Select one or multiple photos/video clips to showcase in your campus galleries.
         </p>
       </div>
 
@@ -80,7 +98,8 @@ export const GalleryCreate: React.FC = () => {
         <GalleryForm
           onSubmit={handleSubmit}
           onCancel={handleCancel}
-          submitButtonText="Upload Media"
+          submitButtonText={isSubmitting ? progressMsg || "Uploading..." : "Upload Media"}
+          isSubmitting={isSubmitting}
         />
       </div>
     </div>

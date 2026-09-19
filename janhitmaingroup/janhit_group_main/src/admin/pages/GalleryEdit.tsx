@@ -10,7 +10,8 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { GalleryForm } from "./GalleryForm";
-import { getStoredGallery, saveGallery, GalleryItem } from "@/data/gallery";
+import { galleryService } from "../services/galleryService";
+import { GalleryItem } from "@/data/gallery";
 import { toast } from "sonner";
 
 interface GalleryEditProps {
@@ -21,35 +22,33 @@ export const GalleryEdit: React.FC<GalleryEditProps> = ({ id }) => {
   const navigate = useNavigate();
   const [record, setRecord] = useState<GalleryItem | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
-    const list = getStoredGallery();
-    const found = list.find((r) => r.id === id);
-    if (found) {
-      setRecord(found);
-    } else {
-      setErrorMsg("Gallery item not found. It may have been deleted or the ID is invalid.");
+    async function loadRecord() {
+      try {
+        const item = await galleryService.getGalleryItemById(id);
+        setRecord(item);
+      } catch (err: any) {
+        setErrorMsg(err.message || "Gallery item not found. It may have been deleted or the ID is invalid.");
+      }
     }
+    loadRecord();
   }, [id]);
 
-  const handleSubmit = (formData: Omit<GalleryItem, "id" | "createdAt" | "updatedAt">) => {
-    if (!record) return;
+  const handleSubmit = async (formDataList: FormData[]) => {
+    if (!record || formDataList.length === 0) return;
+    setIsSubmitting(true);
 
-    const list = getStoredGallery();
-    const updated = list.map((r) => {
-      if (r.id === id) {
-        return {
-          ...r,
-          ...formData,
-          updatedAt: new Date().toISOString(),
-        };
-      }
-      return r;
-    });
-
-    saveGallery(updated);
-    toast.success("Gallery item updated successfully");
-    navigate({ to: "/@admin/gallery" });
+    try {
+      await galleryService.updateGalleryItem(id, formDataList[0]);
+      toast.success("Gallery item updated successfully");
+      navigate({ to: "/@admin/gallery" });
+    } catch (error: any) {
+      toast.error(error.message || "Failed to update gallery item");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleCancel = () => {
@@ -118,7 +117,8 @@ export const GalleryEdit: React.FC<GalleryEditProps> = ({ id }) => {
               initialData={record}
               onSubmit={handleSubmit}
               onCancel={handleCancel}
-              submitButtonText="Save Changes"
+              submitButtonText={isSubmitting ? "Saving..." : "Save Changes"}
+              isSubmitting={isSubmitting}
             />
           </div>
         </>

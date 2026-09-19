@@ -12,12 +12,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { getImageUrl } from "@/utils/utils";
+import { campusService } from "@/admin/services/campusService";
 import { getStoredCampuses } from "@/data/campuses";
 import { FacultyProfile } from "@/data/faculties";
 
 interface FacultyFormProps {
   initialData?: FacultyProfile;
-  onSubmit: (data: Omit<FacultyProfile, "id" | "createdAt" | "updatedAt">) => void;
+  onSubmit: (data: Omit<FacultyProfile, "id" | "createdAt" | "updatedAt"> & { imageFile?: File }) => void;
   onCancel: () => void;
   submitButtonText: string;
 }
@@ -29,7 +31,20 @@ export const FacultyForm: React.FC<FacultyFormProps> = ({
   submitButtonText,
 }) => {
   // Load campuses for campus select dropdown
-  const campusesList = getStoredCampuses().filter((c) => c.status === "active");
+  const [campusesList, setCampusesList] = useState<any[]>([]);
+  const [previewError, setPreviewError] = useState(false);
+
+  useEffect(() => {
+    async function fetchCampuses() {
+      try {
+        const res = await campusService.getAllCampuses({ limit: 100 });
+        setCampusesList(res.campuses.filter((c: any) => c.status === "active" || c.isActive));
+      } catch (err) {
+        setCampusesList(getStoredCampuses().filter((c) => c.status === "active"));
+      }
+    }
+    fetchCampuses();
+  }, []);
 
   // Form states
   const [name, setName] = useState(initialData?.name || "");
@@ -102,6 +117,8 @@ export const FacultyForm: React.FC<FacultyFormProps> = ({
     }
   };
 
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+
   // Image Upload Logic
   const handleImageClick = () => {
     if (fileInputRef.current) {
@@ -112,11 +129,12 @@ export const FacultyForm: React.FC<FacultyFormProps> = ({
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      // Validate file size (limit to 1.5MB for local storage storage)
-      if (file.size > 1.5 * 1024 * 1024) {
-        setErrors((prev) => ({ ...prev, image: "Image must be less than 1.5MB." }));
+      if (file.size > 5 * 1024 * 1024) {
+        setErrors((prev) => ({ ...prev, image: "Image must be less than 5MB." }));
         return;
       }
+      setSelectedFile(file);
+      setPreviewError(false);
 
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -129,6 +147,7 @@ export const FacultyForm: React.FC<FacultyFormProps> = ({
 
   const handleRemoveImage = () => {
     setImage("");
+    setSelectedFile(null);
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
@@ -192,6 +211,7 @@ export const FacultyForm: React.FC<FacultyFormProps> = ({
       isFeatured,
       isActive,
       image,
+      ...(selectedFile ? { imageFile: selectedFile } : {}),
     });
   };
 
@@ -212,8 +232,13 @@ export const FacultyForm: React.FC<FacultyFormProps> = ({
                   : "border-muted-foreground/30 hover:border-primary/50 bg-background/50 hover:bg-background"
               }`}
             >
-              {image ? (
-                <img src={image} alt="Faculty Preview" className="w-full h-full object-cover" />
+              {image && !previewError ? (
+                <img
+                  src={getImageUrl(image)}
+                  alt="Faculty Preview"
+                  className="w-full h-full object-cover"
+                  onError={() => setPreviewError(true)}
+                />
               ) : (
                 <div className="text-center p-4">
                   <Camera className="size-6 text-muted-foreground mx-auto mb-1 group-hover:scale-110 transition-transform" />

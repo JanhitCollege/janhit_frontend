@@ -2,7 +2,7 @@ import { Calendar, UserPlus, ClipboardList, CheckSquare, Award } from "lucide-re
 
 export function Admissions() {
   return (
-    <section id="admissions" className="py-20 bg-beige/10 border-y border-gold/10">
+    <section id="admissions" className="py-20 bg-white border-y border-gold/10">
       <div className="max-w-7xl mx-auto px-6">
         <div className="grid lg:grid-cols-12 gap-12">
           {/* Admissions Column */}

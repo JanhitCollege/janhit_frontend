@@ -56,8 +56,49 @@ import {
 } from "@/components/ui/pagination";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
-import { getStoredFaculties, saveFaculties, FacultyProfile } from "@/data/faculties";
+import { getImageUrl } from "@/utils/utils";
+import { facultyService } from "@/admin/services/facultyService";
+import { campusService } from "@/admin/services/campusService";
+import { FacultyProfile } from "@/data/faculties";
 import { getStoredCampuses } from "@/data/campuses";
+
+const FacultyAvatar: React.FC<{ image?: string; name: string; className?: string }> = ({
+  image,
+  name,
+  className = "size-11",
+}) => {
+  const [hasError, setHasError] = useState(false);
+  const imageUrl = getImageUrl(image);
+
+  useEffect(() => {
+    setHasError(false);
+  }, [image]);
+
+  const initials = name
+    .split(" ")
+    .filter(Boolean)
+    .map((n) => n[0])
+    .join("")
+    .toUpperCase()
+    .slice(0, 2);
+
+  return (
+    <div className={`${className} rounded-xl overflow-hidden border bg-muted flex items-center justify-center shrink-0 shadow-sm`}>
+      {imageUrl && !hasError ? (
+        <img
+          src={imageUrl}
+          alt={name}
+          className="w-full h-full object-cover"
+          onError={() => setHasError(true)}
+        />
+      ) : (
+        <div className="size-full bg-gradient-gold text-gold-foreground flex items-center justify-center font-sans font-bold text-sm">
+          {initials || "FA"}
+        </div>
+      )}
+    </div>
+  );
+};
 
 export const FacultyListing: React.FC = () => {
   // State
@@ -80,6 +121,8 @@ export const FacultyListing: React.FC = () => {
   // Pagination
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(5);
+  const [totalItems, setTotalItems] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
 
   // Modals state
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -90,15 +133,56 @@ export const FacultyListing: React.FC = () => {
   const [facultyToToggle, setFacultyToToggle] = useState<FacultyProfile | null>(null);
   const [isTogglingStatus, setIsTogglingStatus] = useState(false);
 
-  // Load initial data
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setFaculties(getStoredFaculties());
-      setCampuses(getStoredCampuses().filter((c) => c.status === "active"));
+  // Fetch faculties from API
+  const fetchFaculties = async () => {
+    setIsLoading(true);
+    try {
+      // Fetch campuses for filters/table if not loaded
+      if (campuses.length === 0) {
+        const campusRes = await campusService.getAllCampuses({ limit: 100 }).catch(() => null);
+        if (campusRes) {
+          setCampuses(campusRes.campuses);
+        } else {
+          setCampuses(getStoredCampuses().filter((c) => c.status === "active"));
+        }
+      }
+
+      const res = await facultyService.getAllFacultyProfilesAdmin({
+        page: currentPage,
+        limit: pageSize,
+        search: searchQuery,
+        campusId: filterCampus !== "all" ? filterCampus : undefined,
+        department: filterDepartment !== "all" ? filterDepartment : undefined,
+        isActive: filterStatus !== "all" ? filterStatus === "active" : undefined,
+        featured: filterFeatured !== "all" ? filterFeatured === "yes" : undefined,
+        sortBy,
+        sortOrder,
+      });
+
+      setFaculties(res.facultyProfiles || []);
+      setTotalItems(res.pagination?.total ?? (res.facultyProfiles || []).length);
+      setTotalPages(res.pagination?.totalPages ?? 1);
+    } catch (error: any) {
+      toast.error(error.message || "Failed to retrieve faculty profiles.");
+      setFaculties([]);
+    } finally {
       setIsLoading(false);
-    }, 400);
-    return () => clearTimeout(timer);
-  }, []);
+    }
+  };
+
+  useEffect(() => {
+    fetchFaculties();
+  }, [
+    currentPage,
+    pageSize,
+    searchQuery,
+    filterCampus,
+    filterDepartment,
+    filterStatus,
+    filterFeatured,
+    sortBy,
+    sortOrder,
+  ]);
 
   // Get unique departments for filters
   const departmentsList = Array.from(
@@ -127,28 +211,18 @@ export const FacultyListing: React.FC = () => {
   const confirmStatusToggle = async () => {
     if (!facultyToToggle) return;
     setIsTogglingStatus(true);
-
-    // Simulate brief network delay
-    await new Promise((resolve) => setTimeout(resolve, 300));
-
-    const updated = faculties.map((f) => {
-      if (f.id === facultyToToggle.id) {
-        const nextActive = !f.isActive;
-        return {
-          ...f,
-          isActive: nextActive,
-          updatedAt: new Date().toISOString(),
-        };
-      }
-      return f;
-    });
-
-    setFaculties(updated);
-    saveFaculties(updated);
-    setIsTogglingStatus(false);
-    setIsStatusModalOpen(false);
-    setFacultyToToggle(null);
-    toast.success(`Faculty profile status updated successfully.`);
+    try {
+      const nextActive = !facultyToToggle.isActive;
+      await facultyService.updateFacultyStatus(facultyToToggle.id, nextActive);
+      toast.success("Faculty profile status updated successfully.");
+      fetchFaculties();
+    } catch (err: any) {
+      toast.error(err.message || "Failed to update faculty status.");
+    } finally {
+      setIsTogglingStatus(false);
+      setIsStatusModalOpen(false);
+      setFacultyToToggle(null);
+    }
   };
 
   // Open Delete Modal
@@ -161,18 +235,17 @@ export const FacultyListing: React.FC = () => {
   const confirmDelete = async () => {
     if (!facultyToDelete) return;
     setIsDeleting(true);
-
-    // Simulate delay
-    await new Promise((resolve) => setTimeout(resolve, 400));
-
-    const updated = faculties.filter((f) => f.id !== facultyToDelete.id);
-    setFaculties(updated);
-    saveFaculties(updated);
-
-    setIsDeleting(false);
-    setIsDeleteModalOpen(false);
-    setFacultyToDelete(null);
-    toast.success("Faculty profile deleted successfully.");
+    try {
+      await facultyService.deleteFacultyProfile(facultyToDelete.id);
+      toast.success("Faculty profile deleted successfully.");
+      fetchFaculties();
+    } catch (err: any) {
+      toast.error(err.message || "Failed to delete faculty profile.");
+    } finally {
+      setIsDeleting(false);
+      setIsDeleteModalOpen(false);
+      setFacultyToDelete(null);
+    }
   };
 
   // Sort toggle handler
@@ -185,80 +258,12 @@ export const FacultyListing: React.FC = () => {
     }
   };
 
-  // Filter & Search Logic
-  const filteredFaculties = faculties.filter((faculty) => {
-    // Search
-    const q = searchQuery.toLowerCase().trim();
-    if (q) {
-      const matchSearch =
-        faculty.name.toLowerCase().includes(q) ||
-        (faculty.designation && faculty.designation.toLowerCase().includes(q)) ||
-        (faculty.department && faculty.department.toLowerCase().includes(q)) ||
-        (faculty.qualification && faculty.qualification.toLowerCase().includes(q)) ||
-        (faculty.specialization && faculty.specialization.toLowerCase().includes(q));
-      if (!matchSearch) return false;
-    }
-
-    // Campus filter
-    if (filterCampus !== "all" && faculty.campusId !== filterCampus) {
-      return false;
-    }
-
-    // Department filter
-    if (filterDepartment !== "all" && faculty.department !== filterDepartment) {
-      return false;
-    }
-
-    // Status filter
-    if (filterStatus !== "all") {
-      const isActiveValue = filterStatus === "active";
-      if (faculty.isActive !== isActiveValue) return false;
-    }
-
-    // HOD filter
-    if (filterHod !== "all") {
-      const isHodValue = filterHod === "yes";
-      if (faculty.isHod !== isHodValue) return false;
-    }
-
-    // Featured filter
-    if (filterFeatured !== "all") {
-      const isFeaturedValue = filterFeatured === "yes";
-      if (faculty.isFeatured !== isFeaturedValue) return false;
-    }
-
-    return true;
-  });
-
-  // Sorting logic
-  const sortedFaculties = [...filteredFaculties].sort((a, b) => {
-    let valA = a[sortBy];
-    let valB = b[sortBy];
-
-    if (typeof valA === "string") valA = valA.toLowerCase();
-    if (typeof valB === "string") valB = valB.toLowerCase();
-
-    if (valA < valB) return sortOrder === "asc" ? -1 : 1;
-    if (valA > valB) return sortOrder === "asc" ? 1 : -1;
-    return 0;
-  });
-
-  // Pagination logic
-  const totalItems = sortedFaculties.length;
-  const totalPages = Math.ceil(totalItems / pageSize) || 1;
   const startIndex = (currentPage - 1) * pageSize;
-  const paginatedFaculties = sortedFaculties.slice(startIndex, startIndex + pageSize);
-
-  // Keep page index within bounds if filters update
-  useEffect(() => {
-    if (currentPage > totalPages) {
-      setCurrentPage(totalPages);
-    }
-  }, [totalPages, currentPage]);
 
   // Helper to resolve campus name
-  const getCampusName = (cid: string) => {
-    const found = campuses.find((c) => c.id === cid);
+  const getCampusName = (cid: string, facultyObj?: any) => {
+    if (facultyObj?.campus?.name) return facultyObj.campus.name;
+    const found = campuses.find((c) => c.id === cid || String(c.id) === String(cid));
     return found ? found.name : "Unknown Campus";
   };
 
@@ -426,7 +431,7 @@ export const FacultyListing: React.FC = () => {
             <Skeleton className="h-20 w-full rounded-xl" />
             <Skeleton className="h-10 w-full rounded-xl" />
           </div>
-        ) : paginatedFaculties.length > 0 ? (
+        ) : faculties.length > 0 ? (
           <div className="overflow-x-auto">
             <Table>
               <TableHeader className="bg-background/80 border-b">
@@ -464,7 +469,7 @@ export const FacultyListing: React.FC = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {paginatedFaculties.map((f) => (
+                {faculties.map((f) => (
                   <TableRow
                     key={f.id}
                     className="hover:bg-accent/40 border-b last:border-0 transition-colors"
@@ -472,23 +477,7 @@ export const FacultyListing: React.FC = () => {
                     {/* Faculty profile details column */}
                     <TableCell className="py-4">
                       <div className="flex items-center gap-3">
-                        <div className="size-11 rounded-xl overflow-hidden border bg-muted flex items-center justify-center shrink-0 shadow-sm">
-                          {f.image ? (
-                            <img
-                              src={f.image}
-                              alt={f.name}
-                              className="w-full h-full object-cover"
-                            />
-                          ) : (
-                            <div className="size-full bg-gradient-gold text-gold-foreground flex items-center justify-center font-sans font-bold text-sm">
-                              {f.name
-                                .split(" ")
-                                .map((n) => n[0])
-                                .join("")
-                                .toUpperCase()}
-                            </div>
-                          )}
-                        </div>
+                        <FacultyAvatar image={f.image} name={f.name} />
                         <div className="min-w-0">
                           <h3 className="font-sans text-sm font-semibold text-foreground truncate">
                             {f.name}
@@ -514,10 +503,10 @@ export const FacultyListing: React.FC = () => {
                     <TableCell className="py-4 text-xs font-semibold text-foreground/80">
                       <div
                         className="flex items-center gap-1.5 max-w-[180px] truncate"
-                        title={getCampusName(f.campusId)}
+                        title={getCampusName(f.campusId, f)}
                       >
                         <Building className="size-3.5 text-muted-foreground shrink-0" />
-                        <span>{getCampusName(f.campusId)}</span>
+                        <span>{getCampusName(f.campusId, f)}</span>
                       </div>
                     </TableCell>
 
@@ -626,7 +615,7 @@ export const FacultyListing: React.FC = () => {
         )}
 
         {/* Table Footer with Pagination */}
-        {!isLoading && sortedFaculties.length > 0 && (
+        {!isLoading && faculties.length > 0 && (
           <div className="border-t border-border/40 p-4 flex flex-col sm:flex-row items-center justify-between gap-4 bg-background/40">
             <div className="text-xs text-muted-foreground font-medium">
               Showing <span className="font-bold text-foreground">{startIndex + 1}</span> to{" "}

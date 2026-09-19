@@ -15,7 +15,8 @@ import {
 import { institutions } from "@/data/institutions";
 import { useState } from "react";
 import { getStoredCampuses } from "@/data/campuses";
-import { createAdmissionLead } from "@/data/admissionLeads";
+import { admissionLeadService } from "@/admin/services/admissionLeadService";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/admissions")({
   head: () => ({
@@ -36,16 +37,15 @@ export const Route = createFileRoute("/admissions")({
 function Admissions() {
   const [sent, setSent] = useState(false);
 
-  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const formData = new FormData(e.currentTarget);
+    const formEl = e.currentTarget;
+    const formData = new FormData(formEl);
     const name = formData.get("name") as string;
     const phone = formData.get("phone") as string;
     const email = formData.get("email") as string;
     const course = formData.get("course") as string;
     const campusSlug = formData.get("campus") as string;
-    const city = formData.get("city") as string;
-    const message = formData.get("message") as string;
 
     // Find campus ID from campusSlug
     const campuses = getStoredCampuses();
@@ -66,20 +66,21 @@ function Admissions() {
       }
     }
 
-    // Call database create
-    createAdmissionLead({
-      name: name || "",
-      email: email || "",
-      mobile: phone || "",
-      course: course || "",
-      campusId,
-      city: city || "",
-      message: message || "",
-    });
+    try {
+      await admissionLeadService.createAdmissionLead({
+        name: name || "",
+        email: email || "",
+        mobile: phone || "",
+        course: course || "",
+        campusId,
+      });
 
-    setSent(true);
-    setTimeout(() => setSent(false), 4000);
-    (e.currentTarget as HTMLFormElement).reset();
+      setSent(true);
+      setTimeout(() => setSent(false), 4000);
+      formEl.reset();
+    } catch (error: any) {
+      toast.error(error.message || "Failed to submit inquiry.");
+    }
   };
 
   return (

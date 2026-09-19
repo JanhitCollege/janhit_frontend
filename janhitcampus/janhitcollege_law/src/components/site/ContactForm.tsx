@@ -36,7 +36,7 @@ export function ContactForm() {
   };
 
   return (
-    <section id="contact" className="py-20 bg-beige/30 border-t border-gold/10">
+    <section id="contact" className="py-20 bg-white border-t border-gold/10">
       <div className="max-w-7xl mx-auto px-6">
         <div className="grid lg:grid-cols-12 gap-12">
           {/* Contact Details & Map */}

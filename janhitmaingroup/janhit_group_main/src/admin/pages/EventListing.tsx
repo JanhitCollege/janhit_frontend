@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import {
   Search,
@@ -56,7 +56,9 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
 import { getStoredCampuses } from "@/data/campuses";
-import { getStoredEvents, saveEvents, EventItem } from "@/data/events";
+import { campusService } from "@/admin/services/campusService";
+import { eventService } from "@/admin/services/eventService";
+import { EventItem } from "@/data/events";
 
 export const EventListing: React.FC = () => {
   const navigate = useNavigate();
@@ -74,6 +76,8 @@ export const EventListing: React.FC = () => {
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(5);
+  const [totalItems, setTotalItems] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
 
   // Modal states
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -86,23 +90,58 @@ export const EventListing: React.FC = () => {
   );
   const [isActionLoading, setIsActionLoading] = useState(false);
 
-  // Load events & campuses
+  // Load campuses
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setEvents(getStoredEvents());
-      setCampuses(getStoredCampuses());
-      setIsLoading(false);
-    }, 450);
-
-    return () => clearTimeout(timer);
+    let isMounted = true;
+    campusService
+      .getAllCampuses({ limit: 100 })
+      .then((res) => {
+        if (isMounted && res.campuses) {
+          setCampuses(res.campuses);
+        }
+      })
+      .catch(() => {
+        if (isMounted) setCampuses(getStoredCampuses());
+      });
+    return () => {
+      isMounted = false;
+    };
   }, []);
+
+  // Fetch events from backend API
+  const fetchEvents = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      const res = await eventService.getEventsAdmin({
+        page: currentPage,
+        limit: pageSize,
+        search: searchQuery,
+        status: filterStatus,
+        campusId: filterCampus,
+        isMainWebsite: filterWebsite,
+        sortBy,
+        sortOrder,
+      });
+      setEvents(res.events);
+      setTotalItems(res.pagination.totalItems);
+      setTotalPages(res.pagination.totalPages || 1);
+    } catch (err: any) {
+      toast.error(err.message || "Failed to load events");
+    } finally {
+      setIsLoading(false);
+    }
+  }, [currentPage, pageSize, searchQuery, filterStatus, filterCampus, filterWebsite, sortBy, sortOrder]);
+
+  useEffect(() => {
+    fetchEvents();
+  }, [fetchEvents]);
 
   // Helper to get campus name list for display
   const getMappedCampusesNames = (campusIds: string[]) => {
-    if (campusIds.length === 0) return ["Global Institutions"];
+    if (!campusIds || campusIds.length === 0) return ["Global Institutions"];
     return campusIds.map((id) => {
       const c = campuses.find((item) => item.id === id);
-      return c ? c.shortName : "Unknown";
+      return c ? (c.shortName || c.name) : "Unknown";
     });
   };
 
@@ -115,16 +154,17 @@ export const EventListing: React.FC = () => {
   const confirmDelete = async () => {
     if (!selectedEvent) return;
     setIsActionLoading(true);
-    await new Promise((resolve) => setTimeout(resolve, 400));
-
-    const updated = events.filter((e) => e.id !== selectedEvent.id);
-    setEvents(updated);
-    saveEvents(updated);
-    setIsActionLoading(false);
-    setIsDeleteModalOpen(false);
-
-    toast.success(`Event "${selectedEvent.title}" deleted successfully.`);
-    setSelectedEvent(null);
+    try {
+      await eventService.deleteEvent(selectedEvent.id);
+      toast.success(`Event "${selectedEvent.title}" deleted successfully.`);
+      setIsDeleteModalOpen(false);
+      setSelectedEvent(null);
+      fetchEvents();
+    } catch (err: any) {
+      toast.error(err.message || "Failed to delete event.");
+    } finally {
+      setIsActionLoading(false);
+    }
   };
 
   // Status transitions: Publish or Archive
@@ -137,27 +177,22 @@ export const EventListing: React.FC = () => {
   const confirmStatusAction = async () => {
     if (!selectedEvent || !pendingStatusAction) return;
     setIsActionLoading(true);
-    await new Promise((resolve) => setTimeout(resolve, 300));
-
-    const updated = events.map((e) => {
-      if (e.id === selectedEvent.id) {
-        return {
-          ...e,
-          status: pendingStatusAction,
-          updatedAt: new Date().toISOString(),
-        };
+    try {
+      if (pendingStatusAction === "PUBLISHED") {
+        await eventService.publishEvent(selectedEvent.id);
+      } else if (pendingStatusAction === "ARCHIVED") {
+        await eventService.archiveEvent(selectedEvent.id);
       }
-      return e;
-    });
-
-    setEvents(updated);
-    saveEvents(updated);
-    setIsActionLoading(false);
-    setIsStatusActionModalOpen(false);
-
-    toast.success(`Event status transitioned to ${pendingStatusAction} successfully.`);
-    setSelectedEvent(null);
-    setPendingStatusAction(null);
+      toast.success(`Event status transitioned to ${pendingStatusAction} successfully.`);
+      setIsStatusActionModalOpen(false);
+      setSelectedEvent(null);
+      setPendingStatusAction(null);
+      fetchEvents();
+    } catch (err: any) {
+      toast.error(err.message || "Failed to update event status.");
+    } finally {
+      setIsActionLoading(false);
+    }
   };
 
   const handleDetailsClick = (event: EventItem) => {
@@ -187,46 +222,8 @@ export const EventListing: React.FC = () => {
     );
   };
 
-  // Filters & Sorting logic
-  const filteredEvents = events.filter((e) => {
-    const q = searchQuery.toLowerCase().trim();
-    const matchesSearch =
-      !q ||
-      e.title.toLowerCase().includes(q) ||
-      (e.venue && e.venue.toLowerCase().includes(q)) ||
-      (e.organizer && e.organizer.toLowerCase().includes(q));
-    const matchesCampus = filterCampus === "all" || e.campusIds.includes(filterCampus);
-    const matchesStatus = filterStatus === "all" || e.status === filterStatus;
-    const matchesWebsite =
-      filterWebsite === "all" ||
-      (filterWebsite === "main" ? e.isMainWebsite === true : e.isMainWebsite === false);
-
-    return matchesSearch && matchesCampus && matchesStatus && matchesWebsite;
-  });
-
-  const sortedEvents = [...filteredEvents].sort((a, b) => {
-    let comparison = 0;
-    if (sortBy === "title") {
-      comparison = a.title.localeCompare(b.title);
-    } else if (sortBy === "startDate") {
-      comparison = new Date(a.startDate).getTime() - new Date(b.startDate).getTime();
-    } else {
-      comparison = new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
-    }
-    return sortOrder === "asc" ? comparison : -comparison;
-  });
-
-  // Pagination
-  const totalItems = sortedEvents.length;
-  const totalPages = Math.ceil(totalItems / pageSize) || 1;
+  const paginatedEvents = events;
   const startIndex = (currentPage - 1) * pageSize;
-  const paginatedEvents = sortedEvents.slice(startIndex, startIndex + pageSize);
-
-  useEffect(() => {
-    if (currentPage > totalPages) {
-      setCurrentPage(totalPages);
-    }
-  }, [totalPages, currentPage]);
 
   return (
     <div className="p-4 md:p-6 flex flex-col flex-grow space-y-6 relative">

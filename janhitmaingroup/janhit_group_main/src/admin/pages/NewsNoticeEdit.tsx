@@ -10,7 +10,8 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { NewsNoticeForm } from "./NewsNoticeForm";
-import { getStoredNewsNotices, saveNewsNotices, NewsNotice } from "@/data/newsNotices";
+import { NewsNotice } from "@/data/newsNotices";
+import { newsNoticeService } from "../services/newsNoticeService";
 import { toast } from "sonner";
 
 interface NewsNoticeEditProps {
@@ -23,16 +24,20 @@ export const NewsNoticeEdit: React.FC<NewsNoticeEditProps> = ({ id }) => {
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   useEffect(() => {
-    const list = getStoredNewsNotices();
-    const found = list.find((r) => r.id === id);
-    if (found) {
-      setRecord(found);
-    } else {
-      setErrorMsg("Announcement not found. It may have been deleted or the ID is invalid.");
+    async function loadRecord() {
+      try {
+        const found = await newsNoticeService.getNewsNoticeById(id);
+        setRecord(found);
+      } catch (err: any) {
+        setErrorMsg(
+          err.message || "Announcement not found. It may have been deleted or the ID is invalid."
+        );
+      }
     }
+    loadRecord();
   }, [id]);
 
-  const handleSubmit = (
+  const handleSubmit = async (
     formData: Omit<
       NewsNotice,
       "id" | "viewCount" | "downloadCount" | "createdDate" | "updatedDate"
@@ -40,21 +45,13 @@ export const NewsNoticeEdit: React.FC<NewsNoticeEditProps> = ({ id }) => {
   ) => {
     if (!record) return;
 
-    const list = getStoredNewsNotices();
-    const updated = list.map((r) => {
-      if (r.id === id) {
-        return {
-          ...r,
-          ...formData,
-          updatedDate: new Date().toISOString(),
-        };
-      }
-      return r;
-    });
-
-    saveNewsNotices(updated);
-    toast.success("Notice updated successfully");
-    navigate({ to: "/@admin/news" });
+    try {
+      await newsNoticeService.updateNewsNotice(id, formData);
+      toast.success("Notice updated successfully");
+      navigate({ to: "/@admin/news" });
+    } catch (error: any) {
+      toast.error(error.message || "Failed to update notice.");
+    }
   };
 
   const handleCancel = () => {

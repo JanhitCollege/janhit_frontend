@@ -23,7 +23,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { getStoredCampuses } from "@/data/campuses";
+import { getStoredCampuses, Campus } from "@/data/campuses";
+import { campusService } from "@/admin/services/campusService";
 import { EventItem } from "@/data/events";
 
 interface EventFormProps {
@@ -34,6 +35,7 @@ interface EventFormProps {
     shortDescription: string | null;
     description: string;
     bannerImage: string | null;
+    bannerFile?: File | null;
     startDate: string;
     endDate: string | null;
     startTime: string | null;
@@ -55,8 +57,27 @@ export const EventForm: React.FC<EventFormProps> = ({
   onCancel,
   submitButtonText,
 }) => {
-  // Load campuses
-  const activeCampuses = getStoredCampuses().filter((c) => c.status === "active");
+  // Load campuses dynamically from backend with fallback
+  const [activeCampuses, setActiveCampuses] = useState<Campus[]>(() =>
+    getStoredCampuses().filter((c) => c.status === "active")
+  );
+
+  useEffect(() => {
+    let isMounted = true;
+    campusService
+      .getAllCampuses({ limit: 100 })
+      .then((res) => {
+        if (isMounted && res.campuses && res.campuses.length > 0) {
+          setActiveCampuses(res.campuses.filter((c) => c.status === "active"));
+        }
+      })
+      .catch(() => {
+        // keep fallback
+      });
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   // Form states
   const [title, setTitle] = useState(initialData?.title || "");
@@ -84,6 +105,7 @@ export const EventForm: React.FC<EventFormProps> = ({
   );
   const [bannerSize, setBannerSize] = useState<number>(0);
   const [bannerImage, setBannerImage] = useState<string | null>(initialData?.bannerImage || null);
+  const [bannerFile, setBannerFile] = useState<File | null>(null);
   const [uploadProgress, setUploadProgress] = useState<number | null>(null);
   const [isDragging, setIsDragging] = useState(false);
 
@@ -183,6 +205,7 @@ export const EventForm: React.FC<EventFormProps> = ({
 
     setErrors((prev) => ({ ...prev, banner: "" }));
     setUploadProgress(0);
+    setBannerFile(file);
 
     const interval = setInterval(() => {
       setUploadProgress((prev) => {
@@ -233,6 +256,7 @@ export const EventForm: React.FC<EventFormProps> = ({
     setBannerName("");
     setBannerSize(0);
     setBannerImage(null);
+    setBannerFile(null);
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
@@ -270,6 +294,7 @@ export const EventForm: React.FC<EventFormProps> = ({
       shortDescription: shortDescription.trim() || null,
       description: description.trim(),
       bannerImage,
+      bannerFile,
       startDate,
       endDate: endDate || null,
       startTime: startTime || null,

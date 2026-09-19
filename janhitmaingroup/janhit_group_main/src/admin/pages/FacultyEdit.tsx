@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { AlertCircle, Loader2 } from "lucide-react";
+import { toast } from "sonner";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -10,7 +11,8 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { FacultyForm } from "./FacultyForm";
-import { getStoredFaculties, saveFaculties, FacultyProfile } from "@/data/faculties";
+import { facultyService } from "@/admin/services/facultyService";
+import { FacultyProfile } from "@/data/faculties";
 
 interface FacultyEditProps {
   id: string;
@@ -21,35 +23,42 @@ export const FacultyEdit: React.FC<FacultyEditProps> = ({ id }) => {
 
   const [faculty, setFaculty] = useState<FacultyProfile | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Retrieve faculty on load
+  // Retrieve faculty from API on load
   useEffect(() => {
-    const list = getStoredFaculties();
-    const found = list.find((f) => f.id === id);
-    if (found) {
-      setFaculty(found);
-    } else {
-      setErrorMsg("Faculty profile not found. It may have been deleted or the ID is invalid.");
+    async function loadFaculty() {
+      setIsLoading(true);
+      try {
+        const data = await facultyService.getFacultyById(id);
+        if (data) {
+          setFaculty(data);
+        } else {
+          setErrorMsg("Faculty profile not found.");
+        }
+      } catch (err: any) {
+        setErrorMsg(err.message || "Failed to load faculty profile.");
+      } finally {
+        setIsLoading(false);
+      }
     }
+    loadFaculty();
   }, [id]);
 
-  const handleSubmit = (formData: Omit<FacultyProfile, "id" | "createdAt" | "updatedAt">) => {
+  const handleSubmit = async (formData: Omit<FacultyProfile, "id" | "createdAt" | "updatedAt"> & { imageFile?: File }) => {
     if (!faculty) return;
 
-    const existing = getStoredFaculties();
-    const updated = existing.map((f) => {
-      if (f.id === id) {
-        return {
-          ...f,
-          ...formData,
-          updatedAt: new Date().toISOString(),
-        };
-      }
-      return f;
-    });
-
-    saveFaculties(updated);
-    navigate({ to: "/@admin/faculties" });
+    setIsSubmitting(true);
+    try {
+      await facultyService.updateFacultyProfile(id, formData);
+      toast.success("Faculty profile updated successfully.");
+      navigate({ to: "/@admin/faculties" });
+    } catch (err: any) {
+      toast.error(err.message || "Failed to update faculty profile.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleCancel = () => {

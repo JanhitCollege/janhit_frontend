@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
+import { toast } from "sonner";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -9,52 +10,27 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { CommitteeForm } from "./CommitteeForm";
-import { getStoredCommittees, saveCommittees, Committee } from "@/data/committees";
+import { Committee } from "@/data/committees";
+import { committeeService } from "../services/committeeService";
 
 export const CommitteeCreate: React.FC = () => {
   const navigate = useNavigate();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (
+  const handleSubmit = async (
     formData: Omit<Committee, "id" | "members" | "documents" | "createdAt" | "updatedAt" | "slug">,
+    bannerFile?: File | null,
   ) => {
-    const existing = getStoredCommittees();
-
-    // Generate unique slug
-    const slugify = (text: string) => {
-      return text
-        .toString()
-        .toLowerCase()
-        .trim()
-        .replace(/\s+/g, "-")
-        .replace(/[^\w\-]+/g, "")
-        .replace(/\-\-+/g, "-")
-        .replace(/^-+/, "")
-        .replace(/-+$/, "");
-    };
-
-    const baseSlug = slugify(formData.title);
-    let uniqueSlug = baseSlug;
-    let counter = 1;
-    while (existing.some((c) => c.slug === uniqueSlug)) {
-      uniqueSlug = `${baseSlug}-${counter}`;
-      counter++;
+    setIsSubmitting(true);
+    try {
+      await committeeService.createCommittee(formData, bannerFile);
+      toast.success("Committee created successfully.");
+      navigate({ to: "/@admin/committees" });
+    } catch (error: any) {
+      toast.error(error.message || "Failed to create committee.");
+    } finally {
+      setIsSubmitting(false);
     }
-
-    // Create new committee
-    const newCommittee: Committee = {
-      ...formData,
-      id: "comm-" + Date.now(),
-      slug: uniqueSlug,
-      members: [],
-      documents: [],
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    };
-
-    const updated = [...existing, newCommittee];
-    saveCommittees(updated);
-
-    navigate({ to: "/@admin/committees" });
   };
 
   const handleCancel = () => {
@@ -105,6 +81,7 @@ export const CommitteeCreate: React.FC = () => {
         onSubmit={handleSubmit}
         onCancel={handleCancel}
         submitButtonText="Save Committee"
+        isSubmitting={isSubmitting}
       />
     </div>
   );

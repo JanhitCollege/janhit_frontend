@@ -41,7 +41,7 @@ const recruiters = [
 
 export function Faculty() {
   return (
-    <section id="faculty" className="py-20 bg-background">
+    <section id="faculty" className="py-20 bg-white">
       <div className="max-w-7xl mx-auto px-6 space-y-20">
         {/* Faculty Section */}
         <div className="space-y-12">

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Link } from "@tanstack/react-router";
 import {
   Search,
@@ -57,7 +57,9 @@ import {
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
-import { getStoredNewsNotices, saveNewsNotices, NewsNotice } from "@/data/newsNotices";
+import { NewsNotice } from "@/data/newsNotices";
+import { newsNoticeService } from "../services/newsNoticeService";
+import { campusService } from "../services/campusService";
 import { getStoredCampuses } from "@/data/campuses";
 
 export const NewsNoticeListing: React.FC = () => {
@@ -85,6 +87,8 @@ export const NewsNoticeListing: React.FC = () => {
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(5);
+  const [totalItems, setTotalItems] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
 
   // Delete modal state
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -94,15 +98,66 @@ export const NewsNoticeListing: React.FC = () => {
   // Mobile drawer state
   const [isMobileDrawerOpen, setIsMobileDrawerOpen] = useState(false);
 
-  // Load records
+  // Load campuses
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setRecords(getStoredNewsNotices());
-      setCampuses(getStoredCampuses());
-      setIsLoading(false);
-    }, 450);
-    return () => clearTimeout(timer);
+    async function loadCampuses() {
+      try {
+        const res = await campusService.getAllCampuses({ limit: 100 });
+        setCampuses(res.campuses.filter((c: any) => c.status === "active" || c.isActive));
+      } catch (err) {
+        setCampuses(getStoredCampuses().filter((c) => c.status === "active"));
+      }
+    }
+    loadCampuses();
   }, []);
+
+  // Fetch news & notices from API
+  const fetchNewsNotices = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      const res = await newsNoticeService.getAllNewsNoticesAdmin({
+        page: currentPage,
+        limit: pageSize,
+        search: searchQuery || undefined,
+        type: filterType,
+        visibility: filterVisibility,
+        status: filterStatus,
+        priority: filterPriority,
+        featured: filterFeatured,
+        campus: filterCampus,
+        publishDate: filterPublishDate || undefined,
+        sortBy,
+        sortOrder,
+      });
+      setRecords(res.newsNotices);
+      setTotalItems(res.pagination.total);
+      setTotalPages(res.pagination.totalPages);
+    } catch (error: any) {
+      toast.error(error.message || "Failed to retrieve news/notices.");
+      setRecords([]);
+      setTotalItems(0);
+      setTotalPages(1);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [
+    currentPage,
+    pageSize,
+    searchQuery,
+    filterType,
+    filterVisibility,
+    filterStatus,
+    filterPriority,
+    filterFeatured,
+    filterCampus,
+    filterPublishDate,
+    sortBy,
+    sortOrder,
+  ]);
+
+  useEffect(() => {
+    fetchNewsNotices();
+  }, [fetchNewsNotices]);
 
   // Format Helper
   const formatDate = (dateStr?: string) => {
@@ -143,87 +198,21 @@ export const NewsNoticeListing: React.FC = () => {
     if (!recordToDelete) return;
     setIsDeleting(true);
 
-    // Simulate short network delay
-    await new Promise((resolve) => setTimeout(resolve, 500));
-
-    const updated = records.filter((r) => r.id !== recordToDelete.id);
-    setRecords(updated);
-    saveNewsNotices(updated);
-
-    setIsDeleting(false);
-    setIsDeleteModalOpen(false);
-    setRecordToDelete(null);
-    toast.success("Post deleted successfully");
+    try {
+      await newsNoticeService.deleteNewsNotice(recordToDelete.id);
+      toast.success("Post deleted successfully");
+      setIsDeleteModalOpen(false);
+      setRecordToDelete(null);
+      fetchNewsNotices();
+    } catch (error: any) {
+      toast.error(error.message || "Failed to delete post.");
+    } finally {
+      setIsDeleting(false);
+    }
   };
 
-  // Filter logic
-  const filteredRecords = records.filter((r) => {
-    const q = searchQuery.toLowerCase().trim();
-
-    // Search query match
-    const matchesSearch =
-      !q || r.title.toLowerCase().includes(q) || r.excerpt.toLowerCase().includes(q);
-
-    // Type match
-    const matchesType = filterType === "all" || r.type === filterType;
-
-    // Visibility match
-    const matchesVisibility = filterVisibility === "all" || r.visibility === filterVisibility;
-
-    // Status match
-    const matchesStatus = filterStatus === "all" || r.status === filterStatus;
-
-    // Priority match
-    const matchesPriority = filterPriority === "all" || r.priority === filterPriority;
-
-    // Featured match
-    const matchesFeatured = filterFeatured === "all" || r.featured === filterFeatured;
-
-    // Campus mapping match
-    const matchesCampus =
-      filterCampus === "all" || (r.visibility === "campus" && r.campusIds.includes(filterCampus));
-
-    // Date filter: record publishDate must be on or after the selected filter date
-    let matchesDate = true;
-    if (filterPublishDate) {
-      const filterDateObj = new Date(filterPublishDate);
-      const recordDateObj = new Date(r.publishDate);
-      // Reset hours to compare dates only
-      filterDateObj.setHours(0, 0, 0, 0);
-      recordDateObj.setHours(0, 0, 0, 0);
-      matchesDate = recordDateObj >= filterDateObj;
-    }
-
-    return (
-      matchesSearch &&
-      matchesType &&
-      matchesVisibility &&
-      matchesStatus &&
-      matchesPriority &&
-      matchesFeatured &&
-      matchesCampus &&
-      matchesDate
-    );
-  });
-
-  // Sort logic
-  const sortedRecords = [...filteredRecords].sort((a, b) => {
-    let valA = a[sortBy] || "";
-    let valB = b[sortBy] || "";
-
-    if (typeof valA === "string") valA = valA.toLowerCase();
-    if (typeof valB === "string") valB = valB.toLowerCase();
-
-    if (valA < valB) return sortOrder === "asc" ? -1 : 1;
-    if (valA > valB) return sortOrder === "asc" ? 1 : -1;
-    return 0;
-  });
-
-  // Pagination logic
-  const totalItems = sortedRecords.length;
-  const totalPages = Math.ceil(totalItems / pageSize) || 1;
   const startIndex = (currentPage - 1) * pageSize;
-  const paginatedRecords = sortedRecords.slice(startIndex, startIndex + pageSize);
+  const paginatedRecords = records;
 
   // Keep page index within bounds if filters change
   useEffect(() => {

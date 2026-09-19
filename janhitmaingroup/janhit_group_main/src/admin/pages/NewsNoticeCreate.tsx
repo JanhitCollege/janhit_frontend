@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import {
   Breadcrumb,
@@ -9,34 +9,26 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { NewsNoticeForm } from "./NewsNoticeForm";
-import { getStoredNewsNotices, saveNewsNotices, NewsNotice } from "@/data/newsNotices";
+import { NewsNotice } from "@/data/newsNotices";
+import { newsNoticeService } from "../services/newsNoticeService";
 import { toast } from "sonner";
 
 export const NewsNoticeCreate: React.FC = () => {
   const navigate = useNavigate();
 
-  const handleSubmit = (
+  const handleSubmit = async (
     formData: Omit<
       NewsNotice,
       "id" | "viewCount" | "downloadCount" | "createdDate" | "updatedDate"
     >,
   ) => {
-    const existing = getStoredNewsNotices();
-
-    const newRecord: NewsNotice = {
-      ...formData,
-      id: "nn_" + Date.now() + "_" + Math.floor(Math.random() * 1000), // Unique ID
-      viewCount: 0,
-      downloadCount: 0,
-      createdDate: new Date().toISOString(),
-      updatedDate: new Date().toISOString(),
-    };
-
-    const updated = [newRecord, ...existing];
-    saveNewsNotices(updated);
-
-    toast.success("Notice published successfully");
-    navigate({ to: "/@admin/news" });
+    try {
+      await newsNoticeService.createNewsNotice(formData);
+      toast.success("Notice published successfully");
+      navigate({ to: "/@admin/news" });
+    } catch (error: any) {
+      toast.error(error.message || "Failed to publish notice.");
+    }
   };
 
   const handleCancel = () => {

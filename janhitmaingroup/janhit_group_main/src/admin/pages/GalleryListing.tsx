@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import {
   Search,
@@ -11,12 +11,9 @@ import {
   Image,
   Video,
   Play,
-  Layers,
   Info,
-  Calendar,
   EyeOff,
   SlidersHorizontal,
-  ChevronDown,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -48,8 +45,10 @@ import {
 } from "@/components/ui/pagination";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
+import { campusService } from "../services/campusService";
 import { getStoredCampuses } from "@/data/campuses";
-import { getStoredGallery, saveGallery, GalleryItem } from "@/data/gallery";
+import { galleryService } from "../services/galleryService";
+import { GalleryItem } from "@/data/gallery";
 
 export const GalleryListing: React.FC = () => {
   const navigate = useNavigate();
@@ -68,6 +67,8 @@ export const GalleryListing: React.FC = () => {
   const [sortOrderDirection, setSortOrderDirection] = useState<"asc" | "desc">("asc");
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(6);
+  const [totalItems, setTotalItems] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
 
   // Modals
   const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
@@ -77,16 +78,65 @@ export const GalleryListing: React.FC = () => {
   const [selectedItem, setSelectedItem] = useState<GalleryItem | null>(null);
   const [isActionLoading, setIsActionLoading] = useState(false);
 
-  // Load data
+  // Load campuses
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setGallery(getStoredGallery());
-      setCampuses(getStoredCampuses());
-      setIsLoading(false);
-    }, 450);
-
-    return () => clearTimeout(timer);
+    async function loadCampuses() {
+      try {
+        const res = await campusService.getAllCampuses({ limit: 100 });
+        setCampuses(res.campuses);
+      } catch (err) {
+        setCampuses(getStoredCampuses());
+      }
+    }
+    loadCampuses();
   }, []);
+
+  // Fetch gallery list from backend
+  const fetchGallery = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      let activeParam: boolean | string | undefined = undefined;
+      if (filterStatus === "active") activeParam = true;
+      if (filterStatus === "inactive") activeParam = false;
+
+      const res = await galleryService.getGalleryList({
+        page: currentPage,
+        limit: pageSize,
+        search: searchQuery,
+        campusId: filterCampus,
+        category: filterCategory,
+        mediaType: filterType,
+        isActive: activeParam,
+        sortBy: sortBy,
+        sortOrder: sortOrderDirection,
+      });
+
+      setGallery(res.gallery);
+      setTotalItems(res.pagination.totalItems);
+      setTotalPages(res.pagination.totalPages || 1);
+    } catch (error: any) {
+      toast.error(error.message || "Failed to load gallery items.");
+      setGallery([]);
+      setTotalItems(0);
+      setTotalPages(1);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [
+    currentPage,
+    pageSize,
+    searchQuery,
+    filterCampus,
+    filterCategory,
+    filterType,
+    filterStatus,
+    sortBy,
+    sortOrderDirection,
+  ]);
+
+  useEffect(() => {
+    fetchGallery();
+  }, [fetchGallery]);
 
   const formatBytes = (bytes: number, decimals = 2) => {
     if (bytes === 0) return "0 Bytes";
@@ -98,7 +148,7 @@ export const GalleryListing: React.FC = () => {
   };
 
   const getCampusName = (campusId: string) => {
-    const campus = campuses.find((c) => c.id === campusId);
+    const campus = campuses.find((c) => String(c.id) === String(campusId));
     return campus ? `${campus.name} (${campus.shortName})` : "Unknown Campus";
   };
 
@@ -111,28 +161,19 @@ export const GalleryListing: React.FC = () => {
   const confirmToggleStatus = async () => {
     if (!selectedItem) return;
     setIsActionLoading(true);
-    await new Promise((resolve) => setTimeout(resolve, 300));
-
-    const updated = gallery.map((g) => {
-      if (g.id === selectedItem.id) {
-        return {
-          ...g,
-          isActive: !g.isActive,
-          updatedAt: new Date().toISOString(),
-        };
-      }
-      return g;
-    });
-
-    setGallery(updated);
-    saveGallery(updated);
-    setIsActionLoading(false);
-    setIsStatusModalOpen(false);
-
-    toast.success(
-      `Media "${selectedItem.title || selectedItem.fileName}" status changed successfully.`,
-    );
-    setSelectedItem(null);
+    try {
+      await galleryService.toggleStatus(selectedItem.id, !selectedItem.isActive);
+      toast.success(
+        `Media "${selectedItem.title || selectedItem.fileName}" status changed successfully.`
+      );
+      fetchGallery();
+    } catch (error: any) {
+      toast.error(error.message || "Failed to toggle status.");
+    } finally {
+      setIsActionLoading(false);
+      setIsStatusModalOpen(false);
+      setSelectedItem(null);
+    }
   };
 
   // Delete confirm
@@ -144,16 +185,17 @@ export const GalleryListing: React.FC = () => {
   const confirmDelete = async () => {
     if (!selectedItem) return;
     setIsActionLoading(true);
-    await new Promise((resolve) => setTimeout(resolve, 400));
-
-    const updated = gallery.filter((g) => g.id !== selectedItem.id);
-    setGallery(updated);
-    saveGallery(updated);
-    setIsActionLoading(false);
-    setIsDeleteModalOpen(false);
-
-    toast.success(`Media item has been permanently deleted.`);
-    setSelectedItem(null);
+    try {
+      await galleryService.deleteGalleryItem(selectedItem.id);
+      toast.success(`Media item has been permanently deleted.`);
+      fetchGallery();
+    } catch (error: any) {
+      toast.error(error.message || "Failed to delete item.");
+    } finally {
+      setIsActionLoading(false);
+      setIsDeleteModalOpen(false);
+      setSelectedItem(null);
+    }
   };
 
   // Open Lightbox
@@ -163,57 +205,16 @@ export const GalleryListing: React.FC = () => {
   };
 
   // Categories list
-  const categoriesList = Array.from(
-    new Set(gallery.map((g) => g.category).filter(Boolean)),
-  ) as string[];
+  const categoriesList = [
+    "Academics",
+    "Events",
+    "Infrastructure",
+    "Sports",
+    "Student Life",
+    "Other",
+  ];
 
-  // Filter & Sort
-  const filteredItems = gallery.filter((g) => {
-    const q = searchQuery.toLowerCase().trim();
-    const matchesSearch =
-      !q ||
-      (g.title && g.title.toLowerCase().includes(q)) ||
-      (g.description && g.description.toLowerCase().includes(q)) ||
-      g.fileName.toLowerCase().includes(q) ||
-      (g.category && g.category.toLowerCase().includes(q));
-    const matchesType = filterType === "all" || g.mediaType === filterType;
-    const matchesCampus = filterCampus === "all" || g.campusId === filterCampus;
-    const matchesCategory = filterCategory === "all" || g.category === filterCategory;
-    const matchesStatus =
-      filterStatus === "all" ||
-      (filterStatus === "active" ? g.isActive === true : g.isActive === false);
-
-    return matchesSearch && matchesType && matchesCampus && matchesCategory && matchesStatus;
-  });
-
-  const sortedItems = [...filteredItems].sort((a, b) => {
-    let comparison = 0;
-    if (sortBy === "title") {
-      const titleA = a.title || a.fileName;
-      const titleB = b.title || b.fileName;
-      comparison = titleA.localeCompare(titleB);
-    } else if (sortBy === "oldest") {
-      comparison = new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
-    } else if (sortBy === "sortOrder") {
-      comparison = a.sortOrder - b.sortOrder;
-    } else {
-      // default: newest
-      comparison = new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-    }
-    return sortOrderDirection === "asc" ? comparison : -comparison;
-  });
-
-  // Pagination
-  const totalItems = sortedItems.length;
-  const totalPages = Math.ceil(totalItems / pageSize) || 1;
   const startIndex = (currentPage - 1) * pageSize;
-  const paginatedItems = sortedItems.slice(startIndex, startIndex + pageSize);
-
-  useEffect(() => {
-    if (currentPage > totalPages) {
-      setCurrentPage(totalPages);
-    }
-  }, [totalPages, currentPage]);
 
   return (
     <div className="p-4 md:p-6 flex flex-col flex-grow space-y-6 relative">
@@ -310,13 +311,11 @@ export const GalleryListing: React.FC = () => {
               </SelectTrigger>
               <SelectContent className="rounded-lg border-border">
                 <SelectItem value="all">All Campuses</SelectItem>
-                {campuses
-                  .filter((c) => c.status === "active")
-                  .map((c) => (
-                    <SelectItem key={c.id} value={c.id}>
-                      {c.shortName}
-                    </SelectItem>
-                  ))}
+                {campuses.map((c) => (
+                  <SelectItem key={c.id} value={c.id}>
+                    {c.shortName || c.name}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>
@@ -425,7 +424,7 @@ export const GalleryListing: React.FC = () => {
               </div>
             ))}
           </div>
-        ) : paginatedItems.length === 0 ? (
+        ) : gallery.length === 0 ? (
           <div className="glass rounded-2xl p-16 text-center border border-border/80 bg-card/45 backdrop-blur-md flex flex-col items-center justify-center">
             <SlidersHorizontal className="size-12 text-muted-foreground/60 mb-3" />
             <h3 className="font-display text-base font-bold text-foreground">
@@ -449,7 +448,7 @@ export const GalleryListing: React.FC = () => {
           <div className="space-y-6">
             {/* Grid display */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {paginatedItems.map((item) => (
+              {gallery.map((item) => (
                 <div
                   key={item.id}
                   className={`group glass rounded-2xl border border-border/80 bg-card/50 overflow-hidden flex flex-col hover-lift relative ${
@@ -588,7 +587,7 @@ export const GalleryListing: React.FC = () => {
                 <div className="text-xs text-muted-foreground font-medium">
                   Showing <span className="text-foreground">{startIndex + 1}</span> to{" "}
                   <span className="text-foreground">
-                    {Math.min(startIndex + pageSize, totalItems)}
+                    {Math.min(startIndex + gallery.length, totalItems)}
                   </span>{" "}
                   of <span className="text-foreground">{totalItems}</span> gallery assets
                 </div>
@@ -800,49 +799,17 @@ export const GalleryListing: React.FC = () => {
                   Duration
                 </span>
                 <span className="text-foreground font-semibold">
-                  {selectedItem.duration} seconds
-                </span>
-              </div>
-            )}
-            {selectedItem?.width && selectedItem?.height && (
-              <div>
-                <span className="text-muted-foreground block font-semibold text-[9px] uppercase tracking-wider mb-0.5">
-                  Resolution
-                </span>
-                <span className="text-foreground font-semibold">
-                  {selectedItem.width} x {selectedItem.height} px
+                  {selectedItem.duration}s
                 </span>
               </div>
             )}
             <div>
               <span className="text-muted-foreground block font-semibold text-[9px] uppercase tracking-wider mb-0.5">
-                Uploaded On
+                Sort Rank
               </span>
-              <span className="text-foreground font-semibold flex items-center gap-1">
-                <Calendar className="size-3 text-gold" />
-                {selectedItem ? new Date(selectedItem.createdAt).toLocaleDateString() : ""}
-              </span>
+              <span className="text-foreground font-semibold">{selectedItem?.sortOrder}</span>
             </div>
           </div>
-
-          {selectedItem?.description && (
-            <div className="mt-3 p-3 bg-background/50 rounded-xl border border-border/40 text-xs">
-              <span className="text-muted-foreground block font-semibold text-[9px] uppercase tracking-wider mb-1">
-                Description / Notes
-              </span>
-              <p className="text-foreground leading-relaxed whitespace-pre-wrap">
-                {selectedItem.description}
-              </p>
-            </div>
-          )}
-
-          <DialogFooter className="mt-6 pt-3 border-t border-border/40">
-            <DialogClose asChild>
-              <Button className="rounded-xl bg-primary text-primary-foreground font-semibold hover:bg-primary/95 text-xs w-full sm:w-auto">
-                Close Preview
-              </Button>
-            </DialogClose>
-          </DialogFooter>
         </DialogContent>
       </Dialog>
     </div>

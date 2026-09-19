@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Upload, X, AlertCircle, Info, Image, Video, CheckCircle2, RefreshCw } from "lucide-react";
+import { X, AlertCircle, Info, Image, Video, CheckCircle2, RefreshCw, Plus, Trash2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -12,6 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { campusService } from "../services/campusService";
 import { getStoredCampuses } from "@/data/campuses";
 import {
   GalleryItem,
@@ -21,27 +22,21 @@ import {
   VIDEO_SIZE_LIMIT,
 } from "@/data/gallery";
 
+export interface SelectedFileItem {
+  id: string;
+  file?: File;
+  fileName: string;
+  fileSize: number;
+  mimeType: string;
+  previewUrl: string;
+}
+
 interface GalleryFormProps {
   initialData?: GalleryItem;
-  onSubmit: (data: {
-    campusId: string;
-    mediaType: "IMAGE" | "VIDEO";
-    title: string | null;
-    description: string | null;
-    category: string | null;
-    fileUrl: string;
-    thumbnail: string | null;
-    fileName: string;
-    mimeType: string;
-    fileSize: number;
-    width: number | null;
-    height: number | null;
-    duration: number | null;
-    sortOrder: number;
-    isActive: boolean;
-  }) => void;
+  onSubmit: (formDataList: FormData[]) => void;
   onCancel: () => void;
   submitButtonText: string;
+  isSubmitting?: boolean;
 }
 
 export const GalleryForm: React.FC<GalleryFormProps> = ({
@@ -49,9 +44,22 @@ export const GalleryForm: React.FC<GalleryFormProps> = ({
   onSubmit,
   onCancel,
   submitButtonText,
+  isSubmitting = false,
 }) => {
-  // Load campuses
-  const campusesList = getStoredCampuses().filter((c) => c.status === "active");
+  // Load campuses from API
+  const [campusesList, setCampusesList] = useState<any[]>([]);
+
+  useEffect(() => {
+    async function loadCampuses() {
+      try {
+        const res = await campusService.getAllCampuses({ limit: 100 });
+        setCampusesList(res.campuses.filter((c: any) => c.status === "active" || c.isActive));
+      } catch (err) {
+        setCampusesList(getStoredCampuses().filter((c: any) => c.status === "active"));
+      }
+    }
+    loadCampuses();
+  }, []);
 
   // Form states
   const [campusId, setCampusId] = useState<string>(initialData?.campusId || "");
@@ -66,17 +74,22 @@ export const GalleryForm: React.FC<GalleryFormProps> = ({
     initialData?.isActive !== undefined ? initialData.isActive : true,
   );
 
-  // File states
-  const [fileName, setFileName] = useState(initialData?.fileName || "");
-  const [fileSize, setFileSize] = useState<number>(initialData?.fileSize || 0);
-  const [mimeType, setMimeType] = useState(initialData?.mimeType || "");
-  const [fileUrl, setFileUrl] = useState(initialData?.fileUrl || "");
-  const [thumbnail, setThumbnail] = useState<string | null>(initialData?.thumbnail || null);
-  const [width, setWidth] = useState<number | null>(initialData?.width || null);
-  const [height, setHeight] = useState<number | null>(initialData?.height || null);
-  const [duration, setDuration] = useState<number | null>(initialData?.duration || null);
+  // File upload state - Multiple files support
+  const [selectedFiles, setSelectedFiles] = useState<SelectedFileItem[]>(() => {
+    if (initialData) {
+      return [
+        {
+          id: initialData.id,
+          fileName: initialData.fileName,
+          fileSize: initialData.fileSize,
+          mimeType: initialData.mimeType,
+          previewUrl: initialData.fileUrl,
+        },
+      ];
+    }
+    return [];
+  });
 
-  const [uploadProgress, setUploadProgress] = useState<number | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isTouched, setIsTouched] = useState<Record<string, boolean>>({});
@@ -86,19 +99,20 @@ export const GalleryForm: React.FC<GalleryFormProps> = ({
   // Clean file states if mediaType changes
   const handleMediaTypeChange = (val: "IMAGE" | "VIDEO") => {
     setMediaType(val);
-    // Reset uploaded file if we toggle types
     if (initialData?.mediaType !== val) {
-      handleRemoveFile();
+      handleClearAllFiles();
+    } else if (initialData) {
+      setSelectedFiles([
+        {
+          id: initialData.id,
+          fileName: initialData.fileName,
+          fileSize: initialData.fileSize,
+          mimeType: initialData.mimeType,
+          previewUrl: initialData.fileUrl,
+        },
+      ]);
     } else {
-      // Restore initial data if switching back to original
-      setFileName(initialData.fileName);
-      setFileSize(initialData.fileSize);
-      setMimeType(initialData.mimeType);
-      setFileUrl(initialData.fileUrl);
-      setThumbnail(initialData.thumbnail);
-      setWidth(initialData.width);
-      setHeight(initialData.height);
-      setDuration(initialData.duration);
+      handleClearAllFiles();
     }
     setErrors((prev) => ({ ...prev, file: "" }));
   };
@@ -113,22 +127,16 @@ export const GalleryForm: React.FC<GalleryFormProps> = ({
   };
 
   const validateField = (fieldName: string, value: any): string => {
-    if (fieldName === "campusId" && !value) {
+    if (fieldName === "campusId" && !value && !initialData) {
       return "Target Campus is required.";
     }
     if (fieldName === "mediaType" && !value) {
       return "Media Type is required.";
     }
-    if (fieldName === "file" && !fileName) {
-      return `Please upload a gallery ${mediaType.toLowerCase()} file.`;
+    if (fieldName === "file" && selectedFiles.length === 0 && !initialData) {
+      return `Please select at least one ${mediaType.toLowerCase()} file to upload.`;
     }
     return "";
-  };
-
-  const handleBlur = (fieldName: string, value: any) => {
-    setIsTouched((prev) => ({ ...prev, [fieldName]: true }));
-    const errorMsg = validateField(fieldName, value);
-    setErrors((prev) => ({ ...prev, [fieldName]: errorMsg }));
   };
 
   const handleFieldChange = (fieldName: string, value: any, setter: (val: any) => void) => {
@@ -143,98 +151,71 @@ export const GalleryForm: React.FC<GalleryFormProps> = ({
     fileInputRef.current?.click();
   };
 
-  const processFile = (file: File) => {
-    const fileExt = "." + file.name.split(".").pop()?.toLowerCase();
+  const processFiles = (files: FileList | File[]) => {
+    const fileArray = Array.from(files);
+    if (fileArray.length === 0) return;
 
-    if (mediaType === "IMAGE") {
-      // Validate image format
-      if (
-        !ALLOWED_IMAGE_TYPES.includes(file.type) &&
-        ![".jpg", ".jpeg", ".png", ".webp"].includes(fileExt)
-      ) {
-        setErrors((prev) => ({
-          ...prev,
-          file: "Unsupported image format. Allowed formats: JPG, JPEG, PNG, WEBP",
-        }));
-        return;
+    const newItems: SelectedFileItem[] = [];
+    let errorMessage = "";
+
+    for (const file of fileArray) {
+      const fileExt = "." + file.name.split(".").pop()?.toLowerCase();
+
+      if (mediaType === "IMAGE") {
+        if (
+          !ALLOWED_IMAGE_TYPES.includes(file.type) &&
+          ![".jpg", ".jpeg", ".png", ".webp"].includes(fileExt)
+        ) {
+          errorMessage = "Unsupported format. Allowed photo formats: JPG, JPEG, PNG, WEBP.";
+          continue;
+        }
+        if (file.size > IMAGE_SIZE_LIMIT) {
+          errorMessage = `File "${file.name}" exceeds the 20 MB image size limit.`;
+          continue;
+        }
+      } else {
+        if (
+          !ALLOWED_VIDEO_TYPES.includes(file.type) &&
+          ![".mp4", ".mov", ".avi", ".mkv", ".webm"].includes(fileExt)
+        ) {
+          errorMessage = "Unsupported format. Allowed video formats: MP4, MOV, AVI, MKV, WEBM.";
+          continue;
+        }
+        if (file.size > VIDEO_SIZE_LIMIT) {
+          errorMessage = `File "${file.name}" exceeds the 100 MB video size limit.`;
+          continue;
+        }
       }
-      // Validate image size limit (20MB)
-      if (file.size > IMAGE_SIZE_LIMIT) {
-        setErrors((prev) => ({
-          ...prev,
-          file: "Image file size exceeds the 20 MB limit.",
-        }));
-        return;
-      }
-    } else {
-      // Validate video format
-      if (
-        !ALLOWED_VIDEO_TYPES.includes(file.type) &&
-        ![".mp4", ".mov", ".avi", ".mkv", ".webm"].includes(fileExt)
-      ) {
-        setErrors((prev) => ({
-          ...prev,
-          file: "Unsupported video format. Allowed formats: MP4, MOV, AVI, MKV, WEBM",
-        }));
-        return;
-      }
-      // Validate video size limit (100MB)
-      if (file.size > VIDEO_SIZE_LIMIT) {
-        setErrors((prev) => ({
-          ...prev,
-          file: "Video file size exceeds the 100 MB limit.",
-        }));
-        return;
-      }
+
+      newItems.push({
+        id: "file_" + Date.now() + "_" + Math.random().toString(36).substr(2, 9),
+        file,
+        fileName: file.name,
+        fileSize: file.size,
+        mimeType: file.type || (mediaType === "IMAGE" ? "image/jpeg" : "video/mp4"),
+        previewUrl: URL.createObjectURL(file),
+      });
+    }
+
+    if (errorMessage && newItems.length === 0) {
+      setErrors((prev) => ({ ...prev, file: errorMessage }));
+      return;
     }
 
     setErrors((prev) => ({ ...prev, file: "" }));
-    setUploadProgress(0);
 
-    // Mock progress bar
-    const interval = setInterval(() => {
-      setUploadProgress((prev) => {
-        if (prev === null) return null;
-        if (prev >= 100) {
-          clearInterval(interval);
-          setFileName(file.name);
-          setFileSize(file.size);
-          setMimeType(file.type || (mediaType === "IMAGE" ? "image/webp" : "video/mp4"));
-
-          if (mediaType === "IMAGE") {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-              setFileUrl(reader.result as string);
-              setThumbnail(null);
-              setWidth(1920);
-              setHeight(1080);
-              setDuration(null);
-            };
-            reader.readAsDataURL(file);
-          } else {
-            // Mock Video Settings
-            setFileUrl(
-              "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
-            );
-            setThumbnail(
-              "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=640&auto=format&fit=crop&q=60",
-            ); // Mock placeholder thumbnail
-            setWidth(1920);
-            setHeight(1080);
-            setDuration(12); // Simulated video duration in seconds
-          }
-          setTimeout(() => setUploadProgress(null), 850);
-          return 100;
-        }
-        return prev + 25;
-      });
-    }, 100);
+    if (mediaType === "VIDEO") {
+      // Videos remain single-file selection
+      setSelectedFiles(newItems.slice(0, 1));
+    } else {
+      // Images append to current list (multiple selection)
+      setSelectedFiles((prev) => [...prev, ...newItems]);
+    }
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      processFile(file);
+    if (e.target.files) {
+      processFiles(e.target.files);
     }
   };
 
@@ -250,21 +231,23 @@ export const GalleryForm: React.FC<GalleryFormProps> = ({
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     setIsDragging(false);
-    const file = e.dataTransfer.files?.[0];
-    if (file) {
-      processFile(file);
+    if (e.dataTransfer.files) {
+      processFiles(e.dataTransfer.files);
     }
   };
 
-  const handleRemoveFile = () => {
-    setFileName("");
-    setFileSize(0);
-    setMimeType("");
-    setFileUrl("");
-    setThumbnail(null);
-    setWidth(null);
-    setHeight(null);
-    setDuration(null);
+  const handleRemoveSingleFile = (idToRemove: string) => {
+    setSelectedFiles((prev) => {
+      const updated = prev.filter((item) => item.id !== idToRemove);
+      if (updated.length === 0 && fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+      return updated;
+    });
+  };
+
+  const handleClearAllFiles = () => {
+    setSelectedFiles([]);
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
@@ -277,7 +260,7 @@ export const GalleryForm: React.FC<GalleryFormProps> = ({
     const newErrors = {
       campusId: validateField("campusId", campusId),
       mediaType: validateField("mediaType", mediaType),
-      file: validateField("file", fileName),
+      file: validateField("file", selectedFiles),
     };
 
     setErrors(newErrors);
@@ -292,23 +275,26 @@ export const GalleryForm: React.FC<GalleryFormProps> = ({
       return;
     }
 
-    onSubmit({
-      campusId,
-      mediaType,
-      title: title.trim() || null,
-      description: description.trim() || null,
-      category: category.trim() || null,
-      fileUrl,
-      thumbnail,
-      fileName,
-      mimeType,
-      fileSize,
-      width,
-      height,
-      duration,
-      sortOrder,
-      isActive,
+    const formDataList: FormData[] = selectedFiles.map((item, index) => {
+      const formData = new FormData();
+      if (campusId) formData.append("campusId", campusId);
+      if (mediaType) formData.append("mediaType", mediaType);
+      if (item.file) formData.append("file", item.file);
+
+      let itemTitle = title.trim();
+      if (itemTitle && selectedFiles.length > 1) {
+        itemTitle = `${itemTitle} (${index + 1}/${selectedFiles.length})`;
+      }
+      if (itemTitle) formData.append("title", itemTitle);
+      if (description.trim()) formData.append("description", description.trim());
+      if (category.trim()) formData.append("category", category.trim());
+      formData.append("sortOrder", String(sortOrder + index));
+      formData.append("isActive", String(isActive));
+
+      return formData;
     });
+
+    onSubmit(formDataList);
   };
 
   return (
@@ -391,7 +377,7 @@ export const GalleryForm: React.FC<GalleryFormProps> = ({
                   htmlFor="sortOrder"
                   className="text-xs font-semibold text-foreground/80 uppercase tracking-wider pl-0.5"
                 >
-                  Sort Order Rank
+                  Starting Sort Order Rank
                 </Label>
                 <Input
                   id="sortOrder"
@@ -407,149 +393,138 @@ export const GalleryForm: React.FC<GalleryFormProps> = ({
 
           {/* Section: File Attachment */}
           <div className="glass rounded-2xl p-6 border border-border/80 shadow-sm space-y-4">
-            <h2 className="font-display text-lg font-bold text-foreground pb-2 border-b border-border/40 flex items-center gap-2">
-              <span className="size-6 rounded bg-primary/10 text-primary flex items-center justify-center text-xs">
-                2
-              </span>
-              Media Upload ({mediaType})
-            </h2>
+            <div className="flex items-center justify-between pb-2 border-b border-border/40">
+              <h2 className="font-display text-lg font-bold text-foreground flex items-center gap-2">
+                <span className="size-6 rounded bg-primary/10 text-primary flex items-center justify-center text-xs">
+                  2
+                </span>
+                Media Upload ({mediaType === "IMAGE" ? "Multiple Photos" : "Video"})
+              </h2>
+
+              {selectedFiles.length > 0 && mediaType === "IMAGE" && (
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-semibold text-gold bg-gold/10 px-2.5 py-1 rounded-full border border-gold/20">
+                    {selectedFiles.length} {selectedFiles.length === 1 ? "photo" : "photos"} selected
+                  </span>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    onClick={handleClearAllFiles}
+                    className="h-7 text-xs text-destructive hover:bg-destructive/10 px-2 rounded-lg"
+                  >
+                    Clear All
+                  </Button>
+                </div>
+              )}
+            </div>
 
             {/* Drag & drop file area */}
-            <div className="space-y-2">
-              <Label className="text-xs font-semibold text-foreground/80 uppercase tracking-wider pl-0.5">
-                Upload File <span className="text-destructive">*</span>
-              </Label>
+            <div className="space-y-3">
+              {/* Dropzone Box */}
+              <div
+                onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
+                onDrop={handleDrop}
+                onClick={handleUploaderClick}
+                className={`flex flex-col items-center justify-center border-2 border-dashed rounded-xl p-6 cursor-pointer transition-all ${
+                  isDragging
+                    ? "border-gold bg-gold/5 text-foreground"
+                    : "border-border bg-background/40 hover:bg-background/80 text-muted-foreground hover:border-gold/40"
+                } ${selectedFiles.length > 0 ? "py-5" : "min-h-[180px]"}`}
+              >
+                {mediaType === "IMAGE" ? (
+                  <Image className="size-9 text-muted-foreground mb-2 animate-pulse" />
+                ) : (
+                  <Video className="size-9 text-muted-foreground mb-2 animate-pulse" />
+                )}
+                <span className="text-sm font-semibold text-foreground mb-1 text-center">
+                  {selectedFiles.length > 0
+                    ? `Click or drag to add ${mediaType === "IMAGE" ? "more photos" : "a different video"}`
+                    : `Drag and drop your ${mediaType === "IMAGE" ? "photos" : "video"} here, or click to browse`}
+                </span>
+                <span className="text-xs text-muted-foreground text-center max-w-sm">
+                  {mediaType === "IMAGE"
+                    ? "You can select multiple photos at once. JPG, JPEG, PNG, or WEBP (Max 20MB per photo)"
+                    : "MP4, MOV, AVI, MKV, or WEBM (Max 100MB)"}
+                </span>
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  onChange={handleFileChange}
+                  multiple={mediaType === "IMAGE"}
+                  accept={
+                    mediaType === "IMAGE" ? ".jpg,.jpeg,.png,.webp" : ".mp4,.mov,.avi,.mkv,.webm"
+                  }
+                  className="hidden"
+                />
+              </div>
 
-              {!fileName && uploadProgress === null ? (
-                <div
-                  onDragOver={handleDragOver}
-                  onDragLeave={handleDragLeave}
-                  onDrop={handleDrop}
-                  onClick={handleUploaderClick}
-                  className={`flex flex-col items-center justify-center border-2 border-dashed rounded-xl p-8 cursor-pointer transition-all min-h-[200px] ${
-                    isDragging
-                      ? "border-gold bg-gold/5 text-foreground"
-                      : "border-border bg-background/40 hover:bg-background/80 text-muted-foreground hover:border-gold/40"
-                  }`}
-                >
-                  {mediaType === "IMAGE" ? (
-                    <Image className="size-10 text-muted-foreground mb-3 animate-pulse" />
-                  ) : (
-                    <Video className="size-10 text-muted-foreground mb-3 animate-pulse" />
-                  )}
-                  <span className="text-sm font-semibold text-foreground mb-1">
-                    Drag and drop your {mediaType.toLowerCase()} here, or click to browse
-                  </span>
-                  <span className="text-xs text-muted-foreground text-center max-w-sm">
-                    {mediaType === "IMAGE"
-                      ? "JPG, JPEG, PNG, or WEBP (Max 20MB)"
-                      : "MP4, MOV, AVI, MKV, or WEBM (Max 100MB)"}
-                  </span>
-                  <input
-                    type="file"
-                    ref={fileInputRef}
-                    onChange={handleFileChange}
-                    accept={
-                      mediaType === "IMAGE" ? ".jpg,.jpeg,.png,.webp" : ".mp4,.mov,.avi,.mkv,.webm"
-                    }
-                    className="hidden"
-                  />
-                </div>
-              ) : uploadProgress !== null ? (
-                /* Uploading progress indicator */
-                <div className="flex flex-col items-center justify-center border rounded-xl p-8 bg-background/40 min-h-[200px]">
-                  <RefreshCw className="size-8 text-gold mb-3 animate-spin" />
-                  <span className="text-sm font-semibold text-foreground mb-2">
-                    Processing {mediaType.toLowerCase()}... {uploadProgress}%
-                  </span>
-                  <div className="w-full max-w-xs bg-muted h-2 rounded-full overflow-hidden border border-border">
-                    <div
-                      className="bg-gradient-gold h-full rounded-full transition-all duration-100"
-                      style={{ width: `${uploadProgress}%` }}
-                    />
+              {/* Selected Files Grid Preview */}
+              {selectedFiles.length > 0 && (
+                <div className="space-y-2 pt-2">
+                  <div className="flex items-center justify-between text-xs font-semibold text-foreground/80 uppercase tracking-wider pl-0.5">
+                    <span>Selected Preview ({selectedFiles.length})</span>
+                    {mediaType === "IMAGE" && (
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={handleUploaderClick}
+                        className="h-7 text-xs rounded-lg border-border"
+                      >
+                        <Plus className="size-3.5 mr-1" /> Add More Photos
+                      </Button>
+                    )}
                   </div>
-                </div>
-              ) : (
-                /* Media uploaded preview info */
-                <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 p-4 rounded-xl border border-border bg-background/60 shadow-sm">
-                  <div className="flex items-center gap-4">
-                    {/* Preview box */}
-                    <div className="size-20 rounded-lg bg-muted border border-border flex items-center justify-center overflow-hidden shrink-0 shadow-sm relative">
-                      {mediaType === "IMAGE" && fileUrl ? (
-                        <img
-                          src={fileUrl}
-                          alt="Uploaded preview"
-                          className="size-full object-cover"
-                        />
-                      ) : thumbnail ? (
-                        <div className="relative size-full">
-                          <img
-                            src={thumbnail}
-                            alt="Video thumbnail"
-                            className="size-full object-cover"
-                          />
-                          <div className="absolute inset-0 bg-black/40 grid place-items-center">
-                            <Video className="size-5 text-white" />
-                          </div>
+
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 max-h-[380px] overflow-y-auto p-1">
+                    {selectedFiles.map((item, index) => (
+                      <div
+                        key={item.id}
+                        className="group relative rounded-xl border border-border bg-background/80 overflow-hidden shadow-sm flex flex-col"
+                      >
+                        {/* Preview Image / Video Thumbnail */}
+                        <div className="aspect-video w-full bg-slate-950 overflow-hidden relative border-b border-border/50">
+                          {mediaType === "IMAGE" ? (
+                            <img
+                              src={item.previewUrl}
+                              alt={item.fileName}
+                              className="size-full object-cover"
+                            />
+                          ) : (
+                            <div className="size-full flex items-center justify-center bg-black/40">
+                              <Video className="size-8 text-white" />
+                            </div>
+                          )}
+
+                          {/* Index Badge */}
+                          <span className="absolute top-1.5 left-1.5 px-1.5 py-0.5 rounded bg-black/75 text-[10px] text-white font-mono font-bold">
+                            #{index + 1}
+                          </span>
+
+                          {/* Remove button overlay */}
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveSingleFile(item.id)}
+                            className="absolute top-1.5 right-1.5 size-6 rounded-full bg-destructive/90 text-destructive-foreground flex items-center justify-center hover:bg-destructive transition-colors shadow-md"
+                            title="Remove photo"
+                          >
+                            <X className="size-3.5" />
+                          </button>
                         </div>
-                      ) : (
-                        <Video className="size-8 text-muted-foreground" />
-                      )}
-                    </div>
 
-                    <div className="space-y-1">
-                      <span className="text-sm font-semibold text-foreground block max-w-md truncate">
-                        {fileName}
-                      </span>
-                      <div className="flex flex-wrap gap-x-3 gap-y-0.5 text-[10px] text-muted-foreground">
-                        <span>Size: {formatBytes(fileSize)}</span>
-                        <span>•</span>
-                        <span>Mimetype: {mimeType}</span>
-                        {duration && (
-                          <>
-                            <span>•</span>
-                            <span>Duration: {duration}s</span>
-                          </>
-                        )}
-                        {width && height && (
-                          <>
-                            <span>•</span>
-                            <span>
-                              Resolution: {width}x{height}
-                            </span>
-                          </>
-                        )}
+                        {/* File Details */}
+                        <div className="p-2 space-y-0.5">
+                          <span className="text-xs font-medium text-foreground truncate block leading-tight">
+                            {item.fileName}
+                          </span>
+                          <span className="text-[10px] text-muted-foreground block font-mono">
+                            {formatBytes(item.fileSize)}
+                          </span>
+                        </div>
                       </div>
-                    </div>
+                    ))}
                   </div>
-
-                  <div className="flex gap-2 w-full md:w-auto justify-end">
-                    <Button
-                      type="button"
-                      variant="outline"
-                      onClick={handleUploaderClick}
-                      className="h-8 rounded-lg text-xs font-semibold px-3 bg-background border-border text-foreground hover:bg-accent"
-                    >
-                      Replace
-                    </Button>
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      onClick={handleRemoveFile}
-                      className="h-8 rounded-lg text-xs font-semibold px-2 text-destructive hover:bg-destructive/10"
-                    >
-                      <X className="size-4 mr-1" /> Remove
-                    </Button>
-                  </div>
-                  <input
-                    type="file"
-                    ref={fileInputRef}
-                    onChange={handleFileChange}
-                    accept={
-                      mediaType === "IMAGE" ? ".jpg,.jpeg,.png,.webp" : ".mp4,.mov,.avi,.mkv,.webm"
-                    }
-                    className="hidden"
-                  />
                 </div>
               )}
 
@@ -580,11 +555,12 @@ export const GalleryForm: React.FC<GalleryFormProps> = ({
                 htmlFor="campusId"
                 className="text-xs font-semibold text-foreground/80 uppercase tracking-wider pl-0.5"
               >
-                Target Campus <span className="text-destructive">*</span>
+                Target Campus {!initialData && <span className="text-destructive">*</span>}
               </Label>
               <Select
                 value={campusId}
                 onValueChange={(val) => handleFieldChange("campusId", val, setCampusId)}
+                disabled={Boolean(initialData)}
               >
                 <SelectTrigger
                   className={`h-11 rounded-xl bg-background/50 border-border text-sm ${
@@ -614,18 +590,19 @@ export const GalleryForm: React.FC<GalleryFormProps> = ({
               <Select
                 value={mediaType}
                 onValueChange={(val: "IMAGE" | "VIDEO") => handleMediaTypeChange(val)}
+                disabled={Boolean(initialData)}
               >
                 <SelectTrigger className="h-11 rounded-xl bg-background/50 border-border text-sm">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent className="rounded-lg border-border">
-                  <SelectItem value="IMAGE">IMAGE (WebP Optimized)</SelectItem>
+                  <SelectItem value="IMAGE">IMAGE (Multiple Photos)</SelectItem>
                   <SelectItem value="VIDEO">VIDEO (MP4 / H264)</SelectItem>
                 </SelectContent>
               </Select>
               <p className="text-[10px] text-muted-foreground pl-0.5 leading-relaxed">
                 <Info className="size-3 inline mr-1 text-gold" />
-                Images are optimized and resized to WebP automatically. Videos will transcode to
+                Photos are optimized and resized to WebP automatically. Videos will transcode to
                 standard MP4 streaming format.
               </p>
             </div>
@@ -646,14 +623,23 @@ export const GalleryForm: React.FC<GalleryFormProps> = ({
           <div className="glass rounded-2xl p-6 border border-border/80 shadow-sm space-y-3">
             <Button
               type="submit"
+              disabled={isSubmitting}
               className="w-full h-11 rounded-xl bg-primary text-primary-foreground font-semibold hover:bg-primary/95 flex items-center justify-center gap-1.5 shadow-sm text-sm"
             >
-              <CheckCircle2 className="size-4" /> {submitButtonText}
+              {isSubmitting ? (
+                <RefreshCw className="size-4 animate-spin mr-1" />
+              ) : (
+                <CheckCircle2 className="size-4" />
+              )}
+              {selectedFiles.length > 1
+                ? `Upload ${selectedFiles.length} Photos`
+                : submitButtonText}
             </Button>
             <Button
               type="button"
               variant="outline"
               onClick={onCancel}
+              disabled={isSubmitting}
               className="w-full h-11 rounded-xl border border-border text-muted-foreground hover:text-foreground font-semibold bg-background hover:bg-accent text-sm"
             >
               Cancel

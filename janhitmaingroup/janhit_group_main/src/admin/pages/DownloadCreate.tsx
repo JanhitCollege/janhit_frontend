@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import {
   Breadcrumb,
@@ -9,27 +9,68 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { DownloadForm } from "./DownloadForm";
-import { getStoredDownloads, saveDownloads, Download } from "@/data/downloads";
+import { downloadService } from "../services/downloadService";
 import { toast } from "sonner";
 
 export const DownloadCreate: React.FC = () => {
   const navigate = useNavigate();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (formData: Omit<Download, "id" | "createdAt" | "updatedAt">) => {
-    const existing = getStoredDownloads();
+  const handleSubmit = async (formData: any) => {
+    const filesToUpload: File[] =
+      formData.files && formData.files.length > 0
+        ? formData.files
+        : formData.file
+        ? [formData.file]
+        : [];
 
-    const newRecord: Download = {
-      ...formData,
-      id: "dl_" + Date.now() + "_" + Math.floor(Math.random() * 1000), // Unique ID
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    };
+    if (filesToUpload.length === 0) {
+      toast.error("Please upload at least one document file.");
+      return;
+    }
 
-    const updated = [newRecord, ...existing];
-    saveDownloads(updated);
+    try {
+      setIsSubmitting(true);
 
-    toast.success("Download document created successfully");
-    navigate({ to: "/@admin/downloads" });
+      if (filesToUpload.length === 1) {
+        await downloadService.createDownload({
+          title: formData.title,
+          category: formData.category,
+          campusId: formData.campusId,
+          description: formData.description,
+          isActive: formData.isActive,
+          file: filesToUpload[0],
+        });
+        toast.success("Download document created successfully");
+      } else {
+        let successCount = 0;
+        for (let i = 0; i < filesToUpload.length; i++) {
+          const file = filesToUpload[i];
+          const fileBaseName = file.name.replace(/\.[^/.]+$/, "");
+          const docTitle =
+            filesToUpload.length === 1
+              ? formData.title
+              : `${formData.title} - ${fileBaseName}`;
+
+          await downloadService.createDownload({
+            title: docTitle,
+            category: formData.category,
+            campusId: formData.campusId,
+            description: formData.description,
+            isActive: formData.isActive,
+            file: file,
+          });
+          successCount++;
+        }
+        toast.success(`${successCount} download documents created successfully`);
+      }
+
+      navigate({ to: "/@admin/downloads" });
+    } catch (err: any) {
+      toast.error(err.message || "Failed to create download document(s)");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleCancel = () => {
@@ -81,6 +122,7 @@ export const DownloadCreate: React.FC = () => {
           onSubmit={handleSubmit}
           onCancel={handleCancel}
           submitButtonText="Create Document"
+          isSubmitting={isSubmitting}
         />
       </div>
     </div>

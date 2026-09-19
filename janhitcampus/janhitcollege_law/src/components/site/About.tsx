@@ -1,9 +1,8 @@
 import { BookOpen, Scale, Award, Users, GraduationCap } from "lucide-react";
-import { motion } from "framer-motion";
 
 export function About() {
   return (
-    <section id="about" className="py-20 bg-background overflow-hidden">
+    <section id="about" className="py-20 bg-white overflow-hidden">
       <div className="max-w-7xl mx-auto px-6">
         <div className="grid lg:grid-cols-12 gap-12 items-center">
           {/* Text content */}

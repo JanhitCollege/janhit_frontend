@@ -9,27 +9,20 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { EventForm } from "./EventForm";
-import { getStoredEvents, saveEvents, EventItem } from "@/data/events";
+import { eventService } from "@/admin/services/eventService";
 import { toast } from "sonner";
 
 export const EventCreate: React.FC = () => {
   const navigate = useNavigate();
 
-  const handleSubmit = (formData: Omit<EventItem, "id" | "createdAt" | "updatedAt">) => {
-    const existing = getStoredEvents();
-
-    const newRecord: EventItem = {
-      ...formData,
-      id: "evt_" + Date.now() + "_" + Math.floor(Math.random() * 1000), // Unique ID
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    };
-
-    const updated = [newRecord, ...existing];
-    saveEvents(updated);
-
-    toast.success("Event created successfully");
-    navigate({ to: "/@admin/events" });
+  const handleSubmit = async (formData: any) => {
+    try {
+      await eventService.createEvent(formData);
+      toast.success("Event created successfully");
+      navigate({ to: "/@admin/events" });
+    } catch (err: any) {
+      toast.error(err.message || "Failed to create event");
+    }
   };
 
   const handleCancel = () => {

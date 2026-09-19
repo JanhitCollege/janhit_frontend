@@ -10,7 +10,8 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { EventForm } from "./EventForm";
-import { getStoredEvents, saveEvents, EventItem } from "@/data/events";
+import { EventItem } from "@/data/events";
+import { eventService } from "@/admin/services/eventService";
 import { toast } from "sonner";
 
 interface EventEditProps {
@@ -23,33 +24,32 @@ export const EventEdit: React.FC<EventEditProps> = ({ id }) => {
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   useEffect(() => {
-    const list = getStoredEvents();
-    const found = list.find((r) => r.id === id);
-    if (found) {
-      setRecord(found);
-    } else {
-      setErrorMsg("Event not found. It may have been deleted or the ID is invalid.");
-    }
+    let isMounted = true;
+    const fetchEvent = async () => {
+      try {
+        const item = await eventService.getEventById(id);
+        if (isMounted) setRecord(item);
+      } catch (err: any) {
+        if (isMounted) {
+          setErrorMsg(err.message || "Event not found. It may have been deleted or the ID is invalid.");
+        }
+      }
+    };
+    fetchEvent();
+    return () => {
+      isMounted = false;
+    };
   }, [id]);
 
-  const handleSubmit = (formData: Omit<EventItem, "id" | "createdAt" | "updatedAt">) => {
+  const handleSubmit = async (formData: any) => {
     if (!record) return;
-
-    const list = getStoredEvents();
-    const updated = list.map((r) => {
-      if (r.id === id) {
-        return {
-          ...r,
-          ...formData,
-          updatedAt: new Date().toISOString(),
-        };
-      }
-      return r;
-    });
-
-    saveEvents(updated);
-    toast.success("Event updated successfully");
-    navigate({ to: "/@admin/events" });
+    try {
+      await eventService.updateEvent(id, formData);
+      toast.success("Event updated successfully");
+      navigate({ to: "/@admin/events" });
+    } catch (err: any) {
+      toast.error(err.message || "Failed to update event");
+    }
   };
 
   const handleCancel = () => {

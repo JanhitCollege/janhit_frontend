@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Upload, FileText, X, AlertCircle, Info, FileDown, CheckCircle2 } from "lucide-react";
+import { Upload, FileText, X, AlertCircle, Info, FileDown, CheckCircle2, Loader2, Files } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -12,8 +12,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { getStoredCampuses } from "@/data/campuses";
-import { Download, ALLOWED_CATEGORIES, CATEGORY_LABELS } from "@/data/downloads";
+import { campusService } from "../services/campusService";
+import { ALLOWED_CATEGORIES, CATEGORY_LABELS } from "@/data/downloads";
+import { Download } from "../services/downloadService";
 
 interface DownloadFormProps {
   initialData?: Download;
@@ -28,9 +29,12 @@ interface DownloadFormProps {
     fileType: string;
     fileSize: number;
     isActive: boolean;
+    file?: File | null;
+    files?: File[];
   }) => void;
   onCancel: () => void;
   submitButtonText: string;
+  isSubmitting?: boolean;
 }
 
 export const DownloadForm: React.FC<DownloadFormProps> = ({
@@ -38,9 +42,22 @@ export const DownloadForm: React.FC<DownloadFormProps> = ({
   onSubmit,
   onCancel,
   submitButtonText,
+  isSubmitting = false,
 }) => {
-  // Load campuses list from mock database
-  const campusesList = getStoredCampuses().filter((c) => c.status === "active");
+  // Campuses state
+  const [campusesList, setCampusesList] = useState<any[]>([]);
+
+  useEffect(() => {
+    async function fetchCampuses() {
+      try {
+        const res = await campusService.getAllCampuses({ limit: 100 });
+        setCampusesList((res.campuses || []).filter((c: any) => c.status === "active" || c.isActive));
+      } catch (err) {
+        setCampusesList([]);
+      }
+    }
+    fetchCampuses();
+  }, []);
 
   // Form states
   const [title, setTitle] = useState(initialData?.title || "");
@@ -52,7 +69,8 @@ export const DownloadForm: React.FC<DownloadFormProps> = ({
     initialData?.isActive !== undefined ? initialData.isActive : true,
   );
 
-  // File upload states
+  // File upload states (Supports single or multiple files selection)
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [fileName, setFileName] = useState(initialData?.fileName || "");
   const [fileSize, setFileSize] = useState<number>(initialData?.fileSize || 0);
   const [fileType, setFileType] = useState(initialData?.fileType || "");
@@ -84,7 +102,7 @@ export const DownloadForm: React.FC<DownloadFormProps> = ({
 
   // File size formatter utility
   const formatBytes = (bytes: number, decimals = 2) => {
-    if (bytes === 0) return "0 Bytes";
+    if (!bytes || bytes === 0) return "0 Bytes";
     const k = 1024;
     const dm = decimals < 0 ? 0 : decimals;
     const sizes = ["Bytes", "KB", "MB", "GB"];
@@ -106,8 +124,8 @@ export const DownloadForm: React.FC<DownloadFormProps> = ({
     if (fieldName === "category" && !value) {
       return "Category is required.";
     }
-    if (fieldName === "file" && !fileName) {
-      return "Please upload a document file.";
+    if (fieldName === "file" && !fileName && selectedFiles.length === 0) {
+      return "Please upload at least one document file.";
     }
     return "";
   };
@@ -131,55 +149,52 @@ export const DownloadForm: React.FC<DownloadFormProps> = ({
     fileInputRef.current?.click();
   };
 
-  const processFile = (file: File) => {
-    // Ext check
+  const processFiles = (filesList: FileList | File[]) => {
+    const filesArray = Array.from(filesList);
     const allowedExtensions = [".pdf", ".doc", ".docx", ".ppt", ".pptx", ".xls", ".xlsx"];
-    const ext = "." + file.name.split(".").pop()?.toLowerCase();
+    const validFiles: File[] = [];
 
-    if (!allowedExtensions.includes(ext)) {
-      setErrors((prev) => ({
-        ...prev,
-        file: "Invalid file type. Allowed: PDF, DOC, DOCX, PPT, PPTX, XLS, XLSX",
-      }));
-      return;
+    for (const file of filesArray) {
+      const ext = "." + file.name.split(".").pop()?.toLowerCase();
+      if (!allowedExtensions.includes(ext)) {
+        setErrors((prev) => ({
+          ...prev,
+          file: `Invalid file type for "${file.name}". Allowed: PDF, DOC, DOCX, PPT, PPTX, XLS, XLSX`,
+        }));
+        return;
+      }
+      const maxSize = 50 * 1024 * 1024;
+      if (file.size > maxSize) {
+        setErrors((prev) => ({
+          ...prev,
+          file: `File "${file.name}" exceeds allowed limit of 50 MB.`,
+        }));
+        return;
+      }
+      validFiles.push(file);
     }
 
-    // Size check (50MB)
-    const maxSize = 50 * 1024 * 1024;
-    if (file.size > maxSize) {
-      setErrors((prev) => ({
-        ...prev,
-        file: "File size exceeds allowed limit of 50 MB.",
-      }));
-      return;
-    }
-
-    // Clear file error
     setErrors((prev) => ({ ...prev, file: "" }));
 
-    // Mock upload progress
-    setUploadProgress(0);
-    const interval = setInterval(() => {
-      setUploadProgress((prev) => {
-        if (prev === null) return null;
-        if (prev >= 100) {
-          clearInterval(interval);
-          setFileName(file.name);
-          setFileSize(file.size);
-          setFileType(file.type || "application/octet-stream");
-          setFileUrl(`/uploads/downloads/${file.name}`);
-          setTimeout(() => setUploadProgress(null), 800); // fade out progress bar
-          return 100;
-        }
-        return prev + 20;
-      });
-    }, 100);
+    if (validFiles.length > 0) {
+      setSelectedFiles(validFiles);
+      if (validFiles.length === 1) {
+        setFileName(validFiles[0].name);
+        setFileSize(validFiles[0].size);
+        setFileType(validFiles[0].type || "application/octet-stream");
+        setFileUrl(URL.createObjectURL(validFiles[0]));
+      } else {
+        setFileName(`${validFiles.length} files selected`);
+        setFileSize(validFiles.reduce((acc, f) => acc + f.size, 0));
+        setFileType("application/pdf");
+        setFileUrl(URL.createObjectURL(validFiles[0]));
+      }
+    }
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      processFile(file);
+    if (e.target.files && e.target.files.length > 0) {
+      processFiles(e.target.files);
     }
   };
 
@@ -195,13 +210,13 @@ export const DownloadForm: React.FC<DownloadFormProps> = ({
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     setIsDragging(false);
-    const file = e.dataTransfer.files?.[0];
-    if (file) {
-      processFile(file);
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+      processFiles(e.dataTransfer.files);
     }
   };
 
   const handleRemoveFile = () => {
+    setSelectedFiles([]);
     setFileName("");
     setFileSize(0);
     setFileType("");
@@ -246,6 +261,8 @@ export const DownloadForm: React.FC<DownloadFormProps> = ({
       fileType,
       fileSize,
       isActive,
+      file: selectedFiles.length > 0 ? selectedFiles[0] : null,
+      files: selectedFiles,
     });
   };
 
@@ -320,7 +337,7 @@ export const DownloadForm: React.FC<DownloadFormProps> = ({
             {/* Drag & drop file area */}
             <div className="space-y-2">
               <Label className="text-xs font-semibold text-foreground/80 uppercase tracking-wider pl-0.5">
-                Upload File <span className="text-destructive">*</span>
+                Upload File(s) <span className="text-destructive">*</span>
               </Label>
 
               {!fileName && uploadProgress === null ? (
@@ -337,16 +354,17 @@ export const DownloadForm: React.FC<DownloadFormProps> = ({
                 >
                   <Upload className="size-8 text-muted-foreground mb-3 animate-pulse" />
                   <span className="text-sm font-semibold text-foreground mb-1">
-                    Drag and drop file here, or click to browse
+                    Drag and drop file(s) here, or click to browse
                   </span>
                   <span className="text-xs text-muted-foreground text-center max-w-sm">
-                    PDF, DOC, DOCX, PPT, PPTX, XLS, or XLSX formats are supported (Max 50MB)
+                    Select single or multiple PDFs, DOC, DOCX, PPT, PPTX, XLS, or XLSX formats (Max 50MB per file)
                   </span>
                   <input
                     type="file"
                     ref={fileInputRef}
                     onChange={handleFileChange}
                     accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx"
+                    multiple
                     className="hidden"
                   />
                 </div>
@@ -355,7 +373,7 @@ export const DownloadForm: React.FC<DownloadFormProps> = ({
                 <div className="flex flex-col items-center justify-center border rounded-xl p-8 bg-background/40 min-h-[180px]">
                   <Upload className="size-8 text-gold mb-3 animate-bounce" />
                   <span className="text-sm font-semibold text-foreground mb-2">
-                    Uploading Document... {uploadProgress}%
+                    Uploading Documents... {uploadProgress}%
                   </span>
                   <div className="w-full max-w-xs bg-muted h-2 rounded-full overflow-hidden border border-border">
                     <div
@@ -366,46 +384,73 @@ export const DownloadForm: React.FC<DownloadFormProps> = ({
                 </div>
               ) : (
                 /* File info view */
-                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 rounded-xl border border-border bg-background/60 shadow-sm">
-                  <div className="flex items-center gap-3">
-                    <div className="size-12 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0 border border-primary/20">
-                      <FileText className="size-6" />
-                    </div>
-                    <div className="space-y-1">
-                      <span className="text-sm font-semibold text-foreground block max-w-md truncate">
-                        {fileName}
-                      </span>
-                      <div className="flex flex-wrap gap-x-3 gap-y-0.5 text-[10px] text-muted-foreground">
-                        <span>Size: {formatBytes(fileSize)}</span>
-                        <span>•</span>
-                        <span className="uppercase">{fileType.split("/").pop()}</span>
+                <div className="flex flex-col items-stretch gap-3 p-4 rounded-xl border border-border bg-background/60 shadow-sm">
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                    <div className="flex items-center gap-3">
+                      <div className="size-12 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0 border border-primary/20">
+                        {selectedFiles.length > 1 ? (
+                          <Files className="size-6" />
+                        ) : (
+                          <FileText className="size-6" />
+                        )}
                       </div>
+                      <div className="space-y-1">
+                        <span className="text-sm font-semibold text-foreground block max-w-md truncate">
+                          {selectedFiles.length > 1
+                            ? `${selectedFiles.length} PDF / Document Files Selected`
+                            : fileName}
+                        </span>
+                        <div className="flex flex-wrap gap-x-3 gap-y-0.5 text-[10px] text-muted-foreground">
+                          <span>Total Size: {formatBytes(fileSize)}</span>
+                          <span>•</span>
+                          <span className="uppercase">{selectedFiles.length > 1 ? `${selectedFiles.length} FILES` : (fileType ? fileType.split("/").pop() : "File")}</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex gap-2 w-full sm:w-auto justify-end">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={handleUploaderClick}
+                        className="h-8 rounded-lg text-xs font-semibold px-3 bg-background border-border text-foreground hover:bg-accent"
+                      >
+                        Change Files
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        onClick={handleRemoveFile}
+                        className="h-8 rounded-lg text-xs font-semibold px-2 text-destructive hover:bg-destructive/10"
+                      >
+                        <X className="size-4 mr-1" /> Remove
+                      </Button>
                     </div>
                   </div>
 
-                  <div className="flex gap-2 w-full sm:w-auto justify-end">
-                    <Button
-                      type="button"
-                      variant="outline"
-                      onClick={handleUploaderClick}
-                      className="h-8 rounded-lg text-xs font-semibold px-3 bg-background border-border text-foreground hover:bg-accent"
-                    >
-                      Change File
-                    </Button>
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      onClick={handleRemoveFile}
-                      className="h-8 rounded-lg text-xs font-semibold px-2 text-destructive hover:bg-destructive/10"
-                    >
-                      <X className="size-4 mr-1" /> Remove
-                    </Button>
-                  </div>
+                  {selectedFiles.length > 1 && (
+                    <div className="pt-2 border-t border-border/40 flex flex-wrap gap-1.5 max-h-32 overflow-y-auto">
+                      {selectedFiles.map((file, idx) => (
+                        <div
+                          key={idx}
+                          className="flex items-center gap-1 text-[11px] bg-muted/50 border border-border/60 px-2 py-1 rounded-md text-foreground/80 font-mono"
+                        >
+                          <FileText className="size-3 text-gold shrink-0" />
+                          <span className="truncate max-w-[200px]">{file.name}</span>
+                          <span className="text-[9px] text-muted-foreground ml-1">
+                            ({formatBytes(file.size)})
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
                   <input
                     type="file"
                     ref={fileInputRef}
                     onChange={handleFileChange}
                     accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx"
+                    multiple
                     className="hidden"
                   />
                 </div>
@@ -463,8 +508,8 @@ export const DownloadForm: React.FC<DownloadFormProps> = ({
                 <SelectContent className="rounded-lg border-border">
                   <SelectItem value="global">Global (All Campuses)</SelectItem>
                   {campusesList.map((c) => (
-                    <SelectItem key={c.id} value={c.id}>
-                      {c.name} ({c.shortName})
+                    <SelectItem key={c.id} value={String(c.id)}>
+                      {c.name} ({c.shortName || c.code})
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -517,13 +562,23 @@ export const DownloadForm: React.FC<DownloadFormProps> = ({
           <div className="glass rounded-2xl p-6 border border-border/80 shadow-sm space-y-3">
             <Button
               type="submit"
+              disabled={isSubmitting}
               className="w-full h-11 rounded-xl bg-primary text-primary-foreground font-semibold hover:bg-primary/95 flex items-center justify-center gap-1.5 shadow-sm text-sm"
             >
-              <CheckCircle2 className="size-4" /> {submitButtonText}
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="size-4 animate-spin" /> Saving...
+                </>
+              ) : (
+                <>
+                  <CheckCircle2 className="size-4" /> {submitButtonText}
+                </>
+              )}
             </Button>
             <Button
               type="button"
               variant="outline"
+              disabled={isSubmitting}
               onClick={onCancel}
               className="w-full h-11 rounded-xl border border-border text-muted-foreground hover:text-foreground font-semibold bg-background hover:bg-accent text-sm"
             >

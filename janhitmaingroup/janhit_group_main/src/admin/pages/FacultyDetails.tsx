@@ -27,7 +27,10 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { getStoredFaculties, FacultyProfile } from "@/data/faculties";
+import { getImageUrl } from "@/utils/utils";
+import { facultyService } from "@/admin/services/facultyService";
+import { campusService } from "@/admin/services/campusService";
+import { FacultyProfile } from "@/data/faculties";
 import { getStoredCampuses } from "@/data/campuses";
 
 interface FacultyDetailsProps {
@@ -41,28 +44,39 @@ export const FacultyDetails: React.FC<FacultyDetailsProps> = ({ id }) => {
   const [campusName, setCampusName] = useState<string>("Unknown Campus");
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [imgError, setImgError] = useState(false);
 
-  // Retrieve faculty and campus details on load
+  // Retrieve faculty and campus details from API on load
   useEffect(() => {
-    const timer = setTimeout(() => {
-      const list = getStoredFaculties();
-      const found = list.find((f) => f.id === id);
-      if (found) {
-        setFaculty(found);
+    async function loadFacultyDetails() {
+      setIsLoading(true);
+      try {
+        const found = await facultyService.getFacultyById(id);
+        if (found) {
+          setFaculty(found);
 
-        // Find campus name
-        const campuses = getStoredCampuses();
-        const camp = campuses.find((c) => c.id === found.campusId);
-        if (camp) {
-          setCampusName(camp.name);
+          if (found.campus?.name) {
+            setCampusName(found.campus.name);
+          } else if (found.campusId) {
+            try {
+              const camp = await campusService.getCampusById(found.campusId);
+              if (camp) setCampusName(camp.name);
+            } catch (_) {
+              const localCampuses = getStoredCampuses();
+              const c = localCampuses.find((item) => item.id === found.campusId);
+              if (c) setCampusName(c.name);
+            }
+          }
+        } else {
+          setErrorMsg("Faculty profile not found.");
         }
-      } else {
-        setErrorMsg("Faculty profile not found. It may have been deleted or the ID is invalid.");
+      } catch (err: any) {
+        setErrorMsg(err.message || "Failed to load faculty details.");
+      } finally {
+        setIsLoading(false);
       }
-      setIsLoading(false);
-    }, 300);
-
-    return () => clearTimeout(timer);
+    }
+    loadFacultyDetails();
   }, [id]);
 
   const formatDate = (dateStr?: string) => {
@@ -184,19 +198,22 @@ export const FacultyDetails: React.FC<FacultyDetailsProps> = ({ id }) => {
 
             {/* Avatar image */}
             <div className="size-36 rounded-2xl overflow-hidden border bg-muted flex items-center justify-center shadow-inner mb-4">
-              {faculty.image ? (
+              {getImageUrl(faculty.image) && !imgError ? (
                 <img
-                  src={faculty.image}
+                  src={getImageUrl(faculty.image)}
                   alt={faculty.name}
                   className="w-full h-full object-cover"
+                  onError={() => setImgError(true)}
                 />
               ) : (
                 <div className="size-full bg-gradient-gold flex items-center justify-center text-gold-foreground font-display font-bold text-4xl">
                   {faculty.name
                     .split(" ")
+                    .filter(Boolean)
                     .map((n) => n[0])
                     .join("")
-                    .toUpperCase()}
+                    .toUpperCase()
+                    .slice(0, 2)}
                 </div>
               )}
             </div>

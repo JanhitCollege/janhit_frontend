@@ -5,24 +5,18 @@ import {
   Phone,
   Calendar,
   Building,
-  User,
   Users,
   AlertCircle,
   Loader2,
-  ChevronRight,
   Plus,
   Trash2,
   Edit2,
   FileText,
-  Clock,
-  Layers,
-  Sparkles,
   ExternalLink,
   Upload,
   BookOpen,
   Camera,
   Check,
-  CheckCircle2,
   CircleAlert,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -64,13 +58,13 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import {
-  getStoredCommittees,
-  saveCommittees,
   Committee,
   CommitteeMember,
   CommitteeDocument,
 } from "@/data/committees";
 import { getStoredCampuses } from "@/data/campuses";
+import { campusService } from "../services/campusService";
+import { committeeService } from "../services/committeeService";
 import { toast } from "sonner";
 
 interface CommitteeDetailsProps {
@@ -113,6 +107,7 @@ export const CommitteeDetails: React.FC<CommitteeDetailsProps> = ({ id, initialT
   const [mDisplayOrder, setMDisplayOrder] = useState("0");
   const [mIsActive, setMIsActive] = useState(true);
   const [mPhoto, setMPhoto] = useState("");
+  const [mPhotoFile, setMPhotoFile] = useState<File | null>(null);
 
   const [isDeleteMemberOpen, setIsDeleteMemberOpen] = useState(false);
   const [memberToDelete, setMemberToDelete] = useState<CommitteeMember | null>(null);
@@ -129,7 +124,7 @@ export const CommitteeDetails: React.FC<CommitteeDetailsProps> = ({ id, initialT
   const [dDisplayOrder, setDDisplayOrder] = useState("0");
   const [dFileBase64, setDFileBase64] = useState("");
   const [dFileName, setDFileName] = useState("");
-  const [dFileType, setDFileType] = useState("");
+  const [dDocFile, setDDocFile] = useState<File | null>(null);
 
   const [isDeleteDocOpen, setIsDeleteDocOpen] = useState(false);
   const [docToDelete, setDocToDelete] = useState<CommitteeDocument | null>(null);
@@ -142,22 +137,29 @@ export const CommitteeDetails: React.FC<CommitteeDetailsProps> = ({ id, initialT
   // Validation states
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
 
-  // Fetch committee details
-  const loadCommittee = () => {
-    const list = getStoredCommittees();
-    const found = list.find((c) => c.id === id);
-    if (found) {
+  // Fetch committee details from API
+  const loadCommittee = async () => {
+    setIsLoading(true);
+    try {
+      const found = await committeeService.getCommitteeById(id);
       setCommittee(found);
-      setCampuses(getStoredCampuses());
-    } else {
-      setErrorMsg("Committee not found. It may have been deleted or the ID is invalid.");
+      try {
+        const campusRes = await campusService.getAllCampuses({ limit: 100 });
+        setCampuses(campusRes.campuses);
+      } catch {
+        setCampuses(getStoredCampuses());
+      }
+      setErrorMsg(null);
+    } catch (err: any) {
+      setErrorMsg(err.message || "Committee not found. It may have been deleted or the ID is invalid.");
+      setCommittee(null);
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false);
   };
 
   useEffect(() => {
-    const timer = setTimeout(loadCommittee, 300);
-    return () => clearTimeout(timer);
+    loadCommittee();
   }, [id]);
 
   const formatDate = (dateStr?: string, showTime = false) => {
@@ -193,7 +195,7 @@ export const CommitteeDetails: React.FC<CommitteeDetailsProps> = ({ id, initialT
     return (
       committee.campuses
         .map((cid) => {
-          const found = campuses.find((c) => c.id === cid);
+          const found = campuses.find((c) => String(c.id) === String(cid));
           return found ? found.shortName || found.name : null;
         })
         .filter(Boolean)
@@ -221,6 +223,7 @@ export const CommitteeDetails: React.FC<CommitteeDetailsProps> = ({ id, initialT
       setMDisplayOrder(String(member.displayOrder));
       setMIsActive(member.isActive);
       setMPhoto(member.photo || "");
+      setMPhotoFile(null);
     } else {
       setEditingMember(null);
       setMName("");
@@ -234,6 +237,7 @@ export const CommitteeDetails: React.FC<CommitteeDetailsProps> = ({ id, initialT
       setMDisplayOrder("0");
       setMIsActive(true);
       setMPhoto("");
+      setMPhotoFile(null);
     }
     setIsMemberModalOpen(true);
   };
@@ -245,10 +249,11 @@ export const CommitteeDetails: React.FC<CommitteeDetailsProps> = ({ id, initialT
   const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      if (file.size > 2 * 1024 * 1024) {
-        setFormErrors((prev) => ({ ...prev, photo: "Photo size exceeds allowed limit of 2MB." }));
+      if (file.size > 20 * 1024 * 1024) {
+        setFormErrors((prev) => ({ ...prev, photo: "Photo size exceeds allowed limit of 20MB." }));
         return;
       }
+      setMPhotoFile(file);
       const reader = new FileReader();
       reader.onloadend = () => {
         setMPhoto(reader.result as string);
@@ -260,6 +265,7 @@ export const CommitteeDetails: React.FC<CommitteeDetailsProps> = ({ id, initialT
 
   const handleRemovePhoto = () => {
     setMPhoto("");
+    setMPhotoFile(null);
     if (photoInputRef.current) photoInputRef.current.value = "";
   };
 
@@ -285,35 +291,8 @@ export const CommitteeDetails: React.FC<CommitteeDetailsProps> = ({ id, initialT
     }
 
     setIsSavingMember(true);
-    await new Promise((resolve) => setTimeout(resolve, 300));
-
-    let updatedMembers = [...committee.members];
-    if (editingMember) {
-      // Update
-      updatedMembers = updatedMembers.map((m) => {
-        if (m.id === editingMember.id) {
-          return {
-            ...m,
-            name: mName.trim(),
-            designation: mDesignation.trim() || undefined,
-            committeeRole: mRole.trim(),
-            department: mDepartment.trim() || undefined,
-            email: mEmail.trim() || undefined,
-            phone: mPhone.trim() || undefined,
-            tenureFrom: mTenureFrom ? new Date(mTenureFrom).toISOString() : undefined,
-            tenureTo: mTenureTo ? new Date(mTenureTo).toISOString() : undefined,
-            displayOrder: orderNum,
-            isActive: mIsActive,
-            photo: mPhoto,
-          };
-        }
-        return m;
-      });
-    } else {
-      // Create
-      const newMember: CommitteeMember = {
-        id: "mem-" + Date.now(),
-        committeeId: id,
+    try {
+      const payload: Partial<CommitteeMember> = {
         name: mName.trim(),
         designation: mDesignation.trim() || undefined,
         committeeRole: mRole.trim(),
@@ -324,33 +303,23 @@ export const CommitteeDetails: React.FC<CommitteeDetailsProps> = ({ id, initialT
         tenureTo: mTenureTo ? new Date(mTenureTo).toISOString() : undefined,
         displayOrder: orderNum,
         isActive: mIsActive,
-        photo: mPhoto,
       };
-      updatedMembers.push(newMember);
-    }
 
-    // Sort updated members by displayOrder
-    updatedMembers.sort((a, b) => a.displayOrder - b.displayOrder);
-
-    // Save
-    const list = getStoredCommittees();
-    const updatedCommittees = list.map((c) => {
-      if (c.id === id) {
-        return {
-          ...c,
-          members: updatedMembers,
-          updatedAt: new Date().toISOString(),
-        };
+      if (editingMember) {
+        await committeeService.updateMember(id, editingMember.id, payload, mPhotoFile);
+        toast.success("Member details updated.");
+      } else {
+        await committeeService.addMember(id, payload, mPhotoFile);
+        toast.success("New member added to committee.");
       }
-      return c;
-    });
 
-    saveCommittees(updatedCommittees);
-    setCommittee({ ...committee, members: updatedMembers, updatedAt: new Date().toISOString() });
-
-    setIsSavingMember(false);
-    setIsMemberModalOpen(false);
-    toast.success(editingMember ? "Member details updated." : "New member added to committee.");
+      await loadCommittee();
+      setIsMemberModalOpen(false);
+    } catch (err: any) {
+      toast.error(err.message || "Failed to save member.");
+    } finally {
+      setIsSavingMember(false);
+    }
   };
 
   const handleOpenDeleteMember = (member: CommitteeMember) => {
@@ -361,28 +330,18 @@ export const CommitteeDetails: React.FC<CommitteeDetailsProps> = ({ id, initialT
   const confirmDeleteMember = async () => {
     if (!memberToDelete || !committee) return;
     setIsDeletingMember(true);
-    await new Promise((resolve) => setTimeout(resolve, 300));
 
-    const updatedMembers = committee.members.filter((m) => m.id !== memberToDelete.id);
-    const list = getStoredCommittees();
-    const updatedCommittees = list.map((c) => {
-      if (c.id === id) {
-        return {
-          ...c,
-          members: updatedMembers,
-          updatedAt: new Date().toISOString(),
-        };
-      }
-      return c;
-    });
-
-    saveCommittees(updatedCommittees);
-    setCommittee({ ...committee, members: updatedMembers, updatedAt: new Date().toISOString() });
-
-    setIsDeletingMember(false);
-    setIsDeleteMemberOpen(false);
-    setMemberToDelete(null);
-    toast.success("Member removed from committee successfully.");
+    try {
+      await committeeService.deleteMember(id, memberToDelete.id);
+      toast.success("Member removed from committee successfully.");
+      await loadCommittee();
+    } catch (err: any) {
+      toast.error(err.message || "Failed to delete member.");
+    } finally {
+      setIsDeletingMember(false);
+      setIsDeleteMemberOpen(false);
+      setMemberToDelete(null);
+    }
   };
 
   // ==========================================
@@ -396,7 +355,7 @@ export const CommitteeDetails: React.FC<CommitteeDetailsProps> = ({ id, initialT
     setDDisplayOrder("0");
     setDFileBase64("");
     setDFileName("");
-    setDFileType("");
+    setDDocFile(null);
     setIsDocModalOpen(true);
   };
 
@@ -407,18 +366,18 @@ export const CommitteeDetails: React.FC<CommitteeDetailsProps> = ({ id, initialT
   const handleDocUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      if (file.size > 5 * 1024 * 1024) {
+      if (file.size > 50 * 1024 * 1024) {
         setFormErrors((prev) => ({
           ...prev,
-          document: "Document size exceeds allowed limit of 5MB for mock storage.",
+          document: "Document size exceeds allowed limit of 50MB.",
         }));
         return;
       }
+      setDDocFile(file);
+      setDFileName(file.name);
       const reader = new FileReader();
       reader.onloadend = () => {
         setDFileBase64(reader.result as string);
-        setDFileName(file.name);
-        setDFileType(file.type);
         setFormErrors((prev) => ({ ...prev, document: "" }));
       };
       reader.readAsDataURL(file);
@@ -428,7 +387,7 @@ export const CommitteeDetails: React.FC<CommitteeDetailsProps> = ({ id, initialT
   const handleRemoveDocFile = () => {
     setDFileBase64("");
     setDFileName("");
-    setDFileType("");
+    setDDocFile(null);
     if (docInputRef.current) docInputRef.current.value = "";
   };
 
@@ -439,7 +398,7 @@ export const CommitteeDetails: React.FC<CommitteeDetailsProps> = ({ id, initialT
     // Validation
     const errors: Record<string, string> = {};
     if (!dTitle.trim()) errors.title = "Document Title is required.";
-    if (!dFileBase64) errors.document = "Please upload a document file.";
+    if (!dDocFile) errors.document = "Please upload a document file.";
     const orderNum = Number(dDisplayOrder);
     if (dDisplayOrder.trim() === "" || isNaN(orderNum) || !Number.isInteger(orderNum)) {
       errors.displayOrder = "Display Order must be an integer.";
@@ -451,43 +410,23 @@ export const CommitteeDetails: React.FC<CommitteeDetailsProps> = ({ id, initialT
     }
 
     setIsUploadingDoc(true);
-    await new Promise((resolve) => setTimeout(resolve, 400));
+    try {
+      const payload: Partial<CommitteeDocument> = {
+        title: dTitle.trim(),
+        description: dDescription.trim() || undefined,
+        documentType: dType,
+        displayOrder: orderNum,
+      };
 
-    const newDoc: CommitteeDocument = {
-      id: "doc-" + Date.now(),
-      committeeId: id,
-      title: dTitle.trim(),
-      description: dDescription.trim() || undefined,
-      documentUrl: dFileBase64, // Saved as base64 data url
-      fileType: dFileType || "application/octet-stream",
-      documentType: dType,
-      displayOrder: orderNum,
-      createdAt: new Date().toISOString(),
-    };
-
-    const updatedDocs = [...committee.documents, newDoc].sort(
-      (a, b) => a.displayOrder - b.displayOrder,
-    );
-
-    // Save
-    const list = getStoredCommittees();
-    const updatedCommittees = list.map((c) => {
-      if (c.id === id) {
-        return {
-          ...c,
-          documents: updatedDocs,
-          updatedAt: new Date().toISOString(),
-        };
-      }
-      return c;
-    });
-
-    saveCommittees(updatedCommittees);
-    setCommittee({ ...committee, documents: updatedDocs, updatedAt: new Date().toISOString() });
-
-    setIsUploadingDoc(false);
-    setIsDocModalOpen(false);
-    toast.success("Document uploaded and linked successfully.");
+      await committeeService.uploadDocument(id, payload, dDocFile!);
+      toast.success("Document uploaded and linked successfully.");
+      await loadCommittee();
+      setIsDocModalOpen(false);
+    } catch (err: any) {
+      toast.error(err.message || "Failed to upload document.");
+    } finally {
+      setIsUploadingDoc(false);
+    }
   };
 
   const handleOpenDeleteDoc = (doc: CommitteeDocument) => {
@@ -498,28 +437,18 @@ export const CommitteeDetails: React.FC<CommitteeDetailsProps> = ({ id, initialT
   const confirmDeleteDoc = async () => {
     if (!docToDelete || !committee) return;
     setIsDeletingDoc(true);
-    await new Promise((resolve) => setTimeout(resolve, 300));
 
-    const updatedDocs = committee.documents.filter((d) => d.id !== docToDelete.id);
-    const list = getStoredCommittees();
-    const updatedCommittees = list.map((c) => {
-      if (c.id === id) {
-        return {
-          ...c,
-          documents: updatedDocs,
-          updatedAt: new Date().toISOString(),
-        };
-      }
-      return c;
-    });
-
-    saveCommittees(updatedCommittees);
-    setCommittee({ ...committee, documents: updatedDocs, updatedAt: new Date().toISOString() });
-
-    setIsDeletingDoc(false);
-    setIsDeleteDocOpen(false);
-    setDocToDelete(null);
-    toast.success("Document deleted successfully.");
+    try {
+      await committeeService.deleteDocument(id, docToDelete.id);
+      toast.success("Document deleted successfully.");
+      await loadCommittee();
+    } catch (err: any) {
+      toast.error(err.message || "Failed to delete document.");
+    } finally {
+      setIsDeletingDoc(false);
+      setIsDeleteDocOpen(false);
+      setDocToDelete(null);
+    }
   };
 
   if (isLoading) {
@@ -633,10 +562,10 @@ export const CommitteeDetails: React.FC<CommitteeDetailsProps> = ({ id, initialT
           ) : (
             <div className="size-full bg-gradient-gold flex items-center justify-center text-gold-foreground font-display font-bold text-3xl">
               {committee.title
-                .split(" ")
+                ?.split(" ")
                 .map((n) => n[0])
                 .join("")
-                .toUpperCase()}
+                .toUpperCase() || "C"}
             </div>
           )}
         </div>
@@ -684,8 +613,8 @@ export const CommitteeDetails: React.FC<CommitteeDetailsProps> = ({ id, initialT
       <div className="flex border-b border-border/60">
         {[
           { id: "overview", label: "Overview" },
-          { id: "members", label: `Members (${committee.members.length})` },
-          { id: "documents", label: `Documents (${committee.documents.length})` },
+          { id: "members", label: `Members (${committee.membersCount ?? committee.members.length})` },
+          { id: "documents", label: `Documents (${committee.documentsCount ?? committee.documents.length})` },
         ].map((tab) => (
           <button
             key={tab.id}
@@ -815,10 +744,10 @@ export const CommitteeDetails: React.FC<CommitteeDetailsProps> = ({ id, initialT
                         ) : (
                           <div className="size-full bg-gradient-gold text-gold-foreground flex items-center justify-center font-display font-bold text-lg">
                             {member.name
-                              .split(" ")
+                              ?.split(" ")
                               .map((n) => n[0])
                               .join("")
-                              .toUpperCase()}
+                              .toUpperCase() || "M"}
                           </div>
                         )}
                       </div>
@@ -1445,7 +1374,7 @@ export const CommitteeDetails: React.FC<CommitteeDetailsProps> = ({ id, initialT
                       Click to upload file document
                     </span>
                     <p className="text-[9px] text-muted-foreground/80 mt-0.5">
-                      PDF, DOC, DOCX, JPG, PNG up to 5MB
+                      PDF, DOC, DOCX, JPG, PNG up to 50MB
                     </p>
                   </div>
                 )}

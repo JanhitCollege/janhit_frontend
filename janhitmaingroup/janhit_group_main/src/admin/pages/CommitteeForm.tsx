@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Camera, X, Upload, Info } from "lucide-react";
+import { Camera, X, Upload, Loader2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -14,15 +14,18 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { getStoredCampuses } from "@/data/campuses";
+import { campusService } from "../services/campusService";
 import { Committee } from "@/data/committees";
 
 interface CommitteeFormProps {
   initialData?: Committee;
   onSubmit: (
     data: Omit<Committee, "id" | "members" | "documents" | "createdAt" | "updatedAt" | "slug">,
+    bannerFile?: File | null,
   ) => void;
   onCancel: () => void;
   submitButtonText: string;
+  isSubmitting?: boolean;
 }
 
 export const CommitteeForm: React.FC<CommitteeFormProps> = ({
@@ -30,9 +33,22 @@ export const CommitteeForm: React.FC<CommitteeFormProps> = ({
   onSubmit,
   onCancel,
   submitButtonText,
+  isSubmitting = false,
 }) => {
-  // Load campuses
-  const campusesList = getStoredCampuses().filter((c) => c.status === "active");
+  // Load campuses from API with fallback to stored campuses
+  const [campusesList, setCampusesList] = useState<any[]>([]);
+
+  useEffect(() => {
+    async function fetchCampuses() {
+      try {
+        const res = await campusService.getAllCampuses({ limit: 100 });
+        setCampusesList(res.campuses.filter((c: any) => c.status === "active" || c.isActive));
+      } catch {
+        setCampusesList(getStoredCampuses().filter((c) => c.status === "active"));
+      }
+    }
+    fetchCampuses();
+  }, []);
 
   // Form states
   const [title, setTitle] = useState(initialData?.title || "");
@@ -70,6 +86,7 @@ export const CommitteeForm: React.FC<CommitteeFormProps> = ({
   const [tenureTo, setTenureTo] = useState(getLocalDateOnly(initialData?.tenureTo) || "");
   const [publishDate, setPublishDate] = useState(getLocalDateTime(initialData?.publishDate) || "");
   const [bannerImage, setBannerImage] = useState(initialData?.bannerImage || "");
+  const [bannerFile, setBannerFile] = useState<File | null>(null);
   const [status, setStatus] = useState<"DRAFT" | "PUBLISHED" | "ARCHIVED">(
     initialData?.status || "DRAFT",
   );
@@ -120,8 +137,9 @@ export const CommitteeForm: React.FC<CommitteeFormProps> = ({
 
   // Checkbox handlers
   const handleCampusToggle = (campusId: string) => {
+    const stringId = String(campusId);
     setSelectedCampuses((prev) =>
-      prev.includes(campusId) ? prev.filter((id) => id !== campusId) : [...prev, campusId],
+      prev.includes(stringId) ? prev.filter((id) => id !== stringId) : [...prev, stringId],
     );
   };
 
@@ -135,14 +153,15 @@ export const CommitteeForm: React.FC<CommitteeFormProps> = ({
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      if (file.size > 2 * 1024 * 1024) {
+      if (file.size > 20 * 1024 * 1024) {
         setErrors((prev) => ({
           ...prev,
-          bannerImage: "Banner image size exceeds allowed limit of 2MB.",
+          bannerImage: "Banner image size exceeds allowed limit of 20MB.",
         }));
         return;
       }
 
+      setBannerFile(file);
       const reader = new FileReader();
       reader.onloadend = () => {
         setBannerImage(reader.result as string);
@@ -154,6 +173,7 @@ export const CommitteeForm: React.FC<CommitteeFormProps> = ({
 
   const handleRemoveImage = () => {
     setBannerImage("");
+    setBannerFile(null);
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
@@ -190,24 +210,27 @@ export const CommitteeForm: React.FC<CommitteeFormProps> = ({
       return;
     }
 
-    // Call submit
-    onSubmit({
-      title: title.trim(),
-      category: category.trim(),
-      shortDescription: shortDescription.trim(),
-      description: description.trim(),
-      objective: objective.trim(),
-      committeeType,
-      academicSession,
-      tenureFrom: tenureFrom ? new Date(tenureFrom).toISOString() : undefined,
-      tenureTo: tenureTo ? new Date(tenureTo).toISOString() : undefined,
-      bannerImage,
-      status,
-      publishDate: publishDate ? new Date(publishDate).toISOString() : undefined,
-      displayOrder: Number(displayOrder),
-      isMainWebsite,
-      campuses: selectedCampuses,
-    });
+    // Call submit with data and file
+    onSubmit(
+      {
+        title: title.trim(),
+        category: category.trim(),
+        shortDescription: shortDescription.trim(),
+        description: description.trim(),
+        objective: objective.trim(),
+        committeeType,
+        academicSession,
+        tenureFrom: tenureFrom ? new Date(tenureFrom).toISOString() : undefined,
+        tenureTo: tenureTo ? new Date(tenureTo).toISOString() : undefined,
+        bannerImage,
+        status,
+        publishDate: publishDate ? new Date(publishDate).toISOString() : undefined,
+        displayOrder: Number(displayOrder),
+        isMainWebsite,
+        campuses: selectedCampuses,
+      },
+      bannerFile,
+    );
   };
 
   return (
@@ -243,7 +266,7 @@ export const CommitteeForm: React.FC<CommitteeFormProps> = ({
                     Upload Banner Image
                   </span>
                   <p className="text-[10px] text-muted-foreground/80 mt-1">
-                    PNG, JPG, WEBP up to 2MB
+                    PNG, JPG, WEBP up to 20MB
                   </p>
                 </div>
               )}
@@ -461,8 +484,8 @@ export const CommitteeForm: React.FC<CommitteeFormProps> = ({
               <div key={campus.id} className="flex items-center space-x-2">
                 <Checkbox
                   id={`campus-${campus.id}`}
-                  checked={selectedCampuses.includes(campus.id)}
-                  onCheckedChange={() => handleCampusToggle(campus.id)}
+                  checked={selectedCampuses.includes(String(campus.id))}
+                  onCheckedChange={() => handleCampusToggle(String(campus.id))}
                   className="rounded"
                 />
                 <Label
@@ -555,14 +578,22 @@ export const CommitteeForm: React.FC<CommitteeFormProps> = ({
 
       {/* Action Buttons */}
       <div className="flex items-center justify-end gap-3 pt-4 border-t">
-        <Button type="button" variant="outline" onClick={onCancel} className="rounded-xl px-6">
+        <Button type="button" variant="outline" onClick={onCancel} className="rounded-xl px-6" disabled={isSubmitting}>
           Cancel
         </Button>
         <Button
           type="submit"
+          disabled={isSubmitting}
           className="bg-primary text-primary-foreground hover:bg-primary/95 shadow-sm rounded-xl px-8"
         >
-          {submitButtonText}
+          {isSubmitting ? (
+            <>
+              <Loader2 className="size-4 mr-2 animate-spin" />
+              Saving...
+            </>
+          ) : (
+            submitButtonText
+          )}
         </Button>
       </div>
     </form>

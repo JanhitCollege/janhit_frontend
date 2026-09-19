@@ -20,7 +20,7 @@ export function Courses() {
   const [activeTab, setActiveTab] = useState<"ballb" | "llb">("ballb");
 
   return (
-    <section id="courses" className="py-20 bg-beige/30 border-y border-gold/10">
+    <section id="courses" className="py-20 bg-white border-y border-gold/10">
       <div className="max-w-7xl mx-auto px-6">
         {/* Section Header */}
         <div className="text-center space-y-3 max-w-2xl mx-auto mb-12">

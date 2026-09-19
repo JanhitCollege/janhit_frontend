@@ -5,16 +5,12 @@ import {
   Phone,
   Calendar,
   Building,
-  User,
   AlertCircle,
   Loader2,
-  ChevronRight,
   MessageSquare,
   Clock,
   Send,
   Trash2,
-  CheckCircle,
-  ExternalLink,
   MapPin,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -35,9 +31,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { getStoredAdmissionLeads, saveAdmissionLeads, AdmissionLead } from "@/data/admissionLeads";
-import { getStoredCampuses } from "@/data/campuses";
 import { toast } from "sonner";
+import { admissionLeadService, AdmissionLead } from "../services/admissionLeadService";
+import { campusService } from "../services/campusService";
 
 interface AdmissionLeadDetailsProps {
   id: string;
@@ -67,18 +63,28 @@ export const AdmissionLeadDetails: React.FC<AdmissionLeadDetailsProps> = ({ id }
 
   // Retrieve lead and notes on load
   useEffect(() => {
-    const timer = setTimeout(() => {
-      const leadsList = getStoredAdmissionLeads();
-      const found = leadsList.find((l) => l.id === id);
-      if (found) {
+    let isMounted = true;
+    async function loadData() {
+      setIsLoading(true);
+      setErrorMsg(null);
+      try {
+        const found = await admissionLeadService.getAdmissionLeadById(id);
+        if (!isMounted) return;
+
         setLead(found);
         setCurrentStatus(found.status);
 
-        // Find campus name
-        const campuses = getStoredCampuses();
-        const camp = campuses.find((c) => c.id === found.campusId);
-        if (camp) {
-          setCampusName(camp.name);
+        if (found.campus?.name) {
+          setCampusName(found.campus.name);
+        } else {
+          try {
+            const camp = await campusService.getCampusById(found.campusId);
+            if (isMounted && camp) {
+              setCampusName(camp.name);
+            }
+          } catch (_) {
+            if (isMounted) setCampusName("Unknown Campus");
+          }
         }
 
         // Load notes from localstorage for this lead
@@ -103,53 +109,49 @@ export const AdmissionLeadDetails: React.FC<AdmissionLeadDetailsProps> = ({ id }
           setNotes(initialNotes);
           localStorage.setItem(storedNotesKey, JSON.stringify(initialNotes));
         }
-      } else {
-        setErrorMsg("Admission lead not found. It may have been deleted or the ID is invalid.");
+      } catch (err: any) {
+        if (isMounted) {
+          setErrorMsg(err.message || "Admission lead not found. It may have been deleted or the ID is invalid.");
+        }
+      } finally {
+        if (isMounted) {
+          setIsLoading(false);
+        }
       }
-      setIsLoading(false);
-    }, 300);
+    }
 
-    return () => clearTimeout(timer);
+    loadData();
+    return () => {
+      isMounted = false;
+    };
   }, [id]);
 
   const handleStatusChange = async (nextStatus: string) => {
     if (!lead) return;
     setIsUpdatingStatus(true);
 
-    // Simulate brief network delay
-    await new Promise((resolve) => setTimeout(resolve, 400));
+    try {
+      const updated = await admissionLeadService.updateAdmissionLeadStatus(id, nextStatus);
+      setLead(updated);
+      setCurrentStatus(updated.status);
 
-    const leadsList = getStoredAdmissionLeads();
-    const updated = leadsList.map((l) => {
-      if (l.id === id) {
-        return {
-          ...l,
-          status: nextStatus as any,
-          updatedAt: new Date().toISOString(),
-        };
-      }
-      return l;
-    });
+      // Add timeline entry for status update
+      const newNote: TimelineNote = {
+        id: "note-status-" + Date.now(),
+        text: `Lead status updated from ${lead.status} to ${nextStatus}.`,
+        createdAt: new Date().toISOString(),
+        author: "Admin",
+      };
+      const updatedNotes = [newNote, ...notes];
+      setNotes(updatedNotes);
+      localStorage.setItem(`janhit_lead_notes_${id}`, JSON.stringify(updatedNotes));
 
-    saveAdmissionLeads(updated);
-
-    // Add timeline entry for status update
-    const newNote: TimelineNote = {
-      id: "note-status-" + Date.now(),
-      text: `Lead status updated from ${lead.status} to ${nextStatus}.`,
-      createdAt: new Date().toISOString(),
-      author: "Admin",
-    };
-    const updatedNotes = [newNote, ...notes];
-    setNotes(updatedNotes);
-    localStorage.setItem(`janhit_lead_notes_${id}`, JSON.stringify(updatedNotes));
-
-    // Update local state
-    setLead({ ...lead, status: nextStatus as any, updatedAt: new Date().toISOString() });
-    setCurrentStatus(nextStatus);
-    setIsUpdatingStatus(false);
-
-    toast.success(`Lead status updated to ${nextStatus} successfully.`);
+      toast.success(`Lead status updated to ${nextStatus} successfully.`);
+    } catch (err: any) {
+      toast.error(err.message || "Failed to update lead status.");
+    } finally {
+      setIsUpdatingStatus(false);
+    }
   };
 
   const handleAddNote = async (e: React.FormEvent) => {
@@ -157,7 +159,6 @@ export const AdmissionLeadDetails: React.FC<AdmissionLeadDetailsProps> = ({ id }
     if (!newNoteText.trim() || !lead) return;
     setIsAddingNote(true);
 
-    // Simulate short network delay
     await new Promise((resolve) => setTimeout(resolve, 200));
 
     const newNote: TimelineNote = {

@@ -24,6 +24,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
+import { campusService } from "../services/campusService";
 import { getStoredCampuses } from "@/data/campuses";
 import { NewsNotice } from "@/data/newsNotices";
 
@@ -60,8 +61,20 @@ export const NewsNoticeForm: React.FC<NewsNoticeFormProps> = ({
   onCancel,
   submitButtonText,
 }) => {
-  // Load campuses from store
-  const campusesList = getStoredCampuses().filter((c) => c.status === "active");
+  // Load campuses from store / API
+  const [campusesList, setCampusesList] = useState<any[]>([]);
+
+  useEffect(() => {
+    async function fetchCampuses() {
+      try {
+        const res = await campusService.getAllCampuses({ limit: 100 });
+        setCampusesList(res.campuses.filter((c: any) => c.status === "active" || c.isActive));
+      } catch (err) {
+        setCampusesList(getStoredCampuses().filter((c) => c.status === "active"));
+      }
+    }
+    fetchCampuses();
+  }, []);
 
   // Form states
   const [title, setTitle] = useState(initialData?.title || "");

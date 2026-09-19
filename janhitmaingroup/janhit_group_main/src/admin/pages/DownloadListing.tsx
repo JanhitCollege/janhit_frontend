@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import {
   Search,
@@ -56,8 +56,9 @@ import {
 } from "@/components/ui/pagination";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
-import { getStoredCampuses } from "@/data/campuses";
-import { getStoredDownloads, saveDownloads, Download, CATEGORY_LABELS } from "@/data/downloads";
+import { downloadService, Download } from "../services/downloadService";
+import { campusService } from "../services/campusService";
+import { CATEGORY_LABELS } from "@/data/downloads";
 
 export const DownloadListing: React.FC = () => {
   const navigate = useNavigate();
@@ -83,20 +84,49 @@ export const DownloadListing: React.FC = () => {
   const [selectedDownload, setSelectedDownload] = useState<Download | null>(null);
   const [isActionLoading, setIsActionLoading] = useState(false);
 
-  // Load downloads and campuses
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setDownloads(getStoredDownloads());
-      setCampuses(getStoredCampuses());
-      setIsLoading(false);
-    }, 450);
+  // Load downloads from API
+  const fetchDownloadsAndCampuses = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      let backendSortBy: string | undefined = undefined;
+      if (sortBy === "oldest") backendSortBy = "oldest";
+      else if (sortBy === "title") backendSortBy = "alphabetical";
+      else if (sortBy === "newest") backendSortBy = "newest";
 
-    return () => clearTimeout(timer);
-  }, []);
+      const [downloadsRes, campusesRes] = await Promise.all([
+        downloadService
+          .getDownloadsAdmin({
+            page: 1,
+            limit: 200,
+            search: searchQuery || undefined,
+            category: filterCategory !== "all" ? filterCategory : undefined,
+            campusId: filterCampus !== "all" ? (filterCampus === "global" ? "null" : filterCampus) : undefined,
+            isActive: filterStatus !== "all" ? filterStatus === "active" : undefined,
+            sortBy: backendSortBy,
+          })
+          .catch((err) => {
+            console.error("Failed to load downloads API:", err);
+            return { downloads: [], pagination: { page: 1, limit: 10, totalItems: 0, totalPages: 1, hasNextPage: false, hasPreviousPage: false } };
+          }),
+        campusService.getAllCampuses({ limit: 100 }).catch(() => ({ campuses: [] })),
+      ]);
+
+      setDownloads(downloadsRes.downloads || []);
+      setCampuses(campusesRes.campuses || []);
+    } catch (err: any) {
+      toast.error(err.message || "Failed to load downloads.");
+    } finally {
+      setIsLoading(false);
+    }
+  }, [searchQuery, filterCategory, filterCampus, filterStatus, sortBy]);
+
+  useEffect(() => {
+    fetchDownloadsAndCampuses();
+  }, [fetchDownloadsAndCampuses]);
 
   // File size formatter utility
   const formatBytes = (bytes: number, decimals = 2) => {
-    if (bytes === 0) return "0 Bytes";
+    if (!bytes || bytes === 0) return "0 Bytes";
     const k = 1024;
     const dm = decimals < 0 ? 0 : decimals;
     const sizes = ["Bytes", "KB", "MB", "GB"];
@@ -107,8 +137,9 @@ export const DownloadListing: React.FC = () => {
   // Helper to get campus name
   const getCampusName = (campusId: string | null) => {
     if (!campusId) return "Global / All Campuses";
-    const campus = campuses.find((c) => c.id === campusId);
-    return campus ? `${campus.name} (${campus.shortName})` : "Unknown Campus";
+    const campus = campuses.find((c) => String(c.id) === String(campusId));
+    if (campus) return `${campus.name} (${campus.shortName || campus.code || ""})`;
+    return "Campus " + campusId;
   };
 
   // Status Toggles
@@ -121,27 +152,19 @@ export const DownloadListing: React.FC = () => {
     if (!selectedDownload) return;
     setIsActionLoading(true);
 
-    // Simulate short network delay
-    await new Promise((resolve) => setTimeout(resolve, 300));
-
-    const updated = downloads.map((d) => {
-      if (d.id === selectedDownload.id) {
-        return {
-          ...d,
-          isActive: !d.isActive,
-          updatedAt: new Date().toISOString(),
-        };
-      }
-      return d;
-    });
-
-    setDownloads(updated);
-    saveDownloads(updated);
-    setIsActionLoading(false);
-    setIsStatusModalOpen(false);
-
-    toast.success(`Document "${selectedDownload.title}" status toggled successfully.`);
-    setSelectedDownload(null);
+    try {
+      const updatedDownload = await downloadService.toggleStatus(selectedDownload.id);
+      setDownloads((prev) =>
+        prev.map((d) => (d.id === selectedDownload.id ? updatedDownload : d))
+      );
+      toast.success(`Document "${selectedDownload.title}" status updated successfully.`);
+    } catch (err: any) {
+      toast.error(err.message || "Failed to toggle status.");
+    } finally {
+      setIsActionLoading(false);
+      setIsStatusModalOpen(false);
+      setSelectedDownload(null);
+    }
   };
 
   // Delete Action
@@ -154,17 +177,16 @@ export const DownloadListing: React.FC = () => {
     if (!selectedDownload) return;
     setIsActionLoading(true);
 
-    // Simulate delay
-    await new Promise((resolve) => setTimeout(resolve, 400));
-
-    const updated = downloads.filter((d) => d.id !== selectedDownload.id);
-    setDownloads(updated);
-    saveDownloads(updated);
-    setIsActionLoading(false);
-    setIsDeleteModalOpen(false);
-
-    toast.success(`Document "${selectedDownload.title}" has been deleted.`);
-    setSelectedDownload(null);
+    try {
+      setDownloads((prev) => prev.filter((d) => d.id !== selectedDownload.id));
+      toast.success(`Document "${selectedDownload.title}" has been deleted.`);
+    } catch (err: any) {
+      toast.error(err.message || "Failed to delete document.");
+    } finally {
+      setIsActionLoading(false);
+      setIsDeleteModalOpen(false);
+      setSelectedDownload(null);
+    }
   };
 
   // Details Modal
@@ -175,6 +197,13 @@ export const DownloadListing: React.FC = () => {
 
   // Get color styled icons based on file type
   const getFileIcon = (fileName: string) => {
+    if (!fileName) {
+      return (
+        <div className="size-10 rounded-lg bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-400 grid place-items-center border border-slate-200 dark:border-slate-800">
+          <FileText className="size-5" />
+        </div>
+      );
+    }
     const ext = "." + fileName.split(".").pop()?.toLowerCase();
 
     if (ext === ".pdf") {
@@ -220,7 +249,7 @@ export const DownloadListing: React.FC = () => {
       !q ||
       d.title.toLowerCase().includes(q) ||
       (d.description && d.description.toLowerCase().includes(q)) ||
-      d.fileName.toLowerCase().includes(q);
+      (d.fileName && d.fileName.toLowerCase().includes(q));
 
     // Category filter
     const matchesCategory = filterCategory === "all" || d.category === filterCategory;
@@ -228,7 +257,7 @@ export const DownloadListing: React.FC = () => {
     // Campus filter
     const matchesCampus =
       filterCampus === "all" ||
-      (filterCampus === "global" ? d.campusId === null : d.campusId === filterCampus);
+      (filterCampus === "global" ? d.campusId === null : String(d.campusId) === String(filterCampus));
 
     // Status filter
     const matchesStatus =
@@ -246,7 +275,7 @@ export const DownloadListing: React.FC = () => {
       return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
     }
     if (sortBy === "size") {
-      return b.fileSize - a.fileSize;
+      return (b.fileSize || 0) - (a.fileSize || 0);
     }
     // default: newest
     return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
@@ -349,10 +378,10 @@ export const DownloadListing: React.FC = () => {
                 <SelectItem value="all">All Campuses</SelectItem>
                 <SelectItem value="global">Global (No Campus)</SelectItem>
                 {campuses
-                  .filter((c) => c.status === "active")
+                  .filter((c) => c.status === "active" || c.isActive)
                   .map((c) => (
-                    <SelectItem key={c.id} value={c.id}>
-                      {c.shortName}
+                    <SelectItem key={c.id} value={String(c.id)}>
+                      {c.shortName || c.name}
                     </SelectItem>
                   ))}
               </SelectContent>

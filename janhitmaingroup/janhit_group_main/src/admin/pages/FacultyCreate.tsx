@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
+import { toast } from "sonner";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -9,27 +10,24 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { FacultyForm } from "./FacultyForm";
-import { getStoredFaculties, saveFaculties, FacultyProfile } from "@/data/faculties";
+import { facultyService } from "@/admin/services/facultyService";
+import { FacultyProfile } from "@/data/faculties";
 
 export const FacultyCreate: React.FC = () => {
   const navigate = useNavigate();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (formData: Omit<FacultyProfile, "id" | "createdAt" | "updatedAt">) => {
-    const existing = getStoredFaculties();
-
-    // Create new faculty profile
-    const newFaculty: FacultyProfile = {
-      ...formData,
-      id: "fac-" + Date.now(), // Generate a unique ID
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    };
-
-    const updated = [...existing, newFaculty];
-    saveFaculties(updated);
-
-    // Navigate back to listing page
-    navigate({ to: "/@admin/faculties" });
+  const handleSubmit = async (formData: Omit<FacultyProfile, "id" | "createdAt" | "updatedAt"> & { imageFile?: File }) => {
+    setIsSubmitting(true);
+    try {
+      await facultyService.createFacultyProfile(formData);
+      toast.success("Faculty profile created successfully.");
+      navigate({ to: "/@admin/faculties" });
+    } catch (error: any) {
+      toast.error(error.message || "Failed to create faculty profile.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleCancel = () => {
