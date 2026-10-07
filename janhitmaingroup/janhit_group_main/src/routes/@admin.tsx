@@ -17,6 +17,7 @@ import {
   FileDown,
   Image,
   Calendar,
+  ShieldCheck,
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -133,6 +134,12 @@ function AdminLayoutContent() {
       icon: Calendar,
       to: "/@admin/events" as const,
       active: location.pathname.startsWith("/@admin/events"),
+    },
+    {
+      label: "Public Disclosures",
+      icon: ShieldCheck,
+      to: "/@admin/disclosures" as const,
+      active: location.pathname.startsWith("/@admin/disclosures"),
     },
     {
       label: "My Profile",

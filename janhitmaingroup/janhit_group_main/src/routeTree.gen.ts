@@ -33,6 +33,7 @@ import { Route as AtadminGalleryIndexRouteImport } from './routes/@admin.gallery
 import { Route as AtadminFacultiesIndexRouteImport } from './routes/@admin.faculties.index'
 import { Route as AtadminEventsIndexRouteImport } from './routes/@admin.events.index'
 import { Route as AtadminDownloadsIndexRouteImport } from './routes/@admin.downloads.index'
+import { Route as AtadminDisclosuresIndexRouteImport } from './routes/@admin.disclosures.index'
 import { Route as AtadminCommitteesIndexRouteImport } from './routes/@admin.committees.index'
 import { Route as AtadminCampusesIndexRouteImport } from './routes/@admin.campuses.index'
 import { Route as AtadminAdmissionLeadsIndexRouteImport } from './routes/@admin.admission-leads.index'
@@ -174,6 +175,11 @@ const AtadminEventsIndexRoute = AtadminEventsIndexRouteImport.update({
 const AtadminDownloadsIndexRoute = AtadminDownloadsIndexRouteImport.update({
   id: '/downloads/',
   path: '/downloads/',
+  getParentRoute: () => AtadminRoute,
+} as any)
+const AtadminDisclosuresIndexRoute = AtadminDisclosuresIndexRouteImport.update({
+  id: '/disclosures/',
+  path: '/disclosures/',
   getParentRoute: () => AtadminRoute,
 } as any)
 const AtadminCommitteesIndexRoute = AtadminCommitteesIndexRouteImport.update({
@@ -320,6 +326,7 @@ export interface FileRoutesByFullPath {
   '/@admin/admission-leads/': typeof AtadminAdmissionLeadsIndexRoute
   '/@admin/campuses/': typeof AtadminCampusesIndexRoute
   '/@admin/committees/': typeof AtadminCommitteesIndexRoute
+  '/@admin/disclosures/': typeof AtadminDisclosuresIndexRoute
   '/@admin/downloads/': typeof AtadminDownloadsIndexRoute
   '/@admin/events/': typeof AtadminEventsIndexRoute
   '/@admin/faculties/': typeof AtadminFacultiesIndexRoute
@@ -367,6 +374,7 @@ export interface FileRoutesByTo {
   '/@admin/admission-leads': typeof AtadminAdmissionLeadsIndexRoute
   '/@admin/campuses': typeof AtadminCampusesIndexRoute
   '/@admin/committees': typeof AtadminCommitteesIndexRoute
+  '/@admin/disclosures': typeof AtadminDisclosuresIndexRoute
   '/@admin/downloads': typeof AtadminDownloadsIndexRoute
   '/@admin/events': typeof AtadminEventsIndexRoute
   '/@admin/faculties': typeof AtadminFacultiesIndexRoute
@@ -416,6 +424,7 @@ export interface FileRoutesById {
   '/@admin/admission-leads/': typeof AtadminAdmissionLeadsIndexRoute
   '/@admin/campuses/': typeof AtadminCampusesIndexRoute
   '/@admin/committees/': typeof AtadminCommitteesIndexRoute
+  '/@admin/disclosures/': typeof AtadminDisclosuresIndexRoute
   '/@admin/downloads/': typeof AtadminDownloadsIndexRoute
   '/@admin/events/': typeof AtadminEventsIndexRoute
   '/@admin/faculties/': typeof AtadminFacultiesIndexRoute
@@ -466,6 +475,7 @@ export interface FileRouteTypes {
     | '/@admin/admission-leads/'
     | '/@admin/campuses/'
     | '/@admin/committees/'
+    | '/@admin/disclosures/'
     | '/@admin/downloads/'
     | '/@admin/events/'
     | '/@admin/faculties/'
@@ -513,6 +523,7 @@ export interface FileRouteTypes {
     | '/@admin/admission-leads'
     | '/@admin/campuses'
     | '/@admin/committees'
+    | '/@admin/disclosures'
     | '/@admin/downloads'
     | '/@admin/events'
     | '/@admin/faculties'
@@ -561,6 +572,7 @@ export interface FileRouteTypes {
     | '/@admin/admission-leads/'
     | '/@admin/campuses/'
     | '/@admin/committees/'
+    | '/@admin/disclosures/'
     | '/@admin/downloads/'
     | '/@admin/events/'
     | '/@admin/faculties/'
@@ -767,6 +779,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AtadminDownloadsIndexRouteImport
       parentRoute: typeof AtadminRoute
     }
+    '/@admin/disclosures/': {
+      id: '/@admin/disclosures/'
+      path: '/disclosures'
+      fullPath: '/@admin/disclosures/'
+      preLoaderRoute: typeof AtadminDisclosuresIndexRouteImport
+      parentRoute: typeof AtadminRoute
+    }
     '/@admin/committees/': {
       id: '/@admin/committees/'
       path: '/committees'
@@ -940,6 +959,7 @@ interface AtadminRouteChildren {
   AtadminAdmissionLeadsIndexRoute: typeof AtadminAdmissionLeadsIndexRoute
   AtadminCampusesIndexRoute: typeof AtadminCampusesIndexRoute
   AtadminCommitteesIndexRoute: typeof AtadminCommitteesIndexRoute
+  AtadminDisclosuresIndexRoute: typeof AtadminDisclosuresIndexRoute
   AtadminDownloadsIndexRoute: typeof AtadminDownloadsIndexRoute
   AtadminEventsIndexRoute: typeof AtadminEventsIndexRoute
   AtadminFacultiesIndexRoute: typeof AtadminFacultiesIndexRoute
@@ -974,6 +994,7 @@ const AtadminRouteChildren: AtadminRouteChildren = {
   AtadminAdmissionLeadsIndexRoute: AtadminAdmissionLeadsIndexRoute,
   AtadminCampusesIndexRoute: AtadminCampusesIndexRoute,
   AtadminCommitteesIndexRoute: AtadminCommitteesIndexRoute,
+  AtadminDisclosuresIndexRoute: AtadminDisclosuresIndexRoute,
   AtadminDownloadsIndexRoute: AtadminDownloadsIndexRoute,
   AtadminEventsIndexRoute: AtadminEventsIndexRoute,
   AtadminFacultiesIndexRoute: AtadminFacultiesIndexRoute,

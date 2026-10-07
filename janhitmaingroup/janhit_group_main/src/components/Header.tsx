@@ -180,10 +180,11 @@ function InstitutionsDropdown() {
               </div>
               <div className="flex flex-col gap-1">
                 {colleges.map((inst) => (
-                  <Link
+                  <a
                     key={inst.slug}
-                    to="/institutions/$slug"
-                    params={{ slug: inst.slug }}
+                    href={inst.website}
+                    target="_blank"
+                    rel="noreferrer"
                     onClick={() => setIsOpen(false)}
                     className="group flex flex-col p-2.5 rounded-xl hover:bg-accent text-left transition"
                   >
@@ -191,7 +192,7 @@ function InstitutionsDropdown() {
                       {inst.name}
                     </div>
                     <div className="text-[10px] text-muted-foreground mt-1">{inst.location}</div>
-                  </Link>
+                  </a>
                 ))}
               </div>
             </div>
@@ -203,10 +204,11 @@ function InstitutionsDropdown() {
               </div>
               <div className="flex flex-col gap-1">
                 {schools.map((inst) => (
-                  <Link
+                  <a
                     key={inst.slug}
-                    to="/institutions/$slug"
-                    params={{ slug: inst.slug }}
+                    href={inst.website}
+                    target="_blank"
+                    rel="noreferrer"
                     onClick={() => setIsOpen(false)}
                     className="group flex flex-col p-2.5 rounded-xl hover:bg-accent text-left transition"
                   >
@@ -214,7 +216,7 @@ function InstitutionsDropdown() {
                       {inst.name}
                     </div>
                     <div className="text-[10px] text-muted-foreground mt-1">{inst.location}</div>
-                  </Link>
+                  </a>
                 ))}
               </div>
             </div>
@@ -820,15 +822,16 @@ export function Header() {
                     {activeMobileSection === "Institutions" && (
                       <div className="pl-4 flex flex-col border-l border-border/80 ml-3 mt-1 mb-2 gap-0.5">
                         {institutions.map((inst) => (
-                          <Link
+                          <a
                             key={inst.slug}
-                            to="/institutions/$slug"
-                            params={{ slug: inst.slug }}
+                            href={inst.website}
+                            target="_blank"
+                            rel="noreferrer"
                             onClick={() => setOpen(false)}
                             className="px-3 py-2 rounded-lg text-xs font-semibold text-muted-foreground hover:text-primary hover:bg-accent"
                           >
                             {inst.name} ({inst.city})
-                          </Link>
+                          </a>
                         ))}
                       </div>
                     )}

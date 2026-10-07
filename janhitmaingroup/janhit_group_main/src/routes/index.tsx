@@ -162,71 +162,102 @@ function Home() {
       </section>
 
       {/* ABOUT */}
-      <section className="py-24">
-        <div className="container-tight grid lg:grid-cols-2 gap-14 items-center">
-          <FadeIn>
-            <span className="inline-block px-3 py-1 rounded-full text-[11px] font-semibold uppercase tracking-[0.2em] text-gold border border-gold/40 bg-gold/5">
-              About the Group
+      <section className="py-24 bg-white" style={{ backgroundColor: "#ffffff" }}>
+        <div className="container-tight">
+          {/* Centered Top Eyebrow */}
+          <div className="text-center mb-10">
+            <span className="inline-block px-4 py-1.5 rounded-full text-xs md:text-sm font-bold uppercase tracking-[0.22em] text-amber-950 bg-gradient-gold border border-gold/40 shadow-gold">
+              About Janhit Group of Institutions
             </span>
-            <h2 className="mt-4 text-3xl md:text-5xl font-display font-bold">
-              Two decades of nurturing minds across{" "}
-              <span className="text-gradient-gold">Uttar Pradesh</span>.
-            </h2>
-            <p className="mt-5 text-muted-foreground leading-relaxed">
-              Established in 2002, Janhit Group has grown into a multi-campus education family with
-              a presence in Greater Noida, Ghaziabad and Saharanpur — offering programs in Law,
-              Education, Management, Commerce, Science and K-12 schooling.
-            </p>
-            <div className="mt-6 flex flex-wrap gap-2">
-              {["AICTE", "NCTE", "BCI", "CBSE", "CCS University", "Maa Shakumbhari University"].map(
-                (t) => (
-                  <span
-                    key={t}
-                    className="px-3 py-1.5 rounded-lg bg-accent text-accent-foreground text-xs font-semibold"
-                  >
-                    {t}
-                  </span>
-                ),
-              )}
-            </div>
-            <Link
-              to="/about"
-              className="mt-8 inline-flex items-center gap-2 text-primary font-semibold hover:gap-3 transition-all"
-            >
-              Read our story <ArrowRight className="size-4" />
-            </Link>
-          </FadeIn>
+          </div>
 
-          <div className="relative">
-            <div className="absolute -inset-4 bg-gradient-gold opacity-20 blur-3xl rounded-full" />
-            <div className="relative glass rounded-3xl p-8">
-              <h3 className="font-display text-xl font-bold">Our Journey</h3>
-              <ol className="mt-6 space-y-5 relative before:absolute before:left-3 before:top-2 before:bottom-2 before:w-px before:bg-border">
-                {timeline.map((m) => (
-                  <li key={m.y} className="pl-10 relative">
-                    <span className="absolute left-0 top-1 size-6 rounded-full bg-gradient-gold grid place-items-center text-[10px] font-bold text-gold-foreground shadow-gold">
-                      ●
-                    </span>
-                    <div className="text-xs uppercase tracking-wider text-gold font-semibold">
-                      {m.y}
-                    </div>
-                    <div className="font-semibold">{m.t}</div>
-                    <div className="text-sm text-muted-foreground">{m.d}</div>
-                  </li>
-                ))}
-              </ol>
+          <div className="grid lg:grid-cols-2 gap-10 items-stretch">
+            {/* LEFT CARD: About Us Content */}
+            <FadeIn>
+              <div
+                className="h-full flex flex-col justify-between p-8 md:p-10 bg-white rounded-3xl border border-border shadow-sm"
+                style={{ backgroundColor: "#ffffff" }}
+              >
+                <div>
+                  <h2 className="text-3xl md:text-4xl font-display font-bold text-foreground leading-tight">
+                    Two decades of nurturing minds across{" "}
+                    <span className="text-gradient-gold">Uttar Pradesh</span>.
+                  </h2>
+                  <p className="mt-5 text-muted-foreground leading-relaxed text-sm md:text-base">
+                    Established in 2002, Janhit Group of Institutions has grown into a premier multi-campus educational network spanning Greater Noida, Ghaziabad, and Saharanpur. Across seven state-of-the-art campuses, we deliver comprehensive academic programs in Law, Management, Computer Applications, Humanities, Commerce, Applied Sciences, Teacher Training, and K-12 schooling.
+                  </p>
+                  <p className="mt-4 text-muted-foreground leading-relaxed text-sm md:text-base">
+                    Our mission is to combine rigorous academic frameworks with practical industry exposure, ethical leadership, and student-centered mentoring. With over 10,000 active learners and 100+ distinguished faculty members, we foster an inspiring environment where curious minds transform into visionary professionals.
+                  </p>
+                  <div className="mt-6 flex flex-wrap gap-2">
+                    {[
+                      "AICTE Approved",
+                      "NCTE Approved",
+                      "BCI Recognized",
+                      "CBSE Affiliated",
+                      "CCS University",
+                      "Maa Shakumbhari University",
+                    ].map((t) => (
+                      <span
+                        key={t}
+                        className="px-3 py-1.5 rounded-lg bg-accent text-accent-foreground text-xs font-semibold border border-border/50"
+                      >
+                        {t}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="mt-8 pt-6 border-t border-border/60">
+                  <Link
+                    to="/about"
+                    className="inline-flex items-center gap-2 text-primary font-bold hover:gap-3 transition-all"
+                  >
+                    Read our full story <ArrowRight className="size-4" />
+                  </Link>
+                </div>
+              </div>
+            </FadeIn>
+
+            {/* RIGHT CARD: Our Journey */}
+            <div className="relative">
+              <div className="absolute -inset-4 bg-gradient-gold opacity-15 blur-3xl rounded-full pointer-events-none" />
+              <div
+                className="relative h-full flex flex-col justify-between p-8 md:p-10 bg-white rounded-3xl border border-border shadow-sm"
+                style={{ backgroundColor: "#ffffff" }}
+              >
+                <div>
+                  <h3 className="font-display text-2xl font-bold text-foreground">Our Journey</h3>
+                  <ol className="mt-6 space-y-5 relative before:absolute before:left-3 before:top-2 before:bottom-2 before:w-px before:bg-border">
+                    {timeline.map((m) => (
+                      <li key={m.y} className="pl-10 relative">
+                        <span className="absolute left-0 top-1 size-6 rounded-full bg-gradient-gold grid place-items-center text-[10px] font-bold text-gold-foreground shadow-gold">
+                          ●
+                        </span>
+                        <div className="text-xs uppercase tracking-wider text-gold font-bold">
+                          {m.y}
+                        </div>
+                        <div className="font-semibold text-foreground">{m.t}</div>
+                        <div className="text-sm text-muted-foreground">{m.d}</div>
+                      </li>
+                    ))}
+                  </ol>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
       {/* INSTITUTIONS */}
-      <section className="py-24 bg-secondary/40">
+      <section className="py-24 bg-white" style={{ backgroundColor: "#ffffff" }}>
         <div className="container-tight">
           <SectionHeader
             eyebrow="Our Institutions"
+            eyebrowClassName="inline-block px-4 py-1.5 rounded-full text-xs md:text-sm font-bold uppercase tracking-[0.22em] text-amber-950 bg-gradient-gold border border-gold/40 shadow-gold"
             title="Explore the Janhit family of campuses"
-            subtitle="Seven institutions across three cities, each crafted to empower its learners."
+            subtitle="At Janhit Group, our institutions represent a shared commitment to excellence, innovation, and inclusive education. With campuses across multiple cities, each institution offers a unique learning environment designed to nurture knowledge, skills, creativity, and character. From professional education and teacher training to legal studies and school education, our diverse institutions provide meaningful opportunities for learners at every stage. With dedicated faculty, modern infrastructure, industry-relevant programs, and a student-focused approach, we strive to prepare young minds for the challenges and opportunities of tomorrow. Together, the Janhit family continues to build a strong educational ecosystem focused on empowering learners and creating a positive impact on society."
+            containerClassName="max-w-4xl"
           />
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {institutions.map((i, idx) => (

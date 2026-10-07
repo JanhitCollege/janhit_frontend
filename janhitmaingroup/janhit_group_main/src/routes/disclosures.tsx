@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SectionHeader, FadeIn } from "@/components/Section";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   FileText,
   Download,
@@ -12,7 +12,9 @@ import {
   HelpCircle,
   ChevronRight,
   Clipboard,
+  ExternalLink,
 } from "lucide-react";
+import { getCampusDisclosuresPublic, getDisclosureDownloadUrl } from "@/services/api";
 
 export const Route = createFileRoute("/disclosures")({
   head: () => ({
@@ -28,30 +30,34 @@ export const Route = createFileRoute("/disclosures")({
   component: DisclosuresPage,
 });
 
-const disclosures = [
+const defaultDisclosures = [
   {
+    id: "default-1",
     label: "Affiliation Certificates (B.A.LL.B., LLB and LL.M.)",
     file: "Affiliation_Law_CCS_University.pdf",
   },
-  { label: "College Prospectus & Guidelines 2026-27", file: "College_Prospectus_2026.pdf" },
+  { id: "default-2", label: "College Prospectus & Guidelines 2026-27", file: "College_Prospectus_2026.pdf" },
   {
+    id: "default-3",
     label: "Courses / Programs Approvals (BCI, NCTE, AICTE)",
     file: "Program_Regulatory_Approvals.pdf",
   },
   {
+    id: "default-4",
     label: "Detailed Subject Syllabus (CCS University)",
     file: "Syllabus_CCS_University_Law_MGMT.pdf",
   },
-  { label: "Code of Conduct (Students, Teachers & Staff)", file: "Code_of_Conduct_Janhit.pdf" },
-  { label: "Core Faculty List & Academic Qualifications", file: "Faculty_List_Qualifications.pdf" },
-  { label: "Alumni Association Registration & Bylaws", file: "Alumni_Association_Bylaws.pdf" },
+  { id: "default-5", label: "Code of Conduct (Students, Teachers & Staff)", file: "Code_of_Conduct_Janhit.pdf" },
+  { id: "default-6", label: "Core Faculty List & Academic Qualifications", file: "Faculty_List_Qualifications.pdf" },
+  { id: "default-7", label: "Alumni Association Registration & Bylaws", file: "Alumni_Association_Bylaws.pdf" },
   {
+    id: "default-8",
     label: "RTI Act Statutory Disclosures (Right to Information)",
     file: "RTI_Act_Statutory_Declaration.pdf",
   },
-  { label: "Academic Calendar (Odd & Even Semesters 2026)", file: "Academic_Calendar_2026.pdf" },
-  { label: "Management Committee Members & Governance", file: "Management_Committee_List.pdf" },
-  { label: "Legal Aid Clinic Committee Roster", file: "Legal_Aid_Clinic_Members.pdf" },
+  { id: "default-9", label: "Academic Calendar (Odd & Even Semesters 2026)", file: "Academic_Calendar_2026.pdf" },
+  { id: "default-10", label: "Management Committee Members & Governance", file: "Management_Committee_List.pdf" },
+  { id: "default-11", label: "Legal Aid Clinic Committee Roster", file: "Legal_Aid_Clinic_Members.pdf" },
 ];
 
 const committees = [
@@ -113,12 +119,63 @@ const committees = [
   },
 ];
 
+const defaultTeacherDetails: any[] = [];
+
 function DisclosuresPage() {
   const [selectedCommittee, setSelectedCommittee] = useState<number>(0);
+  const [apiDisclosures, setApiDisclosures] = useState<any[]>([]);
+  const [teacherDetails, setTeacherDetails] = useState<any[]>(defaultTeacherDetails);
+
+  useEffect(() => {
+    async function fetchDisclosures() {
+      try {
+        const stored = localStorage.getItem("janhit_teachers_jws-gn");
+        if (stored) {
+          try { setTeacherDetails(JSON.parse(stored)); } catch (e) {}
+        }
+        const res = await getCampusDisclosuresPublic("jws-gn");
+        if (res?.success && res.data) {
+          const docs = [...(res.data.documents || []), ...(res.data.academics || [])];
+          if (docs.length > 0) {
+            setApiDisclosures(
+              docs.map((d: any) => ({
+                id: d.id,
+                label: d.title,
+                file: d.fileName || d.docNo || "Statutory_Document.pdf",
+                downloadUrl: getDisclosureDownloadUrl(d.id),
+              }))
+            );
+          }
+
+          if (res.data.staff?.length > 0) {
+            const rosterItem = res.data.staff.find((s: any) => s.key === "TEACHER_ROSTER_JSON");
+            if (rosterItem && rosterItem.value) {
+              try {
+                setTeacherDetails(JSON.parse(rosterItem.value));
+              } catch (e) {}
+            }
+          }
+        }
+      } catch (e) {
+        // Soft fallback to default disclosures
+      }
+    }
+    fetchDisclosures();
+  }, []);
+
+  const displayDisclosures = apiDisclosures.length > 0 ? apiDisclosures : defaultDisclosures;
 
   const scrollToSection = (id: string) => {
     const el = document.getElementById(id);
     if (el) el.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const handleDownload = (disc: any) => {
+    if (disc.downloadUrl) {
+      window.open(disc.downloadUrl, "_blank");
+    } else {
+      alert(`Downloading Disclosure Document: ${disc.file}`);
+    }
   };
 
   return (
@@ -135,7 +192,7 @@ function DisclosuresPage() {
             </h1>
             <p className="mt-6 text-lg opacity-90 max-w-2xl">
               Mandatory university and government disclosures, affiliation certificates, code of
-              conduct declarations, and student welfare committee compositions.
+              conduct declarations, teacher details roster, and student welfare committee compositions.
             </p>
           </FadeIn>
         </div>
@@ -150,6 +207,12 @@ function DisclosuresPage() {
               className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl bg-card border border-border hover:border-gold/30 hover:bg-gold/5 text-sm font-semibold text-foreground hover:text-gold transition duration-300 shadow-sm"
             >
               <Clipboard className="size-4 text-gold" /> Public Disclosures
+            </button>
+            <button
+              onClick={() => scrollToSection("teacher-details")}
+              className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl bg-card border border-border hover:border-gold/30 hover:bg-gold/5 text-sm font-semibold text-foreground hover:text-gold transition duration-300 shadow-sm"
+            >
+              <Users className="size-4 text-gold" /> Teacher Details
             </button>
             <button
               onClick={() => scrollToSection("committees")}
@@ -171,9 +234,9 @@ function DisclosuresPage() {
           />
 
           <div className="max-w-4xl mx-auto mt-12 border border-border bg-card rounded-3xl shadow-sm overflow-hidden divide-y divide-border/60">
-            {disclosures.map((disc, idx) => (
+            {displayDisclosures.map((disc, idx) => (
               <div
-                key={idx}
+                key={disc.id || idx}
                 className="p-5 md:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-secondary/20 transition duration-150"
               >
                 <div className="flex items-start gap-4">
@@ -190,11 +253,70 @@ function DisclosuresPage() {
                   </div>
                 </div>
 
-                <button className="self-start sm:self-center inline-flex items-center gap-1 text-xs text-gold font-bold hover:underline shrink-0 bg-secondary/50 px-3 py-1.5 rounded-lg border border-border">
+                <button
+                  onClick={() => handleDownload(disc)}
+                  className="self-start sm:self-center inline-flex items-center gap-1 text-xs text-gold font-bold hover:underline shrink-0 bg-secondary/50 px-3 py-1.5 rounded-lg border border-border cursor-pointer"
+                >
                   Download PDF <Download className="size-3.5" />
                 </button>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Teacher Details Section */}
+      <section id="teacher-details" className="py-16 scroll-mt-32 bg-secondary/20 relative border-t border-border/60">
+        <div className="container-tight">
+          <SectionHeader
+            eyebrow="Faculty Roster"
+            title="TEACHER DETAILS"
+            subtitle="Official mandatory disclosure list of teaching staff, designations, and academic qualifications."
+          />
+
+          <div className="max-w-5xl mx-auto mt-10 bg-card rounded-2xl border border-border/80 shadow-xs overflow-hidden">
+            <div className="p-4 md:p-5 bg-secondary/50 border-b border-border/80 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Users className="size-5 text-gold" />
+                <h3 className="font-bold text-sm md:text-base text-foreground tracking-wide uppercase">
+                  TEACHER DETAILS
+                </h3>
+              </div>
+              <span className="text-xs font-semibold text-muted-foreground">
+                {teacherDetails.length} Staff Members Listed
+              </span>
+            </div>
+
+            <div className="overflow-x-auto">
+              <table className="w-full text-left border-collapse text-xs md:text-sm">
+                <thead>
+                  <tr className="bg-secondary/70 border-b border-border/80 text-foreground font-bold uppercase tracking-wider text-[11px] md:text-xs">
+                    <th className="py-3.5 px-4 border-r border-border/80 w-16 text-center">SL NO.</th>
+                    <th className="py-3.5 px-4 border-r border-border/80 min-w-[180px]">TEACHER NAME</th>
+                    <th className="py-3.5 px-4 border-r border-border/80 min-w-[200px]">DESIGNATION</th>
+                    <th className="py-3.5 px-4 min-w-[240px]">QUALIFICATION</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-border/60">
+                  {teacherDetails.map((t, idx) => (
+                    <tr key={idx} className="hover:bg-secondary/30 transition-colors">
+                      <td className="py-3 px-4 border-r border-border/80 text-center font-bold text-muted-foreground">
+                        {t.slNo || idx + 1}
+                      </td>
+                      <td className="py-3 px-4 border-r border-border/80 font-semibold text-foreground">
+                        {t.name}
+                      </td>
+                      <td className="py-3 px-4 border-r border-border/80 font-medium text-foreground uppercase tracking-wide text-xs">
+                        {t.designation}
+                      </td>
+                      <td className="py-3 px-4 text-muted-foreground font-medium">
+                        {t.qualification}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </section>

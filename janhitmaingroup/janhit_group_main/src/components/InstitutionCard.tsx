@@ -1,4 +1,3 @@
-import { Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import { ArrowUpRight, ExternalLink, MapPin } from "lucide-react";
 import type { Institution } from "@/data/institutions";
@@ -57,13 +56,14 @@ export function InstitutionCard({ inst, index = 0 }: { inst: Institution; index?
         </div>
 
         <div className="mt-5 flex items-center gap-2">
-          <Link
-            to="/institutions/$slug"
-            params={{ slug: inst.slug }}
+          <a
+            href={inst.website}
+            target="_blank"
+            rel="noreferrer"
             className="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary-glow transition"
           >
             View Details <ArrowUpRight className="size-4" />
-          </Link>
+          </a>
           <a
             href={inst.maps}
             target="_blank"

@@ -73,15 +73,16 @@ export function Footer() {
             Our Institutions
           </h4>
           <ul className="mt-5 space-y-2.5 text-sm opacity-80">
-            {institutions.slice(0, 6).map((i) => (
+            {institutions.map((i) => (
               <li key={i.slug}>
-                <Link
-                  to="/institutions/$slug"
-                  params={{ slug: i.slug }}
+                <a
+                  href={i.website}
+                  target="_blank"
+                  rel="noreferrer"
                   className="hover:text-gold transition"
                 >
                   {i.name} — {i.city}
-                </Link>
+                </a>
               </li>
             ))}
           </ul>

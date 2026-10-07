@@ -6,11 +6,15 @@ export function SectionHeader({
   title,
   subtitle,
   center = true,
+  containerClassName = "max-w-2xl",
+  eyebrowClassName,
 }: {
   eyebrow?: string;
   title: string;
   subtitle?: string;
   center?: boolean;
+  containerClassName?: string;
+  eyebrowClassName?: string;
 }) {
   return (
     <motion.div
@@ -18,15 +22,20 @@ export function SectionHeader({
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-80px" }}
       transition={{ duration: 0.6 }}
-      className={`max-w-2xl ${center ? "mx-auto text-center" : ""} mb-12`}
+      className={`${containerClassName} ${center ? "mx-auto text-center" : ""} mb-12`}
     >
       {eyebrow && (
-        <span className="inline-block px-3 py-1 rounded-full text-[11px] font-semibold uppercase tracking-[0.2em] text-gold border border-gold/40 bg-gold/5">
+        <span
+          className={
+            eyebrowClassName ||
+            "inline-block px-3 py-1 rounded-full text-[11px] font-semibold uppercase tracking-[0.2em] text-gold border border-gold/40 bg-gold/5"
+          }
+        >
           {eyebrow}
         </span>
       )}
       <h2 className="mt-4 text-3xl md:text-5xl font-bold text-foreground">{title}</h2>
-      {subtitle && <p className="mt-4 text-base md:text-lg text-muted-foreground">{subtitle}</p>}
+      {subtitle && <p className="mt-4 text-base md:text-lg text-muted-foreground leading-relaxed">{subtitle}</p>}
     </motion.div>
   );
 }

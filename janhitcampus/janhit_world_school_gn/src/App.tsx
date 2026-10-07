@@ -18,6 +18,7 @@ import { AdmissionsPage } from "@/pages/AdmissionsPage";
 import { GalleryPage } from "@/pages/GalleryPage";
 import { FaqPage } from "@/pages/FaqPage";
 import { ContactPage } from "@/pages/ContactPage";
+import { PublicDisclosurePage } from "@/pages/PublicDisclosurePage";
 
 // Initialize standard React QueryClient
 const queryClient = new QueryClient({
@@ -48,6 +49,7 @@ export default function App() {
               <Route path="/campus" element={<GalleryPage />} />
               <Route path="/faq" element={<FaqPage />} />
               <Route path="/contact" element={<ContactPage />} />
+              <Route path="/public-disclosure" element={<PublicDisclosurePage />} />
             </Routes>
           </main>
           <Footer />

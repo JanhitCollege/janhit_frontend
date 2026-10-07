@@ -10,6 +10,7 @@ const exploreLinks = [
   { label: "Sports", href: "/sports" },
   { label: "Admissions", href: "/admissions" },
   { label: "Gallery", href: "/gallery" },
+  { label: "Public Disclosure", href: "/public-disclosure" },
   { label: "FAQ", href: "/faq" },
   { label: "Contact Us", href: "/contact" },
 ];
