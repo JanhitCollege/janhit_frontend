@@ -17,6 +17,7 @@ import {
   ArrowLeft,
   ChevronRight,
   Pencil,
+  Eye,
 } from "lucide-react";
 import { toast } from "sonner";
 import { campusService } from "../services/campusService";
@@ -44,10 +45,6 @@ export interface TeacherDetail {
 }
 
 export const DEFAULT_TEACHER_DETAILS: TeacherDetail[] = [];
-
-const DEFAULT_DOCUMENTS: any[] = [];
-
-const DEFAULT_ACADEMICS: any[] = [];
 
 const DEFAULT_METRIC_FIELDS = {
   A_GENERAL_INFO: [
@@ -95,18 +92,14 @@ const DUMMY_TEACHERS = [
 
 const sanitizeTeacherRoster = (roster: any[]): TeacherDetail[] => {
   if (!Array.isArray(roster)) return [];
-  const cleaned = roster.filter(
-    (t: any) =>
-      t &&
-      (t.name !== undefined || t.designation !== undefined || t.qualification !== undefined) &&
-      !DUMMY_TEACHERS.some((d) => t.name && String(t.name).trim().toLowerCase().includes(d.toLowerCase()))
-  );
-  return cleaned.map((t: any, idx: number) => ({
-    slNo: idx + 1,
-    name: t.name || "",
-    designation: t.designation || "",
-    qualification: t.qualification || "",
-  }));
+  return roster
+    .filter((t: any) => t && (t.name || t.designation || t.qualification))
+    .map((t: any, idx: number) => ({
+      slNo: t.slNo || idx + 1,
+      name: t.name || "",
+      designation: t.designation || "",
+      qualification: t.qualification || "",
+    }));
 };
 
 const findCampusMatch = (val: string, list: any[]) => {
@@ -122,7 +115,7 @@ const findCampusMatch = (val: string, list: any[]) => {
 export function DisclosureManagement() {
   const [campuses, setCampuses] = useState<any[]>(STATIC_CAMPUS_FALLBACKS);
   const [selectedCampus, setSelectedCampus] = useState<any>(STATIC_CAMPUS_FALLBACKS[0]);
-  const [viewMode, setViewMode] = useState<"list" | "detail">("list");
+  const [viewMode, setViewMode] = useState<"list" | "detail" | "preview">("list");
   const [loading, setLoading] = useState<boolean>(false);
   const [savingMetrics, setSavingMetrics] = useState<boolean>(false);
   const [activeTab, setActiveTab] = useState<"documents" | "metrics">("documents");
@@ -168,8 +161,8 @@ export function DisclosureManagement() {
     }
   }, [selectedCampus]);
 
-const normalizeKey = (k: string) => (k || "").replace(/_/g, "").toLowerCase();
-const isKeyMatch = (k1: string, k2: string) => normalizeKey(k1) === normalizeKey(k2);
+  const normalizeKey = (k: string) => (k || "").replace(/_/g, "").toLowerCase();
+  const isKeyMatch = (k1: string, k2: string) => normalizeKey(k1) === normalizeKey(k2);
 
   // 2. Fetch campus disclosures data for selected campus
   const loadCampusData = async () => {
@@ -243,30 +236,30 @@ const isKeyMatch = (k1: string, k2: string) => normalizeKey(k1) === normalizeKey
         }
 
         // 3. Populate Staff metrics & Teacher Roster
-        if (res.data.staff?.length > 0) {
-          const rosterMetric = res.data.staff.find((s: any) => isKeyMatch(s.key, "TEACHER_ROSTER_JSON"));
+        let loadedRoster: any[] = [];
+        if (Array.isArray(res.data.teacherRoster) && res.data.teacherRoster.length > 0) {
+          loadedRoster = res.data.teacherRoster;
+        } else if (res.data.staff?.length > 0) {
+          const rosterMetric = res.data.staff.find((s: any) => isKeyMatch(s.key, "TEACHER_ROSTER_JSON") || isKeyMatch(s.key, "TEACHER_ROSTER"));
           if (rosterMetric && rosterMetric.value) {
             try {
-              const rawData = typeof rosterMetric.value === "string" ? JSON.parse(rosterMetric.value) : rosterMetric.value;
-              const parsed = sanitizeTeacherRoster(rawData);
-              setTeacherRoster(parsed);
-            } catch (e) {
-              setTeacherRoster([]);
-            }
-          } else {
-            const stored = localStorage.getItem(`janhit_teachers_${selectedCampus.id}`);
-            if (stored) {
-              try { 
-                const parsed = sanitizeTeacherRoster(JSON.parse(stored));
-                setTeacherRoster(parsed);
-              } catch (e) { setTeacherRoster([]); }
-            } else {
-              setTeacherRoster([]);
-            }
+              loadedRoster = typeof rosterMetric.value === "string" ? JSON.parse(rosterMetric.value) : rosterMetric.value;
+            } catch (e) {}
           }
+        }
 
+        if (!Array.isArray(loadedRoster) || loadedRoster.length === 0) {
+          const stored = localStorage.getItem(`janhit_teachers_${selectedCampus.id}`);
+          if (stored) {
+            try { loadedRoster = JSON.parse(stored); } catch (e) {}
+          }
+        }
+
+        setTeacherRoster(sanitizeTeacherRoster(loadedRoster));
+
+        if (res.data.staff?.length > 0) {
           res.data.staff
-            .filter((s: any) => !isKeyMatch(s.key, "TEACHER_ROSTER_JSON"))
+            .filter((s: any) => !isKeyMatch(s.key, "TEACHER_ROSTER_JSON") && !isKeyMatch(s.key, "TEACHER_ROSTER"))
             .forEach((s: any) => {
               const field = loadedMetrics.D_STAFF.find((f: any) => isKeyMatch(f.key, s.key));
               if (field) {
@@ -276,16 +269,6 @@ const isKeyMatch = (k1: string, k2: string) => normalizeKey(k1) === normalizeKey
                 loadedMetrics.D_STAFF.push({ key: s.key, label: s.label || s.key, value: s.value });
               }
             });
-        } else {
-          const stored = localStorage.getItem(`janhit_teachers_${selectedCampus.id}`);
-          if (stored) {
-            try { 
-              const parsed = sanitizeTeacherRoster(JSON.parse(stored));
-              setTeacherRoster(parsed);
-            } catch (e) { setTeacherRoster([]); }
-          } else {
-            setTeacherRoster([]);
-          }
         }
 
         // 4. Populate Infrastructure metrics
@@ -451,6 +434,14 @@ const isKeyMatch = (k1: string, k2: string) => normalizeKey(k1) === normalizeKey
 
       payload.push({
         section_code: "D_STAFF",
+        metric_key: "TEACHER_ROSTER",
+        metric_label: "TEACHER DETAILS (PUBLIC ROSTER TABLE)",
+        metric_value: JSON.stringify(teacherRoster),
+        sort_order: 98,
+      });
+
+      payload.push({
+        section_code: "D_STAFF",
         metric_key: "TEACHER_ROSTER_JSON",
         metric_label: "Teacher Details Roster List",
         metric_value: JSON.stringify(teacherRoster),
@@ -468,7 +459,7 @@ const isKeyMatch = (k1: string, k2: string) => normalizeKey(k1) === normalizeKey
 
   return (
     <div className="p-4 md:p-6 space-y-6 max-w-7xl mx-auto">
-      {/* View Mode Toggle Header */}
+      {/* Header Bar */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-card p-5 md:p-6 rounded-2xl border border-border/80 shadow-xs">
         <div className="flex items-center gap-3.5">
           <div className="size-11 rounded-xl bg-gradient-gold grid place-items-center shadow-gold shrink-0">
@@ -485,7 +476,7 @@ const isKeyMatch = (k1: string, k2: string) => normalizeKey(k1) === normalizeKey
         </div>
 
         <div className="flex items-center gap-2 self-start md:self-auto">
-          {viewMode === "detail" && (
+          {viewMode !== "list" && (
             <button
               type="button"
               onClick={() => setViewMode("list")}
@@ -495,7 +486,7 @@ const isKeyMatch = (k1: string, k2: string) => normalizeKey(k1) === normalizeKey
             </button>
           )}
 
-          {/* Modern Campus Dropdown Selector */}
+          {/* Campus Dropdown Selector */}
           <Select
             value={String(selectedCampus?.id || selectedCampus?.slug)}
             onValueChange={(val) => {
@@ -503,7 +494,6 @@ const isKeyMatch = (k1: string, k2: string) => normalizeKey(k1) === normalizeKey
               if (camp) {
                 setSelectedCampus(camp);
                 setUploadCampusId(camp.id);
-                setViewMode("detail");
               }
             }}
           >
@@ -528,7 +518,7 @@ const isKeyMatch = (k1: string, k2: string) => normalizeKey(k1) === normalizeKey
         </div>
       </div>
 
-      {/* VIEW MODE 1: BRANCH LIST DASHBOARD */}
+      {/* MODE 1: ALL BRANCHES DASHBOARD (LIST VIEW) */}
       {viewMode === "list" && (
         <div className="space-y-5">
           <div className="flex items-center justify-between">
@@ -572,425 +562,614 @@ const isKeyMatch = (k1: string, k2: string) => normalizeKey(k1) === normalizeKey
                   </div>
                 </div>
 
-                <button
-                  type="button"
-                  onClick={() => {
-                    setSelectedCampus(campus);
-                    setUploadCampusId(campus.id);
-                    setViewMode("detail");
-                  }}
-                  className="w-full py-2.5 px-4 rounded-xl bg-gradient-gold text-gold-foreground font-bold text-xs md:text-sm shadow-gold hover:opacity-95 transition flex items-center justify-center gap-2 cursor-pointer"
-                >
-                  <span>Manage Disclosures</span>
-                  <ChevronRight className="size-4" />
-                </button>
+                {/* VIEW DETAILS and MANAGE BUTTONS */}
+                <div className="flex items-center gap-2 pt-2 border-t border-border/60">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSelectedCampus(campus);
+                      setUploadCampusId(campus.id);
+                      setViewMode("preview");
+                    }}
+                    className="flex-1 py-2.5 px-3 rounded-xl bg-accent text-foreground hover:bg-gold/10 hover:text-gold font-bold text-xs border border-border/80 transition flex items-center justify-center gap-1.5 cursor-pointer"
+                  >
+                    <Eye className="size-4 text-gold" />
+                    <span>View Details</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSelectedCampus(campus);
+                      setUploadCampusId(campus.id);
+                      setViewMode("detail");
+                    }}
+                    className="flex-1 py-2.5 px-3 rounded-xl bg-gradient-gold text-gold-foreground font-bold text-xs shadow-gold hover:opacity-95 transition flex items-center justify-center gap-1.5 cursor-pointer"
+                  >
+                    <Pencil className="size-4" />
+                    <span>Manage / Edit</span>
+                  </button>
+                </div>
               </div>
             ))}
           </div>
         </div>
       )}
 
-      {/* VIEW MODE 2: DETAIL COMPLIANCE EDITOR */}
-      {viewMode === "detail" && (
+      {/* MODE 2: PUBLIC DISCLOSURE VIEW PREVIEW MODE */}
+      {viewMode === "preview" && (
         <div className="space-y-6">
-
-
-
-      {/* Navigation Tabs */}
-      <div className="flex items-center gap-2 border-b border-border pb-2.5">
-        <button
-          onClick={() => setActiveTab("documents")}
-          className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs md:text-sm font-bold transition-all cursor-pointer ${
-            activeTab === "documents"
-              ? "bg-primary text-primary-foreground shadow-xs"
-              : "bg-card text-muted-foreground hover:bg-accent hover:text-foreground border border-border/60"
-          }`}
-        >
-          <FileText className="size-4" />
-          <span>Statutory PDF Documents</span>
-        </button>
-
-        <button
-          onClick={() => setActiveTab("metrics")}
-          className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs md:text-sm font-bold transition-all cursor-pointer ${
-            activeTab === "metrics"
-              ? "bg-primary text-primary-foreground shadow-xs"
-              : "bg-card text-muted-foreground hover:bg-accent hover:text-foreground border border-border/60"
-          }`}
-        >
-          <Info className="size-4" />
-          <span>Campus Details & Staff Metrics</span>
-        </button>
-      </div>
-
-      {/* Loading Indicator */}
-      {loading && (
-        <div className="flex items-center justify-center py-12 text-muted-foreground gap-2.5 text-xs md:text-sm font-medium">
-          <Loader2 className="size-5 animate-spin text-gold" />
-          <span>Loading campus disclosure data...</span>
-        </div>
-      )}
-
-      {/* Tab 1: Documents Management */}
-      {!loading && activeTab === "documents" && (
-        <div className="space-y-5">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-card p-5 rounded-2xl border border-border/80 shadow-xs">
             <div>
-              <h2 className="text-base md:text-lg font-bold font-display text-foreground">
-                Statutory Certificates & Academic Documents
+              <span className="text-[11px] font-bold uppercase tracking-wider text-gold block">Public Disclosure Report Preview</span>
+              <h2 className="text-lg md:text-xl font-bold font-display text-foreground">
+                {selectedCampus?.name}
               </h2>
-              <span className="text-xs font-semibold text-muted-foreground mt-0.5 block">
-                Selected Branch: <strong className="text-foreground">{selectedCampus?.name}</strong>
-              </span>
-            </div>
-
-            <button
-              onClick={() => {
-                setUploadCampusId(selectedCampus.id);
-                setUploadModalOpen(true);
-              }}
-              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-gold text-gold-foreground font-bold text-xs md:text-sm shadow-gold hover:opacity-95 transition cursor-pointer self-start sm:self-auto"
-            >
-              <Plus className="size-4" /> Upload Statutory PDF
-            </button>
-          </div>
-
-          {/* Documents Cards */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-            {/* Category B Documents */}
-            <div className="bg-card p-5 rounded-2xl border border-border/80 shadow-xs space-y-4">
-              <div className="flex items-center justify-between border-b pb-3 border-border/60">
-                <h3 className="font-bold text-sm md:text-base text-foreground flex items-center gap-2">
-                  <ShieldCheck className="size-4.5 text-gold" /> B. Documents & Information
-                </h3>
-                <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-accent text-foreground border border-border/60">
-                  {documents.length} Files
-                </span>
-              </div>
-
-              {documents.length === 0 ? (
-                <div className="text-center py-10 space-y-3">
-                  <FileText className="size-10 text-muted-foreground/40 mx-auto" />
-                  <p className="text-xs md:text-sm font-medium text-muted-foreground max-w-sm mx-auto leading-relaxed">
-                    No statutory documents uploaded yet for <strong className="text-foreground">{selectedCampus?.name}</strong>.
-                  </p>
-                  <button
-                    onClick={() => {
-                      setUploadCampusId(selectedCampus.id);
-                      setCategoryCode("B_DOCUMENTS");
-                      setUploadModalOpen(true);
-                    }}
-                    className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold text-gold border border-gold/40 rounded-xl hover:bg-gold/10 transition cursor-pointer"
-                  >
-                    <Plus className="size-3.5" /> Add First Document
-                  </button>
-                </div>
-              ) : (
-                <div className="space-y-3">
-                  {documents.map((doc: any) => (
-                    <div
-                      key={doc.id}
-                      className="p-3.5 rounded-xl border border-border/80 bg-background flex items-start justify-between gap-3 hover:border-gold/40 transition"
-                    >
-                      <div className="space-y-0.5">
-                        <h4 className="text-xs md:text-sm font-semibold text-foreground leading-snug">{doc.title}</h4>
-                        <span className="text-[11px] text-muted-foreground block font-mono">
-                          Doc No: {doc.docNo} • {doc.fileSize}
-                        </span>
-                      </div>
-                      <div className="flex items-center gap-1.5 shrink-0">
-                        <a
-                          href={getDisclosureDownloadUrl(doc.id)}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="p-1.5 rounded-lg bg-accent text-foreground hover:text-gold transition"
-                          title="View PDF"
-                        >
-                          <ExternalLink className="size-3.5" />
-                        </a>
-                        <button
-                          onClick={() => handleDeleteDoc(doc.id)}
-                          className="p-1.5 rounded-lg bg-destructive/10 text-destructive hover:bg-destructive/20 cursor-pointer transition"
-                          title="Delete Document"
-                        >
-                          <Trash2 className="size-3.5" />
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-
-            {/* Category C Academics */}
-            <div className="bg-card p-5 rounded-2xl border border-border/80 shadow-xs space-y-4">
-              <div className="flex items-center justify-between border-b pb-3 border-border/60">
-                <h3 className="font-bold text-sm md:text-base text-foreground flex items-center gap-2">
-                  <BookOpen className="size-4.5 text-gold" /> C. Result & Academics
-                </h3>
-                <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-accent text-foreground border border-border/60">
-                  {academics.length} Files
-                </span>
-              </div>
-
-              {academics.length === 0 ? (
-                <div className="text-center py-10 space-y-3">
-                  <BookOpen className="size-10 text-muted-foreground/40 mx-auto" />
-                  <p className="text-xs md:text-sm font-medium text-muted-foreground max-w-sm mx-auto leading-relaxed">
-                    No academic disclosure documents uploaded yet for <strong className="text-foreground">{selectedCampus?.name}</strong>.
-                  </p>
-                  <button
-                    onClick={() => {
-                      setUploadCampusId(selectedCampus.id);
-                      setCategoryCode("C_ACADEMICS");
-                      setUploadModalOpen(true);
-                    }}
-                    className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold text-gold border border-gold/40 rounded-xl hover:bg-gold/10 transition cursor-pointer"
-                  >
-                    <Plus className="size-3.5" /> Add Academic File
-                  </button>
-                </div>
-              ) : (
-                <div className="space-y-3">
-                  {academics.map((doc: any) => (
-                    <div
-                      key={doc.id}
-                      className="p-3.5 rounded-xl border border-border/80 bg-background flex items-start justify-between gap-3 hover:border-gold/40 transition"
-                    >
-                      <div className="space-y-0.5">
-                        <h4 className="text-xs md:text-sm font-semibold text-foreground leading-snug">{doc.title}</h4>
-                        <span className="text-[11px] text-muted-foreground block font-mono">
-                          Ref: {doc.docNo} • {doc.fileSize}
-                        </span>
-                      </div>
-                      <div className="flex items-center gap-1.5 shrink-0">
-                        <a
-                          href={getDisclosureDownloadUrl(doc.id)}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="p-1.5 rounded-lg bg-accent text-foreground hover:text-gold transition"
-                          title="View PDF"
-                        >
-                          <ExternalLink className="size-3.5" />
-                        </a>
-                        <button
-                          onClick={() => handleDeleteDoc(doc.id)}
-                          className="p-1.5 rounded-lg bg-destructive/10 text-destructive hover:bg-destructive/20 cursor-pointer transition"
-                          title="Delete Document"
-                        >
-                          <Trash2 className="size-3.5" />
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Tab 2: Campus Details & Metrics */}
-      {!loading && activeTab === "metrics" && (
-        <div className="space-y-5">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-            <div>
-              <h2 className="text-base md:text-lg font-bold font-display text-foreground">
-                General Info, Staffing & Infrastructure Details
-              </h2>
-              <p className="text-xs font-semibold text-muted-foreground mt-0.5">
-                Editing metrics for: <strong className="text-foreground">{selectedCampus?.name}</strong>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                {selectedCampus?.address || "Institutional Campus"}
               </p>
             </div>
 
+            <div className="flex items-center gap-2 self-start sm:self-auto">
+              <button
+                type="button"
+                onClick={() => setViewMode("detail")}
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-gradient-gold text-gold-foreground font-bold text-xs shadow-gold hover:opacity-95 transition cursor-pointer"
+              >
+                <Pencil className="size-3.5" /> Edit / Manage Details
+              </button>
+            </div>
+          </div>
+
+          {loading ? (
+            <div className="flex items-center justify-center py-12 text-muted-foreground gap-2.5 text-xs md:text-sm font-medium">
+              <Loader2 className="size-5 animate-spin text-gold" />
+              <span>Loading updated disclosure metrics...</span>
+            </div>
+          ) : (
+            <div className="space-y-6">
+              {/* Section A Preview */}
+              <div className="bg-card p-5 md:p-6 rounded-2xl border border-border/80 shadow-xs space-y-4">
+                <h3 className="font-bold text-sm md:text-base text-foreground flex items-center gap-2 border-b pb-3 border-border/60">
+                  <Info className="size-4.5 text-gold" /> Section A: General Information
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs md:text-sm">
+                  {metrics.A_GENERAL_INFO?.map((item: any) => (
+                    <div key={item.key} className="bg-background p-3 rounded-xl border border-border/60 space-y-1">
+                      <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block">{item.label}</span>
+                      <p className="font-semibold text-foreground">{item.value || "—"}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Section D Preview */}
+              <div className="bg-card p-5 md:p-6 rounded-2xl border border-border/80 shadow-xs space-y-6">
+                <h3 className="font-bold text-sm md:text-base text-foreground flex items-center gap-2 border-b pb-3 border-border/60">
+                  <Users className="size-4.5 text-gold" /> Section D: Staff (Teaching Metrics & Roster)
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-xs md:text-sm">
+                  {metrics.D_STAFF?.map((item: any) => (
+                    <div key={item.key} className="bg-background p-3 rounded-xl border border-border/60 space-y-1">
+                      <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block">{item.label}</span>
+                      <p className="font-semibold text-foreground">{item.value || "—"}</p>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Teacher Details Roster Table Preview */}
+                <div className="space-y-3 pt-2">
+                  <h4 className="font-bold text-xs md:text-sm text-foreground uppercase tracking-wider flex items-center gap-2">
+                    <Users className="size-4 text-gold" /> TEACHER DETAILS (PUBLIC ROSTER TABLE)
+                  </h4>
+                  <div className="overflow-x-auto border border-border/80 rounded-xl bg-background">
+                    <table className="w-full text-left border-collapse text-xs">
+                      <thead>
+                        <tr className="bg-muted/50 border-b border-border/80 text-muted-foreground font-bold uppercase tracking-wider text-[10px]">
+                          <th className="py-2.5 px-3 border-r border-border/80 w-14 text-center">SL NO.</th>
+                          <th className="py-2.5 px-3 border-r border-border/80">TEACHER NAME</th>
+                          <th className="py-2.5 px-3 border-r border-border/80">DESIGNATION</th>
+                          <th className="py-2.5 px-3">QUALIFICATION</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-border/60">
+                        {teacherRoster.length === 0 ? (
+                          <tr>
+                            <td colSpan={4} className="py-6 text-center text-muted-foreground font-medium text-xs">
+                              No teacher details configured for this branch yet.
+                            </td>
+                          </tr>
+                        ) : (
+                          teacherRoster.map((t, idx) => (
+                            <tr key={idx} className="hover:bg-accent/30 transition">
+                              <td className="py-2 px-3 border-r border-border/80 text-center font-bold text-muted-foreground">
+                                {t.slNo || idx + 1}
+                              </td>
+                              <td className="py-2 px-3 border-r border-border/80 font-bold text-foreground">
+                                {t.name || "—"}
+                              </td>
+                              <td className="py-2 px-3 border-r border-border/80 font-semibold text-muted-foreground uppercase">
+                                {t.designation || "—"}
+                              </td>
+                              <td className="py-2 px-3 font-medium text-foreground">
+                                {t.qualification || "—"}
+                              </td>
+                            </tr>
+                          ))
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+
+              {/* Section E Preview */}
+              <div className="bg-card p-5 md:p-6 rounded-2xl border border-border/80 shadow-xs space-y-4">
+                <h3 className="font-bold text-sm md:text-base text-foreground flex items-center gap-2 border-b pb-3 border-border/60">
+                  <Building2 className="size-4.5 text-gold" /> Section E: Infrastructure Details
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-xs md:text-sm">
+                  {metrics.E_INFRASTRUCTURE?.map((item: any) => (
+                    <div key={item.key} className="bg-background p-3 rounded-xl border border-border/60 space-y-1">
+                      <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block">{item.label}</span>
+                      <p className="font-semibold text-foreground">{item.value || "—"}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Statutory Documents Preview */}
+              <div className="bg-card p-5 md:p-6 rounded-2xl border border-border/80 shadow-xs space-y-4">
+                <h3 className="font-bold text-sm md:text-base text-foreground flex items-center gap-2 border-b pb-3 border-border/60">
+                  <FileText className="size-4.5 text-gold" /> Statutory PDF Documents
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <h4 className="font-bold text-xs text-muted-foreground uppercase tracking-wider mb-2">B. Documents & Information</h4>
+                    {documents.length === 0 ? (
+                      <p className="text-xs text-muted-foreground italic">No statutory documents uploaded.</p>
+                    ) : (
+                      <div className="space-y-2">
+                        {documents.map((doc) => (
+                          <div key={doc.id} className="p-3 rounded-xl border border-border/80 bg-background flex items-center justify-between gap-2">
+                            <div>
+                              <p className="text-xs font-semibold text-foreground">{doc.title}</p>
+                              <span className="text-[10px] text-muted-foreground block">Ref: {doc.docNo}</span>
+                            </div>
+                            <a href={getDisclosureDownloadUrl(doc.id)} target="_blank" rel="noreferrer" className="p-1.5 rounded-lg bg-gold/10 text-gold hover:bg-gold hover:text-gold-foreground transition text-xs font-bold flex items-center gap-1">
+                              <ExternalLink className="size-3.5" /> View PDF
+                            </a>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                  <div>
+                    <h4 className="font-bold text-xs text-muted-foreground uppercase tracking-wider mb-2">C. Result & Academics</h4>
+                    {academics.length === 0 ? (
+                      <p className="text-xs text-muted-foreground italic">No academic documents uploaded.</p>
+                    ) : (
+                      <div className="space-y-2">
+                        {academics.map((doc) => (
+                          <div key={doc.id} className="p-3 rounded-xl border border-border/80 bg-background flex items-center justify-between gap-2">
+                            <div>
+                              <p className="text-xs font-semibold text-foreground">{doc.title}</p>
+                              <span className="text-[10px] text-muted-foreground block">Ref: {doc.docNo}</span>
+                            </div>
+                            <a href={getDisclosureDownloadUrl(doc.id)} target="_blank" rel="noreferrer" className="p-1.5 rounded-lg bg-gold/10 text-gold hover:bg-gold hover:text-gold-foreground transition text-xs font-bold flex items-center gap-1">
+                              <ExternalLink className="size-3.5" /> View PDF
+                            </a>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* MODE 3: DETAIL COMPLIANCE EDITOR (MANAGE MODE) */}
+      {viewMode === "detail" && (
+        <div className="space-y-6">
+          {/* Navigation Tabs */}
+          <div className="flex items-center gap-2 border-b border-border pb-2.5">
             <button
-              onClick={handleSaveMetrics}
-              disabled={savingMetrics}
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-gold text-gold-foreground font-bold text-xs md:text-sm shadow-gold hover:opacity-95 transition disabled:opacity-50 cursor-pointer self-start sm:self-auto"
+              onClick={() => setActiveTab("documents")}
+              className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs md:text-sm font-bold transition-all cursor-pointer ${
+                activeTab === "documents"
+                  ? "bg-primary text-primary-foreground shadow-xs"
+                  : "bg-card text-muted-foreground hover:bg-accent hover:text-foreground border border-border/60"
+              }`}
             >
-              {savingMetrics ? <Loader2 className="size-4 animate-spin" /> : <Save className="size-4" />}
-              <span>Save Details for {selectedCampus?.shortName || selectedCampus?.name}</span>
+              <FileText className="size-4" />
+              <span>Statutory PDF Documents</span>
+            </button>
+
+            <button
+              onClick={() => setActiveTab("metrics")}
+              className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs md:text-sm font-bold transition-all cursor-pointer ${
+                activeTab === "metrics"
+                  ? "bg-primary text-primary-foreground shadow-xs"
+                  : "bg-card text-muted-foreground hover:bg-accent hover:text-foreground border border-border/60"
+              }`}
+            >
+              <Info className="size-4" />
+              <span>Campus Details & Staff Metrics</span>
             </button>
           </div>
 
-          {/* Section A: General Info */}
-          <div className="bg-card p-5 md:p-6 rounded-2xl border border-border/80 shadow-xs space-y-4">
-            <h3 className="font-bold text-sm md:text-base text-foreground flex items-center gap-2 border-b pb-3 border-border/60">
-              <Info className="size-4.5 text-gold" /> Section A: General Information
-            </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {metrics.A_GENERAL_INFO?.map((item: any, idx: number) => (
-                <div key={item.key} className="space-y-1">
-                  <label className="text-[11px] md:text-xs font-bold text-muted-foreground uppercase tracking-wider block">
-                    {item.label}
-                  </label>
-                  <input
-                    type="text"
-                    value={item.value || ""}
-                    placeholder={item.placeholder || "Enter detail..."}
-                    onChange={(e) => handleMetricChange("A_GENERAL_INFO", idx, e.target.value)}
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-background border border-border/80 text-xs md:text-sm font-semibold text-foreground focus:outline-none focus:ring-1 focus:ring-gold transition"
-                  />
-                </div>
-              ))}
+          {/* Loading Indicator */}
+          {loading && (
+            <div className="flex items-center justify-center py-12 text-muted-foreground gap-2.5 text-xs md:text-sm font-medium">
+              <Loader2 className="size-5 animate-spin text-gold" />
+              <span>Loading campus disclosure data...</span>
             </div>
-          </div>
+          )}
 
-          {/* Section D: Teaching Staff & Teacher Details Table */}
-          <div className="bg-card p-5 md:p-6 rounded-2xl border border-border/80 shadow-xs space-y-6">
-            <h3 className="font-bold text-sm md:text-base text-foreground flex items-center gap-2 border-b pb-3 border-border/60">
-              <Users className="size-4.5 text-gold" /> Section D: Staff (Teaching Metrics & Roster)
-            </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {metrics.D_STAFF?.map((item: any, idx: number) => (
-                <div key={item.key} className="space-y-1">
-                  <label className="text-[11px] md:text-xs font-bold text-muted-foreground uppercase tracking-wider block">
-                    {item.label}
-                  </label>
-                  <input
-                    type="text"
-                    value={item.value || ""}
-                    placeholder={item.placeholder || "Enter detail..."}
-                    onChange={(e) => handleMetricChange("D_STAFF", idx, e.target.value)}
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-background border border-border/80 text-xs md:text-sm font-semibold text-foreground focus:outline-none focus:ring-1 focus:ring-gold transition"
-                  />
-                </div>
-              ))}
-            </div>
-
-            {/* TEACHER DETAILS ROSTER TABLE */}
-            <div className="pt-4 border-t border-border/60 space-y-4">
+          {/* Tab 1: Documents Management */}
+          {!loading && activeTab === "documents" && (
+            <div className="space-y-5">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div>
-                  <h4 className="font-bold text-xs md:text-sm text-foreground uppercase tracking-wider flex items-center gap-2">
-                    <Users className="size-4 text-gold" /> TEACHER DETAILS (Public Roster Table)
-                  </h4>
-                  <p className="text-[11px] text-muted-foreground mt-0.5">
-                    Configure official teacher list rendered on public disclosure page (SL NO, TEACHER NAME, DESIGNATION, QUALIFICATION)
-                  </p>
+                  <h2 className="text-base md:text-lg font-bold font-display text-foreground">
+                    Statutory Certificates & Academic Documents
+                  </h2>
+                  <span className="text-xs font-semibold text-muted-foreground mt-0.5 block">
+                    Selected Branch: <strong className="text-foreground">{selectedCampus?.name}</strong>
+                  </span>
                 </div>
-                <div className="flex items-center gap-2 self-start sm:self-auto">
-                  <button
-                    type="button"
-                    onClick={handleClearAllTeachers}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-destructive/10 text-destructive border border-destructive/30 hover:bg-destructive/20 text-xs font-bold transition cursor-pointer"
-                  >
-                    <Trash2 className="size-3.5" /> Clear All
-                  </button>
-                  <button
-                    type="button"
-                    onClick={handleAddTeacher}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gold/10 text-gold border border-gold/30 hover:bg-gold/20 text-xs font-bold transition cursor-pointer"
-                  >
-                    <Plus className="size-3.5" /> Add Teacher
-                  </button>
-                </div>
+
+                <button
+                  onClick={() => {
+                    setUploadCampusId(selectedCampus.id);
+                    setUploadModalOpen(true);
+                  }}
+                  className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-gold text-gold-foreground font-bold text-xs md:text-sm shadow-gold hover:opacity-95 transition cursor-pointer self-start sm:self-auto"
+                >
+                  <Plus className="size-4" /> Upload Statutory PDF
+                </button>
               </div>
 
-              <div className="overflow-x-auto border border-border/80 rounded-xl bg-background shadow-2xs">
-                <table className="w-full text-left border-collapse text-xs">
-                  <thead>
-                    <tr className="bg-muted/50 border-b border-border/80 text-muted-foreground font-bold uppercase tracking-wider text-[10px]">
-                      <th className="py-2.5 px-3 border-r border-border/80 w-14 text-center">SL NO.</th>
-                      <th className="py-2.5 px-3 border-r border-border/80 min-w-[160px]">TEACHER NAME</th>
-                      <th className="py-2.5 px-3 border-r border-border/80 min-w-[180px]">DESIGNATION</th>
-                      <th className="py-2.5 px-3 border-r border-border/80 min-w-[220px]">QUALIFICATION</th>
-                      <th className="py-2.5 px-3 w-16 text-center">ACTION</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-border/60">
-                    {teacherRoster.length === 0 ? (
-                      <tr>
-                        <td colSpan={5} className="py-8 text-center text-muted-foreground font-medium text-xs">
-                          No teacher details added yet. Click{" "}
-                          <button
-                            type="button"
-                            onClick={handleAddTeacher}
-                            className="text-gold font-bold underline hover:opacity-80 inline-flex items-center gap-1 cursor-pointer"
-                          >
-                            + Add Teacher
-                          </button>{" "}
-                          to configure the teacher roster for this branch.
-                        </td>
-                      </tr>
-                    ) : (
-                      teacherRoster.map((teacher, idx) => (
-                        <tr key={idx} className="hover:bg-accent/30 transition">
-                          <td className="py-2 px-3 border-r border-border/80 text-center font-bold text-muted-foreground">
-                            {teacher.slNo || idx + 1}
-                          </td>
-                          <td className="py-2 px-3 border-r border-border/80">
-                            <input
-                              type="text"
-                              value={teacher.name}
-                              onChange={(e) => handleTeacherChange(idx, "name", e.target.value)}
-                              placeholder="e.g. Dr. Sunita Sharma"
-                              className="w-full px-2.5 py-1.5 rounded-lg bg-card border border-border/70 text-xs font-semibold text-foreground focus:ring-1 focus:ring-gold outline-none"
-                            />
-                          </td>
-                          <td className="py-2 px-3 border-r border-border/80">
-                            <input
-                              type="text"
-                              value={teacher.designation}
-                              onChange={(e) => handleTeacherChange(idx, "designation", e.target.value)}
-                              placeholder="e.g. Principal / Special Educator"
-                              className="w-full px-2.5 py-1.5 rounded-lg bg-card border border-border/70 text-xs font-semibold text-foreground uppercase tracking-wide focus:ring-1 focus:ring-gold outline-none"
-                            />
-                          </td>
-                          <td className="py-2 px-3 border-r border-border/80">
-                            <input
-                              type="text"
-                              value={teacher.qualification}
-                              onChange={(e) => handleTeacherChange(idx, "qualification", e.target.value)}
-                              placeholder="e.g. M.A., B.Ed., Ph.D."
-                              className="w-full px-2.5 py-1.5 rounded-lg bg-card border border-border/70 text-xs font-medium text-foreground focus:ring-1 focus:ring-gold outline-none"
-                            />
-                          </td>
-                          <td className="py-2 px-3 text-center">
+              {/* Documents Cards */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+                {/* Category B Documents */}
+                <div className="bg-card p-5 rounded-2xl border border-border/80 shadow-xs space-y-4">
+                  <div className="flex items-center justify-between border-b pb-3 border-border/60">
+                    <h3 className="font-bold text-sm md:text-base text-foreground flex items-center gap-2">
+                      <ShieldCheck className="size-4.5 text-gold" /> B. Documents & Information
+                    </h3>
+                    <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-accent text-foreground border border-border/60">
+                      {documents.length} Files
+                    </span>
+                  </div>
+
+                  {documents.length === 0 ? (
+                    <div className="text-center py-10 space-y-3">
+                      <FileText className="size-10 text-muted-foreground/40 mx-auto" />
+                      <p className="text-xs md:text-sm font-medium text-muted-foreground max-w-sm mx-auto leading-relaxed">
+                        No statutory documents uploaded yet for <strong className="text-foreground">{selectedCampus?.name}</strong>.
+                      </p>
+                      <button
+                        onClick={() => {
+                          setUploadCampusId(selectedCampus.id);
+                          setCategoryCode("B_DOCUMENTS");
+                          setUploadModalOpen(true);
+                        }}
+                        className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold text-gold border border-gold/40 rounded-xl hover:bg-gold/10 transition cursor-pointer"
+                      >
+                        <Plus className="size-3.5" /> Add First Document
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="space-y-3">
+                      {documents.map((doc: any) => (
+                        <div
+                          key={doc.id}
+                          className="p-3.5 rounded-xl border border-border/80 bg-background flex items-start justify-between gap-3 hover:border-gold/40 transition"
+                        >
+                          <div className="space-y-0.5">
+                            <h4 className="text-xs md:text-sm font-semibold text-foreground leading-snug">{doc.title}</h4>
+                            <span className="text-[11px] text-muted-foreground block font-mono">
+                              Doc No: {doc.docNo} • {doc.fileSize}
+                            </span>
+                          </div>
+                          <div className="flex items-center gap-1.5 shrink-0">
+                            <a
+                              href={getDisclosureDownloadUrl(doc.id)}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="p-1.5 rounded-lg bg-accent text-foreground hover:text-gold transition"
+                              title="View PDF"
+                            >
+                              <ExternalLink className="size-3.5" />
+                            </a>
                             <button
-                              type="button"
-                              onClick={() => handleRemoveTeacher(idx)}
-                              className="p-1.5 text-destructive hover:bg-destructive/10 rounded-lg transition cursor-pointer"
-                              title="Remove Teacher"
+                              onClick={() => handleDeleteDoc(doc.id)}
+                              className="p-1.5 rounded-lg bg-destructive/10 text-destructive hover:bg-destructive/20 cursor-pointer transition"
+                              title="Delete Document"
                             >
                               <Trash2 className="size-3.5" />
                             </button>
-                          </td>
-                        </tr>
-                      ))
-                    )}
-                  </tbody>
-                </table>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                {/* Category C Academics */}
+                <div className="bg-card p-5 rounded-2xl border border-border/80 shadow-xs space-y-4">
+                  <div className="flex items-center justify-between border-b pb-3 border-border/60">
+                    <h3 className="font-bold text-sm md:text-base text-foreground flex items-center gap-2">
+                      <BookOpen className="size-4.5 text-gold" /> C. Result & Academics
+                    </h3>
+                    <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-accent text-foreground border border-border/60">
+                      {academics.length} Files
+                    </span>
+                  </div>
+
+                  {academics.length === 0 ? (
+                    <div className="text-center py-10 space-y-3">
+                      <BookOpen className="size-10 text-muted-foreground/40 mx-auto" />
+                      <p className="text-xs md:text-sm font-medium text-muted-foreground max-w-sm mx-auto leading-relaxed">
+                        No academic disclosure documents uploaded yet for <strong className="text-foreground">{selectedCampus?.name}</strong>.
+                      </p>
+                      <button
+                        onClick={() => {
+                          setUploadCampusId(selectedCampus.id);
+                          setCategoryCode("C_ACADEMICS");
+                          setUploadModalOpen(true);
+                        }}
+                        className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold text-gold border border-gold/40 rounded-xl hover:bg-gold/10 transition cursor-pointer"
+                      >
+                        <Plus className="size-3.5" /> Add Academic File
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="space-y-3">
+                      {academics.map((doc: any) => (
+                        <div
+                          key={doc.id}
+                          className="p-3.5 rounded-xl border border-border/80 bg-background flex items-start justify-between gap-3 hover:border-gold/40 transition"
+                        >
+                          <div className="space-y-0.5">
+                            <h4 className="text-xs md:text-sm font-semibold text-foreground leading-snug">{doc.title}</h4>
+                            <span className="text-[11px] text-muted-foreground block font-mono">
+                              Ref: {doc.docNo} • {doc.fileSize}
+                            </span>
+                          </div>
+                          <div className="flex items-center gap-1.5 shrink-0">
+                            <a
+                              href={getDisclosureDownloadUrl(doc.id)}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="p-1.5 rounded-lg bg-accent text-foreground hover:text-gold transition"
+                              title="View PDF"
+                            >
+                              <ExternalLink className="size-3.5" />
+                            </a>
+                            <button
+                              onClick={() => handleDeleteDoc(doc.id)}
+                              className="p-1.5 rounded-lg bg-destructive/10 text-destructive hover:bg-destructive/20 cursor-pointer transition"
+                              title="Delete Document"
+                            >
+                              <Trash2 className="size-3.5" />
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
-          </div>
+          )}
 
-          {/* Section E: Infrastructure */}
-          <div className="bg-card p-5 md:p-6 rounded-2xl border border-border/80 shadow-xs space-y-4">
-            <h3 className="font-bold text-sm md:text-base text-foreground flex items-center gap-2 border-b pb-3 border-border/60">
-              <Building2 className="size-4.5 text-gold" /> Section E: Infrastructure
-            </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {metrics.E_INFRASTRUCTURE?.map((item: any, idx: number) => (
-                <div key={item.key} className="space-y-1">
-                  <label className="text-[11px] md:text-xs font-bold text-muted-foreground uppercase tracking-wider block">
-                    {item.label}
-                  </label>
-                  <input
-                    type="text"
-                    value={item.value || ""}
-                    placeholder={item.placeholder || "Enter detail..."}
-                    onChange={(e) => handleMetricChange("E_INFRASTRUCTURE", idx, e.target.value)}
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-background border border-border/80 text-xs md:text-sm font-semibold text-foreground focus:outline-none focus:ring-1 focus:ring-gold transition"
-                  />
+          {/* Tab 2: Campus Details & Metrics */}
+          {!loading && activeTab === "metrics" && (
+            <div className="space-y-5">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div>
+                  <h2 className="text-base md:text-lg font-bold font-display text-foreground">
+                    General Info, Staffing & Infrastructure Details
+                  </h2>
+                  <p className="text-xs font-semibold text-muted-foreground mt-0.5">
+                    Editing metrics for: <strong className="text-foreground">{selectedCampus?.name}</strong>
+                  </p>
                 </div>
-              ))}
+
+                <button
+                  onClick={handleSaveMetrics}
+                  disabled={savingMetrics}
+                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-gold text-gold-foreground font-bold text-xs md:text-sm shadow-gold hover:opacity-95 transition disabled:opacity-50 cursor-pointer self-start sm:self-auto"
+                >
+                  {savingMetrics ? <Loader2 className="size-4 animate-spin" /> : <Save className="size-4" />}
+                  <span>Save Details for {selectedCampus?.shortName || selectedCampus?.name}</span>
+                </button>
+              </div>
+
+              {/* Section A: General Info */}
+              <div className="bg-card p-5 md:p-6 rounded-2xl border border-border/80 shadow-xs space-y-4">
+                <h3 className="font-bold text-sm md:text-base text-foreground flex items-center gap-2 border-b pb-3 border-border/60">
+                  <Info className="size-4.5 text-gold" /> Section A: General Information
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {metrics.A_GENERAL_INFO?.map((item: any, idx: number) => (
+                    <div key={item.key} className="space-y-1">
+                      <label className="text-[11px] md:text-xs font-bold text-muted-foreground uppercase tracking-wider block">
+                        {item.label}
+                      </label>
+                      <input
+                        type="text"
+                        value={item.value || ""}
+                        placeholder={item.placeholder || "Enter detail..."}
+                        onChange={(e) => handleMetricChange("A_GENERAL_INFO", idx, e.target.value)}
+                        className="w-full px-3.5 py-2.5 rounded-xl bg-background border border-border/80 text-xs md:text-sm font-semibold text-foreground focus:outline-none focus:ring-1 focus:ring-gold transition"
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Section D: Teaching Staff & Teacher Details Table */}
+              <div className="bg-card p-5 md:p-6 rounded-2xl border border-border/80 shadow-xs space-y-6">
+                <h3 className="font-bold text-sm md:text-base text-foreground flex items-center gap-2 border-b pb-3 border-border/60">
+                  <Users className="size-4.5 text-gold" /> Section D: Staff (Teaching Metrics & Roster)
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {metrics.D_STAFF?.map((item: any, idx: number) => (
+                    <div key={item.key} className="space-y-1">
+                      <label className="text-[11px] md:text-xs font-bold text-muted-foreground uppercase tracking-wider block">
+                        {item.label}
+                      </label>
+                      <input
+                        type="text"
+                        value={item.value || ""}
+                        placeholder={item.placeholder || "Enter detail..."}
+                        onChange={(e) => handleMetricChange("D_STAFF", idx, e.target.value)}
+                        className="w-full px-3.5 py-2.5 rounded-xl bg-background border border-border/80 text-xs md:text-sm font-semibold text-foreground focus:outline-none focus:ring-1 focus:ring-gold transition"
+                      />
+                    </div>
+                  ))}
+                </div>
+
+                {/* TEACHER DETAILS ROSTER TABLE */}
+                <div className="pt-4 border-t border-border/60 space-y-4">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div>
+                      <h4 className="font-bold text-xs md:text-sm text-foreground uppercase tracking-wider flex items-center gap-2">
+                        <Users className="size-4 text-gold" /> TEACHER DETAILS (Public Roster Table)
+                      </h4>
+                      <p className="text-[11px] text-muted-foreground mt-0.5">
+                        Configure official teacher list rendered on public disclosure page (SL NO, TEACHER NAME, DESIGNATION, QUALIFICATION)
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-2 self-start sm:self-auto">
+                      <button
+                        type="button"
+                        onClick={handleClearAllTeachers}
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-destructive/10 text-destructive border border-destructive/30 hover:bg-destructive/20 text-xs font-bold transition cursor-pointer"
+                      >
+                        <Trash2 className="size-3.5" /> Clear All
+                      </button>
+                      <button
+                        type="button"
+                        onClick={handleAddTeacher}
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gold/10 text-gold border border-gold/30 hover:bg-gold/20 text-xs font-bold transition cursor-pointer"
+                      >
+                        <Plus className="size-3.5" /> Add Teacher
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="overflow-x-auto border border-border/80 rounded-xl bg-background shadow-2xs">
+                    <table className="w-full text-left border-collapse text-xs">
+                      <thead>
+                        <tr className="bg-muted/50 border-b border-border/80 text-muted-foreground font-bold uppercase tracking-wider text-[10px]">
+                          <th className="py-2.5 px-3 border-r border-border/80 w-14 text-center">SL NO.</th>
+                          <th className="py-2.5 px-3 border-r border-border/80 min-w-[160px]">TEACHER NAME</th>
+                          <th className="py-2.5 px-3 border-r border-border/80 min-w-[180px]">DESIGNATION</th>
+                          <th className="py-2.5 px-3 border-r border-border/80 min-w-[220px]">QUALIFICATION</th>
+                          <th className="py-2.5 px-3 w-16 text-center">ACTION</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-border/60">
+                        {teacherRoster.length === 0 ? (
+                          <tr>
+                            <td colSpan={5} className="py-8 text-center text-muted-foreground font-medium text-xs">
+                              No teacher details added yet. Click{" "}
+                              <button
+                                type="button"
+                                onClick={handleAddTeacher}
+                                className="text-gold font-bold underline hover:opacity-80 inline-flex items-center gap-1 cursor-pointer"
+                              >
+                                + Add Teacher
+                              </button>{" "}
+                              to configure the teacher roster for this branch.
+                            </td>
+                          </tr>
+                        ) : (
+                          teacherRoster.map((teacher, idx) => (
+                            <tr key={idx} className="hover:bg-accent/30 transition">
+                              <td className="py-2 px-3 border-r border-border/80 text-center font-bold text-muted-foreground">
+                                {teacher.slNo || idx + 1}
+                              </td>
+                              <td className="py-2 px-3 border-r border-border/80">
+                                <input
+                                  type="text"
+                                  value={teacher.name}
+                                  onChange={(e) => handleTeacherChange(idx, "name", e.target.value)}
+                                  placeholder="e.g. Dr. Sunita Sharma"
+                                  className="w-full px-2.5 py-1.5 rounded-lg bg-card border border-border/70 text-xs font-semibold text-foreground focus:ring-1 focus:ring-gold outline-none"
+                                />
+                              </td>
+                              <td className="py-2 px-3 border-r border-border/80">
+                                <input
+                                  type="text"
+                                  value={teacher.designation}
+                                  onChange={(e) => handleTeacherChange(idx, "designation", e.target.value)}
+                                  placeholder="e.g. Principal / Special Educator"
+                                  className="w-full px-2.5 py-1.5 rounded-lg bg-card border border-border/70 text-xs font-semibold text-foreground uppercase tracking-wide focus:ring-1 focus:ring-gold outline-none"
+                                />
+                              </td>
+                              <td className="py-2 px-3 border-r border-border/80">
+                                <input
+                                  type="text"
+                                  value={teacher.qualification}
+                                  onChange={(e) => handleTeacherChange(idx, "qualification", e.target.value)}
+                                  placeholder="e.g. M.A., B.Ed., Ph.D."
+                                  className="w-full px-2.5 py-1.5 rounded-lg bg-card border border-border/70 text-xs font-medium text-foreground focus:ring-1 focus:ring-gold outline-none"
+                                />
+                              </td>
+                              <td className="py-2 px-3 text-center">
+                                <button
+                                  type="button"
+                                  onClick={() => handleRemoveTeacher(idx)}
+                                  className="p-1.5 text-destructive hover:bg-destructive/10 rounded-lg transition cursor-pointer"
+                                  title="Remove Teacher"
+                                >
+                                  <Trash2 className="size-3.5" />
+                                </button>
+                              </td>
+                            </tr>
+                          ))
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+
+              {/* Section E: Infrastructure */}
+              <div className="bg-card p-5 md:p-6 rounded-2xl border border-border/80 shadow-xs space-y-4">
+                <h3 className="font-bold text-sm md:text-base text-foreground flex items-center gap-2 border-b pb-3 border-border/60">
+                  <Building2 className="size-4.5 text-gold" /> Section E: Infrastructure
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {metrics.E_INFRASTRUCTURE?.map((item: any, idx: number) => (
+                    <div key={item.key} className="space-y-1">
+                      <label className="text-[11px] md:text-xs font-bold text-muted-foreground uppercase tracking-wider block">
+                        {item.label}
+                      </label>
+                      <input
+                        type="text"
+                        value={item.value || ""}
+                        placeholder={item.placeholder || "Enter detail..."}
+                        onChange={(e) => handleMetricChange("E_INFRASTRUCTURE", idx, e.target.value)}
+                        className="w-full px-3.5 py-2.5 rounded-xl bg-background border border-border/80 text-xs md:text-sm font-semibold text-foreground focus:outline-none focus:ring-1 focus:ring-gold transition"
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
-          </div>
+          )}
         </div>
       )}
-    </div>
-  )}
 
       {/* Modal for PDF Upload */}
       {uploadModalOpen && (

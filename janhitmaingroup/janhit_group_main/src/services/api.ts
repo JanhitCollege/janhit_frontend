@@ -49,6 +49,10 @@ export async function getCampusDisclosuresAdmin(campusId: string) {
   return apiRequest(`/v1/admin/campuses/${campusId}/disclosures`);
 }
 
+export async function getAllCampusesDisclosureSummaryAdmin() {
+  return apiRequest(`/v1/admin/disclosures/campuses`);
+}
+
 export function getDisclosureDownloadUrl(documentId: string) {
   return `${BASE_URL}/v1/disclosures/documents/${documentId}/download`;
 }
@@ -77,6 +81,26 @@ export async function bulkUpdateCampusDetailsAdmin(campusId: string, details: an
   return apiRequest(`/v1/admin/campuses/${campusId}/disclosure-details`, {
     method: "PUT",
     body: JSON.stringify({ details }),
+  });
+}
+
+export async function unifiedUpdateCampusDisclosuresAdmin(campusId: string, payload: any) {
+  return apiRequest(`/v1/admin/campuses/${campusId}/disclosures`, {
+    method: "PUT",
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function batchUpdateCampusDisclosuresAdmin(campusIds: string[], payload: any) {
+  return apiRequest(`/v1/admin/disclosures/batch`, {
+    method: "PUT",
+    body: JSON.stringify({ campusIds, ...payload }),
+  });
+}
+
+export async function deleteCampusMetricAdmin(campusId: string, metricKey: string) {
+  return apiRequest(`/v1/admin/campuses/${campusId}/disclosures/metrics/${metricKey}`, {
+    method: "DELETE",
   });
 }
 
