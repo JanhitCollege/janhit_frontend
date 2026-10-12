@@ -170,7 +170,7 @@ export function Contact() {
                     Call Admissions
                   </div>
                   <div className="font-serif text-sm text-navy font-semibold mt-0.5 whitespace-nowrap">
-                    +91 99585 74400
+                    +91 9773500617
                   </div>
                 </div>
               </a>

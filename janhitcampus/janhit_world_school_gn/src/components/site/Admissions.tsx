@@ -300,7 +300,7 @@ export function Admissions() {
             </p>
           </div>
 
-          {/* Founder's Batch Benefits */}
+          {/* Founder's Batch Benefits & Fee Structure (New Admission) */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -314,7 +314,7 @@ export function Admissions() {
                   Founder's Batch — <span className="italic text-gold">Exclusive Benefits</span>
                 </h4>
                 <p className="text-xs text-muted-foreground mt-1">
-                  Exclusive privileges reserved for the first 50 admissions.
+                  Fee Structure for Session 2026-2027 (New Admission) · Exclusive privileges reserved for the first 50 admissions.
                 </p>
               </div>
               <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gold/10 border border-gold/30 text-gold text-xs font-semibold tracking-wider uppercase">
@@ -326,49 +326,45 @@ export function Admissions() {
               <table className="w-full text-left border-collapse min-w-[600px]">
                 <thead>
                   <tr className="border-b border-gold/10 text-navy font-serif font-bold text-sm md:text-base">
-                    <th className="py-3 px-4">Fee Component</th>
-                    <th className="py-3 px-4">Type Of Fee</th>
-                    <th className="py-3 px-4">General Applicants</th>
+                    <th className="py-3 px-4">Heads</th>
+                    <th className="py-3 px-4">Types Of Fees</th>
+                    <th className="py-3 px-4">Bal Vatika - V</th>
                     <th className="py-3 px-4 text-gold">Founder's Batch (First 50)</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gold/10 text-sm">
                   <tr className="hover:bg-beige/30 transition-colors">
-                    <td className="py-3.5 px-4 font-semibold text-navy">Registration Fee</td>
-                    <td className="py-3.5 px-4 text-muted-foreground">Non-refundable</td>
-                    <td className="py-3.5 px-4 text-muted-foreground">1,000/-</td>
-                    <td className="py-3.5 px-4 font-semibold text-navy">1,000/-</td>
+                    <td className="py-3.5 px-4 font-semibold text-navy">Registration Fees</td>
+                    <td className="py-3.5 px-4 text-muted-foreground">Non-Refundable</td>
+                    <td className="py-3.5 px-4 text-muted-foreground">Rs. 1000/-</td>
+                    <td className="py-3.5 px-4 font-semibold text-navy">Rs. 1000/-</td>
                   </tr>
                   <tr className="hover:bg-beige/30 transition-colors">
-                    <td className="py-3.5 px-4 font-semibold text-navy">Admission Fee</td>
+                    <td className="py-3.5 px-4 font-semibold text-navy">Admission Fees (One Time)</td>
                     <td className="py-3.5 px-4 text-muted-foreground">One Time (non-refundable)</td>
-                    <td className="py-3.5 px-4 text-muted-foreground">25,000/-</td>
-                    <td className="py-3.5 px-4 font-bold text-gold">100% Waived</td>
+                    <td className="py-3.5 px-4 text-muted-foreground">Rs. 25,000/-</td>
+                    <td className="py-3.5 px-4 font-bold text-gold"></td>
                   </tr>
                   <tr className="hover:bg-beige/30 transition-colors">
-                    <td className="py-3.5 px-4 font-semibold text-navy">Miscellaneous Charges</td>
-                    <td className="py-3.5 px-4 text-muted-foreground">Non-refundable</td>
-                    <td className="py-3.5 px-4 text-muted-foreground">4,000/-</td>
-                    <td className="py-3.5 px-4 text-muted-foreground">—</td>
-                  </tr>
-                  <tr className="hover:bg-beige/30 transition-colors">
-                    <td className="py-3.5 px-4 font-semibold text-navy">Annual Tuition Fee</td>
-                    <td className="py-3.5 px-4 text-muted-foreground">Non-refundable</td>
-                    <td className="py-3.5 px-4 text-muted-foreground">As per grade</td>
+                    <td className="py-3.5 px-4 font-semibold text-navy">Mis. Charges</td>
+                    <td className="py-3.5 px-4 text-muted-foreground">Non-Refundable</td>
+                    <td className="py-3.5 px-4 text-muted-foreground">Rs. 4,000/-</td>
                     <td className="py-3.5 px-4 text-muted-foreground">—</td>
                   </tr>
                   <tr className="hover:bg-beige/30 transition-colors">
-                    <td className="py-3.5 px-4 font-semibold text-navy">Sports & Activity Fee</td>
-                    <td className="py-3.5 px-4 text-muted-foreground">—</td>
-                    <td className="py-3.5 px-4 text-muted-foreground">—</td>
-                    <td className="py-3.5 px-4 text-muted-foreground">—</td>
+                    <td className="py-3.5 px-4 font-semibold text-navy">Security Deposit</td>
+                    <td className="py-3.5 px-4 text-muted-foreground">Refundable</td>
+                    <td className="py-3.5 px-4 text-muted-foreground">Rs. 10,000/-</td>
+                    <td className="py-3.5 px-4 font-semibold text-navy">
+                      Rs. 10,000/- <span className="text-xs text-muted-foreground font-normal">(Refundable)</span>
+                    </td>
                   </tr>
                 </tbody>
               </table>
             </div>
           </motion.div>
 
-          {/* School Fee & Refund Policy */}
+          {/* School Fees & School Timings Side-by-Side */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* School Fee Table */}
             <motion.div
@@ -376,77 +372,87 @@ export function Admissions() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.1 }}
-              className="p-6 md:p-8 bg-white border border-gold/20 rounded-2xl shadow-luxury hover:border-gold/50 transition-all duration-300"
+              className="p-6 md:p-8 bg-white border border-gold/20 rounded-2xl shadow-luxury hover:border-gold/50 transition-all duration-300 flex flex-col justify-between"
             >
-              <div className="border-b border-gold/15 pb-4 mb-6">
-                <h4 className="font-serif text-xl md:text-2xl text-navy font-semibold">
-                  School Fee <span className="italic text-gold">(2026-2027)</span>
-                </h4>
-                <p className="text-xs text-muted-foreground mt-1">
-                  Grade-wise composite fee schedule and school timings.
-                </p>
+              <div>
+                <div className="border-b border-gold/15 pb-4 mb-6">
+                  <h4 className="font-serif text-xl md:text-2xl text-navy font-semibold">
+                    School Fees <span className="italic text-gold">(2026-2027)</span>
+                  </h4>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Grade-wise composite fee schedule and summer timings.
+                  </p>
+                </div>
+
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left border-collapse min-w-[500px]">
+                    <thead>
+                      <tr className="border-b border-gold/10 text-navy font-serif font-bold text-sm md:text-base">
+                        <th className="py-3 px-4">Heads</th>
+                        <th className="py-3 px-4">Classes</th>
+                        <th className="py-3 px-4">Summer Timings</th>
+                        <th className="py-3 px-4">Quarterly Fees</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gold/10 text-sm">
+                      <tr className="hover:bg-beige/30 transition-colors">
+                        <td className="py-3.5 px-4 font-semibold text-navy align-top">Composite Fees</td>
+                        <td className="py-3.5 px-4 align-top">
+                          <span className="font-semibold text-navy">Bal Vatika</span>
+                          <span className="block text-xs text-muted-foreground mt-0.5">(Monthly Rs. 8,000/-)</span>
+                        </td>
+                        <td className="py-3.5 px-4 text-muted-foreground align-top">8:45 AM – 12:30 PM</td>
+                        <td className="py-3.5 px-4 font-semibold text-navy align-top">Rs. 24,000/-</td>
+                      </tr>
+                      <tr className="hover:bg-beige/30 transition-colors">
+                        <td className="py-3.5 px-4 font-semibold text-navy align-top">Composite Fees</td>
+                        <td className="py-3.5 px-4 align-top">
+                          <span className="font-semibold text-navy">Bal Vatika I – Bal Vatika II</span>
+                          <span className="block text-xs text-muted-foreground mt-0.5">(Monthly Rs. 8,500/-)</span>
+                        </td>
+                        <td className="py-3.5 px-4 text-muted-foreground align-top">8:45 AM – 12:30 PM</td>
+                        <td className="py-3.5 px-4 font-semibold text-navy align-top">Rs. 25,500/-</td>
+                      </tr>
+                      <tr className="hover:bg-beige/30 transition-colors">
+                        <td className="py-3.5 px-4 font-semibold text-navy align-top">Composite Fees</td>
+                        <td className="py-3.5 px-4 align-top">
+                          <span className="font-semibold text-navy">Bal Vatika III</span>
+                          <span className="block text-xs text-muted-foreground mt-0.5">(Monthly Rs. 8,700/-)</span>
+                        </td>
+                        <td className="py-3.5 px-4 text-muted-foreground align-top">8:45 AM – 12:30 PM</td>
+                        <td className="py-3.5 px-4 font-semibold text-navy align-top">Rs. 26,100/-</td>
+                      </tr>
+                      <tr className="hover:bg-beige/30 transition-colors">
+                        <td className="py-3.5 px-4 font-semibold text-navy align-top">Composite Fees</td>
+                        <td className="py-3.5 px-4 align-top">
+                          <span className="font-semibold text-navy">Grade I – V</span>
+                          <span className="block text-xs text-muted-foreground mt-0.5">(Monthly Rs. 8,700/-)</span>
+                        </td>
+                        <td className="py-3.5 px-4 text-muted-foreground align-top">7:45 AM – 2:00 PM</td>
+                        <td className="py-3.5 px-4 font-semibold text-navy align-top">Rs. 26,100/-</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
               </div>
 
-              <div className="overflow-x-auto">
-                <table className="w-full text-left border-collapse min-w-[500px]">
-                  <thead>
-                    <tr className="border-b border-gold/10 text-navy font-serif font-bold text-sm md:text-base">
-                      <th className="py-3 px-4">Heads</th>
-                      <th className="py-3 px-4">Classes</th>
-                      <th className="py-3 px-4">Summer Timings</th>
-                      <th className="py-3 px-4">Quarterly</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-gold/10 text-sm">
-                    <tr className="hover:bg-beige/30 transition-colors">
-                      <td className="py-3.5 px-4 font-semibold text-navy">Composite Fees</td>
-                      <td className="py-3.5 px-4 text-muted-foreground">Bal-Vatika</td>
-                      <td className="py-3.5 px-4 text-muted-foreground">8:55 am – 1:20 pm</td>
-                      <td className="py-3.5 px-4 font-semibold text-navy">16,500/-</td>
-                    </tr>
-                    <tr className="hover:bg-beige/30 transition-colors">
-                      <td className="py-3.5 px-4 font-semibold text-navy">Composite Fees</td>
-                      <td className="py-3.5 px-4 text-muted-foreground">
-                        Bal-Vatika 1 & Bal-Vatika 2
-                      </td>
-                      <td className="py-3.5 px-4 text-muted-foreground">8:55 am – 1:20 pm</td>
-                      <td className="py-3.5 px-4 font-semibold text-navy">18,000/-</td>
-                    </tr>
-                    <tr className="hover:bg-beige/30 transition-colors">
-                      <td className="py-3.5 px-4 font-semibold text-navy">Composite Fees</td>
-                      <td className="py-3.5 px-4 text-muted-foreground">Bal-Vatika 3</td>
-                      <td className="py-3.5 px-4 text-muted-foreground">8:55 am – 2:40 pm</td>
-                      <td className="py-3.5 px-4 font-semibold text-navy">18,000/-</td>
-                    </tr>
-                    <tr className="hover:bg-beige/30 transition-colors">
-                      <td className="py-3.5 px-4 font-semibold text-navy">Composite Fees</td>
-                      <td className="py-3.5 px-4 text-muted-foreground">Grade I - V</td>
-                      <td className="py-3.5 px-4 text-muted-foreground">8:55 am – 2:40 pm</td>
-                      <td className="py-3.5 px-4 font-semibold text-navy">19,500/-</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-
-              <div className="mt-6 space-y-3 text-xs text-muted-foreground border-t border-gold/10 pt-4">
+              <div className="mt-6 space-y-2.5 text-xs text-muted-foreground border-t border-gold/10 pt-4">
                 <p className="flex gap-2">
                   <span className="text-gold font-bold">•</span>
                   <span>
-                    The above fee structure includes the annual permissible fee hike (5%+CPI) as per
-                    UP State Government order every session.
+                    The above fee structure includes the annual permissible fee hike (5%+CPI) as per UP State Government order every session.
                   </span>
                 </p>
                 <p className="flex gap-2">
                   <span className="text-gold font-bold">•</span>
                   <span>
-                    All fees are payable via bank transfer, cheque, or the school's online payment
-                    portal. Cash payments are not accepted for amounts exceeding Rs. 2,000.
+                    All fees are payable via bank transfer, cheque, or the school's online payment portal. Cash payments are not accepted for amounts exceeding Rs. 2,000.
                   </span>
                 </p>
               </div>
             </motion.div>
 
-            {/* Fee Refund Policy */}
+            {/* School Timings Table */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -457,43 +463,118 @@ export function Admissions() {
               <div>
                 <div className="border-b border-gold/15 pb-4 mb-6">
                   <h4 className="font-serif text-xl md:text-2xl text-navy font-semibold">
-                    Fee Refund <span className="italic text-gold">Policy</span>
+                    School <span className="italic text-gold">Timings</span>
                   </h4>
                   <p className="text-xs text-muted-foreground mt-1">
-                    Please read the refund terms carefully prior to enrollment.
+                    Summer and winter operational schedules across classes.
                   </p>
                 </div>
 
-                <ul className="space-y-4">
-                  <li className="flex gap-3 text-left">
-                    <div className="h-6 w-6 rounded-full bg-red-500/10 text-red-500 flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">
-                      1
-                    </div>
-                    <div className="text-sm leading-relaxed text-muted-foreground">
-                      <strong className="text-navy font-bold">Registration Fee:</strong>{" "}
-                      Registration Fee is strictly non-refundable under all circumstances.
-                    </div>
-                  </li>
-                  <li className="flex gap-3 text-left">
-                    <div className="h-6 w-6 rounded-full bg-red-500/10 text-red-500 flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">
-                      2
-                    </div>
-                    <div className="text-sm leading-relaxed text-muted-foreground">
-                      <strong className="text-navy font-bold">Session Commencement:</strong> No
-                      refund of tuition or other fees will be made once the academic session
-                      commences.
-                    </div>
-                  </li>
-                </ul>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left border-collapse min-w-[440px]">
+                    <thead>
+                      <tr className="border-b border-gold/10 text-navy font-serif font-bold text-sm md:text-base">
+                        <th className="py-3 px-4">Class</th>
+                        <th className="py-3 px-4">Summer</th>
+                        <th className="py-3 px-4">Winter</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gold/10 text-sm">
+                      <tr className="hover:bg-beige/30 transition-colors">
+                        <td className="py-3.5 px-4 font-semibold text-navy">Bal - Vatika - Grade II</td>
+                        <td className="py-3.5 px-4 text-muted-foreground">8:45 AM - 12:30 PM</td>
+                        <td className="py-3.5 px-4 text-muted-foreground">9:30 AM - 1:00 PM</td>
+                      </tr>
+                      <tr className="hover:bg-beige/30 transition-colors">
+                        <td className="py-3.5 px-4 font-semibold text-navy">Class III - VIII</td>
+                        <td className="py-3.5 px-4 text-muted-foreground">7:45 AM - 2:00 PM</td>
+                        <td className="py-3.5 px-4 text-muted-foreground">8:30 AM - 2:30 PM</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
               </div>
 
-              <div className="mt-8 p-4 rounded-xl bg-beige/40 border border-gold/10 text-xs text-muted-foreground">
-                <strong className="text-navy block mb-1 font-semibold">Need assistance?</strong>
-                For any queries regarding fee structures, billing cycles, or payment portal setup,
-                please contact our admissions office.
+              <div className="mt-6 space-y-2 text-xs text-muted-foreground border-t border-gold/10 pt-4">
+                <p className="font-semibold text-navy uppercase tracking-wider text-[11px] mb-2">Note:</p>
+                <p className="flex gap-2">
+                  <span className="text-gold font-bold">•</span>
+                  <span>All Saturdays are off for students.</span>
+                </p>
+                <p className="flex gap-2">
+                  <span className="text-gold font-bold">•</span>
+                  <span>Winter Timings are subjected to change as per weather conditions. Early dispersals are not allowed.</span>
+                </p>
+                <p className="flex gap-2">
+                  <span className="text-gold font-bold">•</span>
+                  <span>In case of exigency, the parent must contact the front office.</span>
+                </p>
+                <p className="flex gap-2">
+                  <span className="text-gold font-bold">•</span>
+                  <span>The child will be allowed to leave only with Parents or registered guardians.</span>
+                </p>
               </div>
             </motion.div>
           </div>
+
+          {/* Fee Refund Policy Card */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className="mt-8 p-6 md:p-8 bg-white border border-gold/20 rounded-2xl shadow-luxury hover:border-gold/50 transition-all duration-300"
+          >
+            <div className="border-b border-gold/15 pb-4 mb-6">
+              <h4 className="font-serif text-xl md:text-2xl text-navy font-semibold">
+                Fee Refund <span className="italic text-gold">Policy</span>
+              </h4>
+              <p className="text-xs text-muted-foreground mt-1">
+                Please read the refund terms carefully prior to enrollment.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+              <ul className="space-y-4">
+                <li className="flex gap-3 text-left">
+                  <div className="h-6 w-6 rounded-full bg-red-500/10 text-red-500 flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">
+                    1
+                  </div>
+                  <div className="text-sm leading-relaxed text-muted-foreground">
+                    <strong className="text-navy font-bold">Registration Fee:</strong> Registration
+                    Fee is strictly non-refundable under all circumstances.
+                  </div>
+                </li>
+                <li className="flex gap-3 text-left">
+                  <div className="h-6 w-6 rounded-full bg-red-500/10 text-red-500 flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">
+                    2
+                  </div>
+                  <div className="text-sm leading-relaxed text-muted-foreground">
+                    <strong className="text-navy font-bold">Session Commencement:</strong> No
+                    refund of composite or school fees will be made once the academic session
+                    commences.
+                  </div>
+                </li>
+                <li className="flex gap-3 text-left">
+                  <div className="h-6 w-6 rounded-full bg-emerald-500/10 text-emerald-600 flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">
+                    3
+                  </div>
+                  <div className="text-sm leading-relaxed text-muted-foreground">
+                    <strong className="text-navy font-bold">Security Deposit:</strong> Security Deposit
+                    (Rs. 10,000/-) is refundable upon clearance and formal completion of school withdrawal.
+                  </div>
+                </li>
+              </ul>
+
+              <div className="p-5 rounded-xl bg-beige/40 border border-gold/10 text-xs text-muted-foreground space-y-2">
+                <strong className="text-navy block font-semibold text-sm">Need assistance?</strong>
+                <p>
+                  For any queries regarding fee structures, billing cycles, payment options, or student timings,
+                  please contact our admissions front desk.
+                </p>
+              </div>
+            </div>
+          </motion.div>
         </div>
 
 
