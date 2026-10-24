@@ -6,7 +6,7 @@ const committeeList = [
     title: "Anti-Ragging Committee",
     description:
       "Janhit College of Law maintains a strict zero-tolerance policy towards ragging. The committee monitors student behavior, conducts sensitization, and addresses any concerns instantly.",
-    head: "Dr. Ashok Kumar Sharma (Presiding Officer)",
+    head: "Dr. S. N. Yadav (Principal & Presiding Officer)",
   },
   {
     icon: HelpCircle,
@@ -44,7 +44,7 @@ export function Committees() {
             College Committees
           </h2>
           <div className="h-1 w-20 bg-gold mx-auto rounded" />
-          <p className="text-sm text-navy/70">
+          <p className="text-sm text-navy/85 font-medium">
             Mandatory committees established in accordance with BCI, UGC, and CCS University
             regulations to ensure a safe, ethical campus environment.
           </p>
@@ -65,7 +65,7 @@ export function Committees() {
                   </div>
                   <h3 className="font-serif text-lg font-bold text-navy">{item.title}</h3>
                 </div>
-                <p className="text-base text-navy/70 leading-relaxed">{item.description}</p>
+                <p className="text-base text-navy/85 font-medium leading-relaxed">{item.description}</p>
                 <div className="pt-2 border-t border-gold/10 flex justify-between items-center text-xs text-navy/60 font-semibold uppercase tracking-wider">
                   <span>Contact In-Charge:</span>
                   <span className="text-gold">{item.head}</span>

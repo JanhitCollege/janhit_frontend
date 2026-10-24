@@ -1,4 +1,5 @@
-import { BookOpen, Scale, Award, Users, GraduationCap } from "lucide-react";
+import { Link } from "react-router-dom";
+import { BookOpen, Scale, Award, Users, GraduationCap, ArrowRight } from "lucide-react";
 
 export function About() {
   return (
@@ -56,6 +57,22 @@ export function About() {
                   with hands-on practice, legal aid sensitization, and professional integrity.
                 </p>
               </div>
+            </div>
+
+            <div className="pt-4 flex flex-wrap items-center gap-4">
+              <Link
+                to="/about"
+                className="px-6 py-3 rounded-xl gradient-gold text-navy-deep font-bold text-xs uppercase tracking-wider shadow-gold hover:-translate-y-0.5 transition-all inline-flex items-center gap-2"
+              >
+                <span>Read Full About Us</span>
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+              <Link
+                to="/admissions"
+                className="px-6 py-3 rounded-xl bg-white border border-gold/40 text-navy font-bold text-xs uppercase tracking-wider hover:bg-gold/10 transition-all"
+              >
+                Admissions Info
+              </Link>
             </div>
           </div>
 

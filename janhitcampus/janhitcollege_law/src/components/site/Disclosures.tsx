@@ -64,7 +64,7 @@ export function Disclosures() {
               <div className="h-1 w-20 bg-gold rounded" />
             </div>
 
-            <p className="text-sm text-navy/80 leading-relaxed">
+            <p className="text-sm text-navy/85 font-medium leading-relaxed">
               Janhit College of Law maintains high academic standards and operates under official
               regulatory approvals. All academic courses, infrastructures, and student-intake counts
               are certified by state and national councils.
@@ -78,7 +78,7 @@ export function Disclosures() {
                   <h4 className="font-bold text-navy text-sm">
                     Bar Council of India (BCI) Approval
                   </h4>
-                  <p className="text-xs text-navy/60 mt-0.5">
+                  <p className="text-xs text-navy/75 font-medium mt-0.5">
                     Recognized and approved by the BCI, New Delhi, allowing graduates to register as
                     Advocates in any Bar Council of India.
                   </p>
@@ -89,7 +89,7 @@ export function Disclosures() {
                 <CheckCircle className="h-5 w-5 text-gold shrink-0 mt-0.5" />
                 <div>
                   <h4 className="font-bold text-navy text-sm">CCSU Meerut Affiliation</h4>
-                  <p className="text-xs text-navy/60 mt-0.5">
+                  <p className="text-xs text-navy/75 font-medium mt-0.5">
                     Affiliated to Chaudhary Charan Singh University, Meerut. Exams and degrees are
                     certified and issued by the university.
                   </p>
@@ -105,7 +105,7 @@ export function Disclosures() {
               <h3 className="font-serif text-lg font-bold text-gold">Compliance Disclosures</h3>
             </div>
 
-            <p className="text-xs text-white/70 leading-relaxed">
+            <p className="text-xs text-white/85 font-medium leading-relaxed">
               In compliance with BCI guidelines, the following administrative records and approvals
               are maintained publicly:
             </p>

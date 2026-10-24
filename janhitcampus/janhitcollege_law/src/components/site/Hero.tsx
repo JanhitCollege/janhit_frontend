@@ -1,6 +1,15 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowRight, Calendar, ShieldCheck, Award } from "lucide-react";
+import {
+  ArrowRight,
+  Calendar,
+  ShieldCheck,
+  Award,
+  Clock,
+  Scale,
+  GraduationCap,
+  Users,
+} from "lucide-react";
 import hero1 from "@/assets/janhit hero image 1.jpg";
 import hero2 from "@/assets/janhit hero image 2.jpg";
 
@@ -135,41 +144,89 @@ export function Hero() {
         </div>
       </section>
 
-      {/* Dedicated Quick Trust Factors Bar */}
-      <div className="bg-white border-b border-gold/20 py-10 px-6">
-        <div className="max-w-7xl mx-auto grid md:grid-cols-3 gap-6">
-          <div className="bg-background border border-gold/20 p-5 rounded-lg flex items-start gap-3.5 shadow-sm hover:shadow-md transition-shadow">
-            <div className="p-2.5 rounded bg-gold/10 text-gold shrink-0">
-              <ShieldCheck className="h-5.5 w-5.5" />
+      {/* Dedicated Quick Trust Factors Bar with Glassmorphism & Hover Effects */}
+      <div className="relative py-12 px-6 bg-slate-50/90 border-b border-gold/25 overflow-hidden">
+        {/* Soft Ambient Glows for Glassmorphism backdrop-blur depth */}
+        <div className="absolute top-1/2 left-1/4 -translate-y-1/2 w-80 h-28 bg-gold/15 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute top-1/2 right-1/4 -translate-y-1/2 w-80 h-28 bg-navy/10 rounded-full blur-3xl pointer-events-none" />
+
+        <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 sm:gap-5 relative z-10">
+          {/* Card 1: Est. 2002 */}
+          <div className="group relative bg-white/95 hover:bg-white backdrop-blur-md border border-gold/30 hover:border-gold p-5 sm:p-6 rounded-2xl flex flex-col items-center text-center justify-center shadow-md hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 ease-out cursor-pointer overflow-hidden min-h-[150px]">
+            <div className="w-12 h-12 rounded-2xl bg-gold/15 group-hover:bg-gold group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 flex items-center justify-center text-gold group-hover:text-navy-deep mb-3 shrink-0 shadow-xs">
+              <Clock className="h-6 w-6" />
             </div>
-            <div>
-              <h4 className="text-navy text-base font-bold">BCI Approved</h4>
-              <p className="text-navy/75 text-sm mt-1">
-                Approved by Bar Council of India, New Delhi
-              </p>
-            </div>
+            <h4 className="text-navy group-hover:text-gold transition-colors font-sans font-bold text-xs sm:text-sm uppercase tracking-wider">
+              Est. 2002
+            </h4>
+            <p className="text-slate-700 font-medium text-xs sm:text-sm mt-1">
+              20+ Yrs Excellence
+            </p>
           </div>
 
-          <div className="bg-background border border-gold/20 p-5 rounded-lg flex items-start gap-3.5 shadow-sm hover:shadow-md transition-shadow">
-            <div className="p-2.5 rounded bg-gold/10 text-gold shrink-0">
-              <Award className="h-5.5 w-5.5" />
+          {/* Card 2: BCI Approved */}
+          <div className="group relative bg-white/95 hover:bg-white backdrop-blur-md border border-gold/30 hover:border-gold p-5 sm:p-6 rounded-2xl flex flex-col items-center text-center justify-center shadow-md hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 ease-out cursor-pointer overflow-hidden min-h-[150px]">
+            <div className="w-12 h-12 rounded-2xl bg-gold/15 group-hover:bg-gold group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 flex items-center justify-center text-gold group-hover:text-navy-deep mb-3 shrink-0 shadow-xs">
+              <ShieldCheck className="h-6 w-6" />
             </div>
-            <div>
-              <h4 className="text-navy text-base font-bold">Affiliated to CCSU</h4>
-              <p className="text-navy/75 text-sm mt-1">Chaudhary Charan Singh University, Meerut</p>
-            </div>
+            <h4 className="text-navy group-hover:text-gold transition-colors font-sans font-bold text-xs sm:text-sm uppercase tracking-wider">
+              BCI Approved
+            </h4>
+            <p className="text-slate-700 font-medium text-xs sm:text-sm mt-1">
+              Bar Council of India
+            </p>
           </div>
 
-          <div className="bg-background border border-gold/20 p-5 rounded-lg flex items-start gap-3.5 shadow-sm hover:shadow-md transition-shadow">
-            <div className="p-2.5 rounded bg-gold/10 text-gold shrink-0">
-              <Calendar className="h-5.5 w-5.5" />
+          {/* Card 3: Affiliated */}
+          <div className="group relative bg-white/95 hover:bg-white backdrop-blur-md border border-gold/30 hover:border-gold p-5 sm:p-6 rounded-2xl flex flex-col items-center text-center justify-center shadow-md hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 ease-out cursor-pointer overflow-hidden min-h-[150px]">
+            <div className="w-12 h-12 rounded-2xl bg-gold/15 group-hover:bg-gold group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 flex items-center justify-center text-gold group-hover:text-navy-deep mb-3 shrink-0 shadow-xs">
+              <Award className="h-6 w-6" />
             </div>
-            <div>
-              <h4 className="text-navy text-base font-bold">5Yrs & 3Yrs Programs</h4>
-              <p className="text-navy/75 text-sm mt-1">
-                Comprehensive integrated & graduate law courses
-              </p>
+            <h4 className="text-navy group-hover:text-gold transition-colors font-sans font-bold text-xs sm:text-sm uppercase tracking-wider">
+              Affiliated
+            </h4>
+            <p className="text-slate-700 font-medium text-xs sm:text-sm mt-1">
+              CCSU Meerut
+            </p>
+          </div>
+
+          {/* Card 4: Moot Court */}
+          <div className="group relative bg-white/95 hover:bg-white backdrop-blur-md border border-gold/30 hover:border-gold p-5 sm:p-6 rounded-2xl flex flex-col items-center text-center justify-center shadow-md hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 ease-out cursor-pointer overflow-hidden min-h-[150px]">
+            <div className="w-12 h-12 rounded-2xl bg-gold/15 group-hover:bg-gold group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 flex items-center justify-center text-gold group-hover:text-navy-deep mb-3 shrink-0 shadow-xs">
+              <Scale className="h-6 w-6" />
             </div>
+            <h4 className="text-navy group-hover:text-gold transition-colors font-sans font-bold text-xs sm:text-sm uppercase tracking-wider">
+              Moot Court
+            </h4>
+            <p className="text-slate-700 font-medium text-xs sm:text-sm mt-1">
+              Courtroom & Legal Aid
+            </p>
+          </div>
+
+          {/* Card 5: 5Yr & 3Yr Law */}
+          <div className="group relative bg-white/95 hover:bg-white backdrop-blur-md border border-gold/30 hover:border-gold p-5 sm:p-6 rounded-2xl flex flex-col items-center text-center justify-center shadow-md hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 ease-out cursor-pointer overflow-hidden min-h-[150px]">
+            <div className="w-12 h-12 rounded-2xl bg-gold/15 group-hover:bg-gold group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 flex items-center justify-center text-gold group-hover:text-navy-deep mb-3 shrink-0 shadow-xs">
+              <GraduationCap className="h-6 w-6" />
+            </div>
+            <h4 className="text-navy group-hover:text-gold transition-colors font-sans font-bold text-xs sm:text-sm uppercase tracking-wider">
+              5Yr & 3Yr Law
+            </h4>
+            <p className="text-slate-700 font-medium text-xs sm:text-sm mt-1">
+              UG & Graduate Degrees
+            </p>
+          </div>
+
+          {/* Card 6: 35,000+ Alumni */}
+          <div className="group relative bg-white/95 hover:bg-white backdrop-blur-md border border-gold/30 hover:border-gold p-5 sm:p-6 rounded-2xl flex flex-col items-center text-center justify-center shadow-md hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 ease-out cursor-pointer overflow-hidden min-h-[150px]">
+            <div className="w-12 h-12 rounded-2xl bg-gold/15 group-hover:bg-gold group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 flex items-center justify-center text-gold group-hover:text-navy-deep mb-3 shrink-0 shadow-xs">
+              <Users className="h-6 w-6" />
+            </div>
+            <h4 className="text-navy group-hover:text-gold transition-colors font-sans font-bold text-xs sm:text-sm uppercase tracking-wider">
+              35,000+ Alumni
+            </h4>
+            <p className="text-slate-700 font-medium text-xs sm:text-sm mt-1">
+              Group Legacy
+            </p>
           </div>
         </div>
       </div>

@@ -52,7 +52,7 @@ export function Infrastructure() {
             College Infrastructure
           </h2>
           <div className="h-1 w-20 bg-gold mx-auto rounded" />
-          <p className="text-sm text-navy/70">
+          <p className="text-sm text-navy/85 font-medium">
             Our campus offers excellent facilities designed to nurture professional competency and
             practical legal research.
           </p>
@@ -74,7 +74,7 @@ export function Infrastructure() {
                 <h3 className="font-serif text-xl font-bold text-navy mb-3 group-hover:text-gold transition-colors">
                   {item.title}
                 </h3>
-                <p className="text-base text-navy/70 leading-relaxed">{item.description}</p>
+                <p className="text-base text-navy/85 font-medium leading-relaxed">{item.description}</p>
               </div>
             );
           })}

@@ -94,7 +94,7 @@ export function Downloads({ isHomePage = false, limit }: DownloadsProps = {}) {
           </span>
           <h2 className="text-3xl md:text-4xl font-serif font-bold text-navy">Downloads Center</h2>
           <div className="h-1 w-20 bg-gold mx-auto rounded" />
-          <p className="text-sm text-navy/70">
+          <p className="text-sm text-navy/85 font-medium">
             Quickly download syllabuses, college brochures, academic calendars, notices, and mandatory legal forms.
           </p>
         </div>
@@ -167,7 +167,7 @@ export function Downloads({ isHomePage = false, limit }: DownloadsProps = {}) {
           <div className="p-12 text-center bg-white border border-slate-200 rounded-xl max-w-lg mx-auto flex flex-col items-center space-y-2 shadow-sm">
             <FileText className="h-10 w-10 text-navy/30" />
             <h3 className="font-serif text-base font-bold text-navy">No Downloads Found</h3>
-            <p className="text-xs text-navy/60">
+            <p className="text-xs text-navy/75 font-medium">
               {searchQuery || selectedCategory !== "ALL"
                 ? "No documents match your filter criteria. Try clearing search or selecting another category."
                 : "Check back later for updated course documents and forms."}
@@ -201,7 +201,7 @@ export function Downloads({ isHomePage = false, limit }: DownloadsProps = {}) {
                       {item.title}
                     </h3>
                     {item.description && (
-                      <p className="text-xs text-navy/60 leading-relaxed max-w-3xl">
+                      <p className="text-xs text-navy/85 font-medium leading-relaxed max-w-3xl">
                         {item.description}
                       </p>
                     )}
@@ -245,7 +245,7 @@ export function Downloads({ isHomePage = false, limit }: DownloadsProps = {}) {
               <Shield className="h-5 w-5" />
               <span>Looking for Admissions Form?</span>
             </h4>
-            <p className="text-xs text-white/70 max-w-md">
+            <p className="text-xs text-white/85 font-medium max-w-md">
               You can instantly fill out our digital admission enquiry form below to secure your
               counseling seat. Our representatives will get back to you.
             </p>

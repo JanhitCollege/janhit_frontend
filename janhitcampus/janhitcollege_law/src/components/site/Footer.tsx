@@ -1,6 +1,14 @@
 import logo from "@/assets/janhitlawcollege_logo.png";
-import { Phone, Mail, MapPin } from "lucide-react";
+import { Phone, Mail, MapPin, Facebook, Instagram, Linkedin, Youtube, Twitter } from "lucide-react";
 import { Link } from "react-router-dom";
+
+const FOOTER_SOCIAL_LINKS = [
+  { name: "Facebook", href: "https://www.facebook.com/janhitgroup", icon: Facebook },
+  { name: "Instagram", href: "https://www.instagram.com/janhitgroup", icon: Instagram },
+  { name: "LinkedIn", href: "https://www.linkedin.com/school/janhit-group-of-institutions/", icon: Linkedin },
+  { name: "YouTube", href: "https://www.youtube.com/@janhitgroup", icon: Youtube },
+  { name: "Twitter", href: "https://twitter.com/janhitgroup", icon: Twitter },
+];
 
 export function Footer() {
   return (
@@ -19,10 +27,33 @@ export function Footer() {
               </span>
             </div>
           </div>
-          <p className="text-xs text-white/70 leading-relaxed max-w-sm">
-            Providing premium legal education, trial courtroom training, and free community outreach
-            in association with the Bar Council of India and CCS University.
+          <p className="text-xs text-white/85 font-medium leading-relaxed max-w-sm">
+            Providing premium legal education, trial courtroom training, moot court advocacy, and free community outreach in association with the Bar Council of India and CCS University.
           </p>
+
+          {/* Social Media Links */}
+          <div className="pt-2">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-gold block mb-2.5">
+              Connect on Social Media
+            </span>
+            <div className="flex items-center gap-2.5">
+              {FOOTER_SOCIAL_LINKS.map((s, idx) => {
+                const Icon = s.icon;
+                return (
+                  <a
+                    key={idx}
+                    href={s.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={s.name}
+                    className="w-8 h-8 rounded-lg bg-white/10 hover:bg-gold text-white hover:text-navy-deep flex items-center justify-center transition-all duration-300"
+                  >
+                    <Icon className="w-4 h-4" />
+                  </a>
+                );
+              })}
+            </div>
+          </div>
         </div>
 
         {/* Quick Links */}
@@ -42,8 +73,13 @@ export function Footer() {
               </Link>
             </li>
             <li>
-              <Link to="/courses" className="hover:text-gold transition-colors">
-                Law Courses
+              <Link to="/academics" className="hover:text-gold transition-colors">
+                Academics
+              </Link>
+            </li>
+            <li>
+              <Link to="/students-corner" className="hover:text-gold transition-colors font-medium text-gold/90">
+                Students Corner
               </Link>
             </li>
             <li>
@@ -52,8 +88,18 @@ export function Footer() {
               </Link>
             </li>
             <li>
-              <Link to="/academic-calendar" className="hover:text-gold transition-colors">
-                Calendar
+              <Link to="/naac" className="hover:text-gold transition-colors font-medium text-gold/90">
+                NAAC & IQAC
+              </Link>
+            </li>
+            <li>
+              <Link to="/career" className="hover:text-gold transition-colors font-semibold text-gold">
+                Career Openings
+              </Link>
+            </li>
+            <li>
+              <Link to="/contact" className="hover:text-gold transition-colors">
+                Contact Us
               </Link>
             </li>
             <li>
@@ -62,13 +108,18 @@ export function Footer() {
               </Link>
             </li>
             <li>
-              <Link to="/faculty" className="hover:text-gold transition-colors">
-                Faculty
+              <Link to="/events" className="hover:text-gold transition-colors font-medium text-gold/90">
+                Events & Activities
+              </Link>
+            </li>
+            <li>
+              <Link to="/gallery" className="hover:text-gold transition-colors">
+                Photo Gallery
               </Link>
             </li>
             <li>
               <Link to="/disclosures" className="hover:text-gold transition-colors">
-                Disclosures
+                Public Disclosure
               </Link>
             </li>
           </ul>

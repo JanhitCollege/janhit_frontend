@@ -1,9 +1,5 @@
-import { Admissions } from "@/components/site/Admissions";
+import { AcademicsPage } from "@/pages/AcademicsPage";
 
 export function AcademicCalendarPage() {
-  return (
-    <div className="pt-6">
-      <Admissions />
-    </div>
-  );
+  return <AcademicsPage />;
 }

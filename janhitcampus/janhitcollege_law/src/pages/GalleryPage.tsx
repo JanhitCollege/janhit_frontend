@@ -98,7 +98,7 @@ export function GalleryPage() {
           </h1>
           <div className="h-1 w-24 bg-gold mx-auto rounded" />
           
-          <p className="text-sm md:text-base text-navy/70 leading-relaxed">
+          <p className="text-sm md:text-base text-navy/85 font-medium leading-relaxed">
             Take a visual tour of Janhit College of Law — featuring our modern moot courtroom, legal research labs, academic symposia, sports tournaments, and student life.
           </p>
         </div>
@@ -157,7 +157,7 @@ export function GalleryPage() {
           <div className="py-16 text-center bg-white rounded-2xl border border-gold/20 p-8 max-w-md mx-auto space-y-3">
             <ImageIcon className="w-12 h-12 text-gold/60 mx-auto" />
             <h3 className="font-serif text-lg font-bold text-navy">No Photos Found</h3>
-            <p className="text-xs text-navy/70">
+            <p className="text-xs text-navy/85 font-medium">
               No gallery items matched your search query or filter selection.
             </p>
             <button
