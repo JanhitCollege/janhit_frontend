@@ -99,7 +99,7 @@ export function ContactForm() {
   };
 
   return (
-    <section id="contact" className="py-20 bg-background border-t border-gold/15">
+    <section id="contact" className="py-20 bg-white border-t border-gold/15">
       <div className="max-w-7xl mx-auto px-6 space-y-16">
         {/* Header */}
         <div className="text-center max-w-3xl mx-auto space-y-3">
@@ -273,7 +273,7 @@ export function ContactForm() {
                     placeholder="Enter student or candidate's full name"
                     value={formData.name}
                     onChange={handleChange}
-                    className="w-full text-sm border border-gold/25 px-4 py-3 rounded-xl focus:outline-none focus:border-gold bg-background transition-colors"
+                    className="w-full text-sm border border-gold/25 px-4 py-3 rounded-xl focus:outline-none focus:border-gold bg-white transition-colors"
                   />
                 </div>
 
@@ -290,7 +290,7 @@ export function ContactForm() {
                       placeholder="candidate@example.com"
                       value={formData.email}
                       onChange={handleChange}
-                      className="w-full text-sm border border-gold/25 px-4 py-3 rounded-xl focus:outline-none focus:border-gold bg-background transition-colors"
+                      className="w-full text-sm border border-gold/25 px-4 py-3 rounded-xl focus:outline-none focus:border-gold bg-white transition-colors"
                     />
                   </div>
 
@@ -307,7 +307,7 @@ export function ContactForm() {
                       placeholder="10-digit mobile number"
                       value={formData.mobile}
                       onChange={handleChange}
-                      className="w-full text-sm border border-gold/25 px-4 py-3 rounded-xl focus:outline-none focus:border-gold bg-background transition-colors"
+                      className="w-full text-sm border border-gold/25 px-4 py-3 rounded-xl focus:outline-none focus:border-gold bg-white transition-colors"
                     />
                   </div>
                 </div>
@@ -321,7 +321,7 @@ export function ContactForm() {
                     name="course"
                     value={formData.course}
                     onChange={handleChange}
-                    className="w-full text-sm border border-gold/25 px-4 py-3 rounded-xl focus:outline-none focus:border-gold bg-background transition-colors cursor-pointer"
+                    className="w-full text-sm border border-gold/25 px-4 py-3 rounded-xl focus:outline-none focus:border-gold bg-white transition-colors cursor-pointer"
                   >
                     <option value="ballb">B.A.LL.B (5 Academic Years - Integrated)</option>
                     <option value="llb">LL.B (3 Academic Years - Graduate Law)</option>
@@ -342,7 +342,7 @@ export function ContactForm() {
                     placeholder="Enter any specific questions regarding eligibility, hostel, admission dates, or documents..."
                     value={formData.message}
                     onChange={handleChange}
-                    className="w-full text-sm border border-gold/25 px-4 py-3 rounded-xl focus:outline-none focus:border-gold bg-background transition-colors resize-none"
+                    className="w-full text-sm border border-gold/25 px-4 py-3 rounded-xl focus:outline-none focus:border-gold bg-white transition-colors resize-none"
                   />
                 </div>
 
@@ -423,7 +423,7 @@ export function ContactForm() {
                   href={item.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className={`border border-gold/25 rounded-2xl p-5 flex flex-col items-center text-center justify-between gap-3 transition-all duration-300 bg-background hover:shadow-xl hover:-translate-y-1 ${item.color} group`}
+                  className={`border border-gold/25 rounded-2xl p-5 flex flex-col items-center text-center justify-between gap-3 transition-all duration-300 bg-white hover:shadow-xl hover:-translate-y-1 ${item.color} group`}
                 >
                   <div className="w-12 h-12 rounded-xl bg-white text-navy flex items-center justify-center shadow-xs group-hover:scale-110 transition-transform">
                     <Icon className="w-6 h-6 text-current" />

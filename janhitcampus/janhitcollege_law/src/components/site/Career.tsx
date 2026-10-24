@@ -165,7 +165,7 @@ export function Career() {
   };
 
   return (
-    <div className="bg-background">
+    <div className="bg-white min-h-screen">
       {/* 1. Hero Section */}
       <section className="relative py-16 md:py-20 bg-white text-navy overflow-hidden border-b border-gold/30">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,oklch(0.74_0.12_85/0.15),transparent_60%)] pointer-events-none" />
@@ -234,7 +234,7 @@ export function Career() {
       </section>
 
       {/* 3. Current Openings Section */}
-      <section id="openings" className="py-20 scroll-mt-24 bg-background">
+      <section id="openings" className="py-20 scroll-mt-24 bg-white border-b border-gold/15">
         <div className="max-w-7xl mx-auto px-6">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-12">
             <div className="space-y-2">
@@ -335,7 +335,7 @@ export function Career() {
             </p>
           </div>
 
-          <div className="bg-background rounded-3xl border border-gold/25 p-8 md:p-12 shadow-xl">
+          <div className="bg-white rounded-3xl border border-gold/25 p-8 md:p-12 shadow-xl">
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid md:grid-cols-2 gap-6">
                 <div className="space-y-1.5">

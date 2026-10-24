@@ -3,7 +3,7 @@ import { MessageSquare } from "lucide-react";
 
 export function ContactPage() {
   return (
-    <div className="pt-2">
+    <div className="bg-white min-h-screen">
       {/* Contact Page Header */}
       <section className="relative py-16 bg-white text-navy overflow-hidden border-b border-gold/30">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_20%,oklch(0.74_0.12_85/0.15),transparent_60%)] pointer-events-none" />
